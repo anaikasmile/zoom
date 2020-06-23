@@ -1,4 +1,10 @@
 
+from . base import *
+
+#DEBUG = config('DEBUG', default=False, cast=bool)
+
+DEBUG = True
+
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
