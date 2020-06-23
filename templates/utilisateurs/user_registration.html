@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <form method="post" autocomplete="off">
+    {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                      <h4 class="card-title">Utilisateurs</h4>
+                      <p class="card-category">Enregistrer un utilisateur</p>
+                    </div>
+                    <div class="card-body">
+                        {{ form.errors }}
+                       {% comment %} {% for field in form %}
+                          <p>
+                            {{ field.birth_date }}<br>
+                            {{ field }}
+                            {% if field.help_text %}
+                              <small style="color: grey">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                              <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                          </p>
+                        {% endfor %}{% endcomment %}
+                             <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">Role </label>
+                                        {{ form.user_type }}
+                                    </div>
+                             </div>
+                             <hr class="my-4" />
+                            <!-- Infos personnel -->
+                            <h6 class="heading-small text-muted mb-4">Informations Personnelles</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">Nom *</label>
+                                        {{ form.last_name }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">Prénoms *</label>
+                                        {{ form.first_name }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                             <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Sexe *</label>
+                                   {{ form.sexe }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Date de naissance *</label>
+                                    {{ form.birth_date }}
+                                </div>
+                              </div>
+                            </div>
+
+                             <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Email </label>
+                                   {{ form.email }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Tél *</label>
+                                    {{ form.tel|add_class:'form-control' }}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">{{ form.adresse.label }}</label>
+                                   {{ form.adresse }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Photo</label>
+                                    <div class="custom-file">
+                                        {{ form.photo }}
+                                        <label class="custom-file-label" for="customFileLang">Select file</label>
+
+                                    </div>
+
+                                </div>
+                              </div>
+                            </div>
+                        <hr class="my-4" />
+                         <!-- Piece identite -->
+                            <h6 class="heading-small text-muted mb-4">Pièce d'identité</h6>
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">{{ form_identity.type.label }}</label>
+                                   {{ form_identity.type }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">{{ form_identity.reference.label }}</label>
+                                   {{ form_identity.reference }}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">{{ form_identity.initiated_at.label }}</label>
+                                   {{ form_identity.initiated_at }}
+                                </div>
+                              </div>
+
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">{{ form_identity.expired_at.label }}</label>
+                                   {{ form_identity.expired_at }}
+                                </div>
+                              </div>
+                            </div>
+                            <hr class="my-4" />
+                            <!-- Personne à prévenir -->
+                            <h6 class="heading-small text-muted mb-4">Personne à prévenir</h6>
+
+                            <div class="row">
+
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Nom</label>
+                                   {{ form_identity.contact_name }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Tél </label>
+                                   {{ form_identity.contact_tel }}
+                                </div>
+                              </div>
+                            </div>
+
+                        </div>
+                  </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-profile">
+
+                    <div class="card-body">
+                        <h6 class="heading-small text-muted mb-4">Identifiants</h6>
+                        <div class="row">
+                              <div class="col-md-12">
+                                    <div class="form-group">
+                                      <label class="bmd-label-floating">Login *</label>
+                                       {{ form.username|add_class:'form-control' }}
+                                    </div>
+                              </div>
+
+                        </div>
+                         <div class="row">
+                              <div class="col-md-12">
+                                    <div class="form-group">
+                                      <label class="bmd-label-floating">Mot de passe *</label>
+                                       {{ form.password1|add_class:'form-control' }}
+                                    </div>
+                              </div>
+
+                        </div>
+                        <div class="row">
+                              <div class="col-md-12">
+                                    <div class="form-group">
+                                      <label class="bmd-label-floating">Confirmer le mot de passe *</label>
+                                       {{ form.password2|add_class:'form-control' }}
+                                    </div>
+                              </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right">Enregistrer</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

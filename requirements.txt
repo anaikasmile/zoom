@@ -1,0 +1,10 @@
+beautifulsoup4==4.9.1
+Django==2.2.13
+django-bootstrap4==1.1.1
+django-countries==6.1.2
+django-widget-tweaks==1.4.8
+Pillow==7.1.2
+psycopg2==2.8.5
+pytz==2020.1
+soupsieve==2.0.1
+sqlparse==0.3.1
