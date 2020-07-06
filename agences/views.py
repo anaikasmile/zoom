@@ -100,6 +100,19 @@ def vehicule_update(request, vehicule_id):
     }
     return render(request, "agences/vehicules_list.html", context)
 
+def vehicule_detail(request, vehicule_id):
+    vehicule = Vehicules.objects.get(id=vehicule_id)
+    #paginator = Paginator(agences, 25)  # Show 25  per page
+    #page = request.GET.get('page')
+    #agences = paginator.get_page(page)
+
+    context = {
+        'vehicule': vehicule,
+    }
+    return render(request, "agences/vehicules_detail.html", context)
+
+
+
 def vehicule_delete(request, vehicule_id):
     vehicule = get_object_or_404(Vehicules, id=vehicule_id)
     vehicule.delete()

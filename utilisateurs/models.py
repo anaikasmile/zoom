@@ -19,6 +19,15 @@ class User(AbstractUser):
     def __str__(self):
         return self.last_name+' '+self.first_name
 
+    def get_role_name(self):
+        if self.user_type == 1:
+            name = "admin"
+        if self.user_type == 2:
+            name = "agent"
+        if self.user_type == 3:
+            name = "chauffeur"
+        return name
+
     def get_full_name(self):
         return self.first_name+' '+self.last_name
 #

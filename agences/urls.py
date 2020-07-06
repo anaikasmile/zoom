@@ -10,6 +10,7 @@ urlpatterns = [
     path('vehicule/create', agence_views.vehicule_create, name='vehicule-create'),
     path('vehicule/update/<int:vehicule_id>/', agence_views.vehicule_update, name='vehicule-update'),
     path('vehicule/delete/<int:vehicule_id>/', agence_views.vehicule_delete, name='vehicule-delete'),
+    path('vehicule/detail/<int:vehicule_id>/', agence_views.vehicule_detail, name='vehicule-detail'),
 
     path('typevehicule/create', agence_views.type_vehicule_create, name='type-vehicule-create'),
     path('typevehicule/update/<int:type_vehicule_id>/', agence_views.type_vehicule_update, name='type-vehicule-update'),

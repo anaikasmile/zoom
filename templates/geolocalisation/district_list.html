@@ -1,4 +1,21 @@
 {% extends 'base.html' %}
+{% block header %}
+
+<div class="row align-items-center py-4">
+    <div class="col-lg-6 col-7">
+      <h6 class="h2 text-white d-inline-block mb-0">Emplacements</h6>
+      <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+          <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+          <li class="breadcrumb-item">Emplacements</li>
+
+          <li class="breadcrumb-item active" aria-current="page">Quartiers</li>
+        </ol>
+      </nav>
+    </div>
+
+</div>
+{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-xl-4">
@@ -72,7 +89,6 @@
                         {{district.created_at|date:'F j, Y'}}
                     </td>
                     <td class="">
-                        <a href="" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
                         <a href="{% url 'geolocalisation:district_update' district.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
                         <a href="{% url 'geolocalisation:district_delete' district.id %}" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
 

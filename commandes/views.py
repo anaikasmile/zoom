@@ -1,6 +1,9 @@
-from django.shortcuts import render, reverse
-from .models import Colis, Insurance, Commandes
-from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset
+from django.shortcuts import render, reverse, get_object_or_404
+from django.http import JsonResponse
+
+from .models import Colis, Insurance, Commandes, HistoriqueCommandes
+from agences.models import Agences
+from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm
 from django.views.generic import ListView, CreateView
 from django.contrib import messages
 
@@ -49,13 +52,120 @@ class ColisCreateView(CreateView):
         self.object.save()
         if commande.is_valid():
             commande.instance = self.object
-            commande.save(commit=False)
-            reference = random_string_generator()
+            commande.save()
+            #reference = random_string_generator()
             # qs_exists = Commandes.objects.filter(numero_commande=reference).exists()
             # if qs_exists:
             #     reference = random_string_generator()
-            commande.save()
         return super().form_valid(form)
     def get_success_url(self):
         messages.success(self.request, 'Commande enregistrée')
         return reverse("commandes:create_commande")
+
+
+def mes_commandes(request):
+    commandes = Commandes.objects.filter(colis__client=request.user)
+    #paginator = Paginator(agences, 25)  # Show 25  per page
+    #page = request.GET.get('page')
+    #agences = paginator.get_page(page)
+
+    context = {
+        'commandes': commandes,
+    }
+    return render(request, "commandes/mes_commandes.html", context)
+
+
+def mes_commandes_detail(request,id):
+    commande = get_object_or_404(Commandes, id=commande_id)
+
+    #paginator = Paginator(agences, 25)  # Show 25  per page
+    #page = request.GET.get('page')
+    #agences = paginator.get_page(page)
+
+    context = {
+        'commande': commande,
+    }
+    return render(request, "commandes/mes_commandes_detail.html", context)
+
+def commandes_liste(request):
+    commandes = Commandes.objects.all()
+    form_step1 = Step1Form
+    form_step2 = Step2Form
+    #paginator = Paginator(agences, 25)  # Show 25  per page
+    #page = request.GET.get('page')
+    #agences = paginator.get_page(page)
+
+    context = {
+        'commandes': commandes,
+        'form_step1': form_step1,
+        'form_step2': form_step2
+    }
+    return render(request, "commandes/commandes_liste.html", context)
+
+
+#Liste des commandes disponibles
+def avalaible_orders(request):
+    commandes = Commandes.objects.filter(driver__isnull=True, status=Commandes.ETAT_PAYE)
+    context = {
+        'commandes': commandes
+    }
+    return render(request, "commandes/commandes_disponibles.html", context)
+
+
+def etat_update(request):
+    etat = request.GET.get('etat')
+    cmd_id = request.GET.get('id')
+    commande = get_object_or_404(Commandes, id=cmd_id)
+    commande.status = etat
+    commande.save()
+    history = HistoriqueCommandes.objects.create(commande=commande, user=request.user, state=etat)
+    if request.GET.get('agence'):
+        agence = get_object_or_404(Agences, id=request.GET.get('agence'))
+        history.agence = agence
+        if request.GET.get('comment'):
+            comment = request.GET.get('comment')
+            history.comment = comment
+    history.save()
+    data = {
+        'statut': 'success',
+        'message': 'La commande a été mise à jour'
+    }
+    return JsonResponse(data)
+
+def historique_commande(request,commande_id):
+    commande = get_object_or_404(Commandes, id=commande_id)
+    historiques = HistoriqueCommandes.objects.filter(commande=commande).order_by('created_at')
+    #paginator = Paginator(agences, 25)  # Show 25  per page
+    #page = request.GET.get('page')
+    #agences = paginator.get_page(page)
+
+    context = {
+        'commande': commande,
+        'historiques': historiques
+    }
+    return render(request, "commandes/commande_historique.html", context)
+
+#Chauffeur: Choisir une commande
+def assign_order_to_me(request):
+    cmd_id = request.GET.get('id')
+    commande = get_object_or_404(Commandes, id=cmd_id)
+    commande.driver = request.user
+    commande.save()
+    data = {
+        'statut': 'success',
+        'message': 'Commande affectée'
+    }
+    return JsonResponse(data)
+
+
+#Reclamations
+def add_reclamation(request):
+    form = ReclamationForm()
+    # paginator = Paginator(agences, 25)  # Show 25  per page
+    # page = request.GET.get('page')
+    # agences = paginator.get_page(page)
+
+    context = {
+        'form': form,
+    }
+    return render(request, "commandes/ajout_reclamation.html", context)

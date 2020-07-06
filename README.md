@@ -22,4 +22,10 @@ python manage.py  makemigrations
 python manage.py migrate
 python manage.py createsuperuser 
 
+Online
+user : zoom  
+pwd : n23zoom
 
+pg_ctlcluster 12 main start
+
+Admin django root n23zoom  

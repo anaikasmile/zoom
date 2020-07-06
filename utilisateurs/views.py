@@ -19,18 +19,21 @@ from .models import Person
 # Create your views here.
 
 # Registration of user */
-def registration(request):
+def registration(request,role):
+
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         form_identity = IdentityForm(request.POST)
 
         if form.is_valid():
             user = form.save()
+
             user.refresh_from_db()  # load the profile instance created by the signal
             user.person.birth_date = form.cleaned_data.get('birth_date')
             user.person.tel = form.cleaned_data.get('tel')
             user.person.sexe = form.cleaned_data.get('sexe')
             user.person.adresse = form.cleaned_data.get('adresse')
+            user.user_type = role
             user.save()
             identity = form_identity.save(commit=False)
             identity.user = user
@@ -39,11 +42,11 @@ def registration(request):
             # raw_password = form.cleaned_data.get('password1')
             # user = authenticate(username=user.username, password=raw_password)
             # login(request, user)
-            return redirect('utilisateurs:user_registration')
+            return redirect('utilisateurs:user_registration', role)
     else:
         form = UserRegistrationForm()
         form_identity = IdentityForm()
-    return render(request, 'utilisateurs/user_signup.html', {'form': form, 'form_identity': form_identity})
+    return render(request, 'utilisateurs/user_registration.html', {'form': form, 'form_identity': form_identity})
 
 
 # Registration of client */
@@ -123,7 +126,7 @@ class ClientListView(ListView):
     paginate_by = 10
     ordering = ['-created']
     def get_queryset(self):
-        return User.objects.exclude(Q(user_type=1) | Q(user_type=2)|Q(user_type=3))
+        return User.objects.filter(Q(user_type=1) | Q(user_type=2)|Q(user_type=3))
 
 class AgentListView(ListView):
     template_name = 'utilisateurs/user_list.html'
@@ -135,6 +138,14 @@ class AgentListView(ListView):
 class DriverListView(ListView):
     template_name = 'utilisateurs/user_list.html'
     paginate_by = 10
-    ordering = ['-created']
+    ordering = ['lastname']
     def get_queryset(self):
         return User.objects.filter(user_type=3)
+
+
+#Delete a user
+def user_delete(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.delete()
+    messages.success(request, 'Utilisateur supprimé')
+    return redirect('users:user-registration')

@@ -205,7 +205,7 @@
                     <span class="shortcut-media avatar rounded-circle bg-gradient-green">
                       <i class="ni ni-books"></i>
                     </span>
-                    <small>Reports</small>
+                    <small>Mes réclamations</small>
                   </a>
                   <a href="#!" class="col-4 shortcut-item">
                     <span class="shortcut-media avatar rounded-circle bg-gradient-purple">
@@ -217,7 +217,7 @@
                     <span class="shortcut-media avatar rounded-circle bg-gradient-yellow">
                       <i class="ni ni-basket"></i>
                     </span>
-                    <small>Shop</small>
+                    <small>Mes commandes</small>
                   </a>
                 </div>
               </div>
@@ -370,7 +370,8 @@
               </script>
             {% endfor %}
         {% endif  %}
-
+        {% block javascript %}
+        {% endblock %}
 
     </body>
 </html>

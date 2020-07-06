@@ -31,9 +31,9 @@ class UserRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'last_name', 'first_name', 'password1', 'password2', 'email', 'user_type')
+        fields = ('username', 'last_name', 'first_name', 'password1', 'password2', 'email')
         widgets = {
-            'user_type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            #'user_type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'required': True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
             'last_name': forms.TextInput(attrs={'required': True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control',}),
             'email': forms.TextInput(attrs={'required': True,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
@@ -59,11 +59,11 @@ class IdentityForm(forms.ModelForm):
         model = Identity
         fields = ('type', 'reference', 'photo', 'initiated_at', 'expired_at', 'contact_name', 'contact_tel')
         widgets = {
-            'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
-            'reference': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'type': forms.Select(attrs={'required':True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'reference': forms.TextInput(attrs={'required':True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'photo': forms.FileInput(attrs={'placeholder': _(u'Photo'), 'name': '', 'id': '', 'class': 'form-control'}),
-            'initiated_at': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date', 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
-            'expired_at': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date', 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'initiated_at': forms.DateInput(format='%d/%m/%Y', attrs={'required': True, 'type': 'date', 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'expired_at': forms.DateInput(format='%d/%m/%Y', attrs={'required': True, 'type': 'date', 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'contact_name': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'contact_tel': forms.TextInput(
                 attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),

@@ -18,7 +18,7 @@
                     <th scope="col" class="sort" data-sort="nom">Prénoms</th>
                     <th scope="col" class="sort" data-sort="nom">Sexe</th>
                     <th scope="col" class="sort" data-sort="nom">Tél</th>
-                    <th scope="col" class="sort" data-sort="nom">Role</th>
+
                     <th scope="col" class="sort" data-sort="nom">Créé le</th>
 
                     <th scope="col">Actions</th>
@@ -40,9 +40,7 @@
                      <td class="budget">
                         {{ user.person.tel }}
                     </td>
-                     <td class="budget">
-                        {{ user.user_type }}
-                    </td>
+
                     <td>
                         {{user.created_at|date:'F j, Y'}}
                     </td>

@@ -1,0 +1,27 @@
+{% extends 'base_frontend.html' %}
+{% load i18n %}
+
+{% load widget_tweaks %}
+{% block header %}
+{% endblock %}
+{% block content %}
+<div class="container-fluid mt--6">
+<!-- Dark table -->
+      <div class="row">
+        <div class="col">
+          <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+              <h3 class="text-white mb-0">Mes commandes</h3>
+            </div>
+            {{ form }}
+
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+
+{% endblock %}
+
+
