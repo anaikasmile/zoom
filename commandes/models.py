@@ -167,3 +167,4 @@ class ReclamationsHandler(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     type = models.CharField(max_length=50, choices=TYPES, null=True, blank=True, verbose_name='Type d incident')
+    commentaire = models.TextField(blank=True, verbose_name='Commentaire')

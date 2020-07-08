@@ -5,11 +5,11 @@
 
 
         <div class="card mb-3">
-          <div class="p-4 text-center text-white text-lg bg-dark rounded-top"><span class="text-uppercase">Historique Commande No - </span><span class="text-medium">{{ commande.numero_commande }}</span></div>
+          <div class="p-4 text-center text-white text-lg bg-light rounded-top"><span class="text-uppercase">Historique Commande No - </span><span class="text-medium">{{ commande.numero_commande }}</span></div>
           <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 bg-secondary">
-            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Deposit date:</span> {{ commande.date_depot}}</div>
-            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Status:</span> {{ commande.getEtatLibelle }}</div>
-            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Expected Date:</span> {{ commande.date_reception }}</div>
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Date de dépôt:</span> {{ commande.date_depot|date:'j M Y' }}</div>
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Statut:</span> {{ commande.getEtatLibelle }}</div>
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Date de livraison prévue:</span> {{ commande.date_reception|date:'j M Y'}}</div>
           </div>
           <div class="card-body">
             <div class="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
@@ -17,33 +17,40 @@
                 {% if h.state == 2 %}
                 <div class="step  completed" >
                 <div class="step-icon-wrap">
-                  <div class="step-icon" type="button" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-money" ></i></div>
+                  <div class="step-icon" type="button"  data-placement="top"><i class="fa fa-money" ></i></div>
                 </div>
                 <h4 class="step-title">{{h.getEtatLibelle}}</h4>
+                <p class="small">{{ h.created_at|date:'j M Y,H:i'   }}</p>
               </div>
+
                 {% endif %}
                 {% if h.state == 3 %}
               <div class="step completed">
                 <div class="step-icon-wrap">
-                  <div class="step-icon" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fa fa-car"></i></div>
+                  <div class="step-icon" ><i class="fa fa-car"></i></div>
                 </div>
                 <h4 class="step-title">{{h.getEtatLibelle}}</h4>
+                <p class="small">{{ h.created_at|date:'j M Y,H:i'   }}</p>
+
               </div>
             {% endif %}
              {% if h.state == 4 %}
               <div class="step completed">
                 <div class="step-icon-wrap">
-                  <div class="step-icon" data-toggle="tooltip" data-placement="top" title="{{ h.agence.name}}"><i class="fa fa-box" ></i></div>
+                  <div class="step-icon" data-toggle="tooltip" data-placement="top" title={{ h.agence.name }}><i class="fa fa-box" ></i></div>
                 </div>
                 <h4 class="step-title">{{h.getEtatLibelle}}</h4>
+                <p class="small">{{ h.created_at|date:'j M Y, H:i'  }}</p>
               </div>
             {% endif %}
              {% if h.state == 5 %}
               <div class="step completed">
                 <div class="step-icon-wrap">
-                  <div class="step-icon"><i class="fa fa-calendar"></i></div>
+                  <div class="step-icon" data-toggle="tooltip" data-placement="top" title={{ h.agence.name }}><i class="fa fa-calendar"></i></div>
                 </div>
                 <h4 class="step-title">{{h.getEtatLibelle}}</h4>
+                 <p class="small">{{ h.created_at|date:'j M Y,H:i'   }}</p>
+
               </div>
             {% endif %}
              {% if h.state == 6 %}
@@ -52,11 +59,15 @@
                   <div class="step-icon"><i class="fa fa-check"></i></div>
                 </div>
                 <h4 class="step-title">{{h.getEtatLibelle}}</h4>
+                <p class="small">{{ h.created_at|date:'j M Y,H:i'   }}</p>
+
               </div>
-            </div>
              {% endif %}
+
            {% endfor %}
           </div>
+        </div>
+
             {% comment %}<div class="table-responsive">
               <table class="table align-items-center table-dark table-flush">
                 <thead class="thead-dark">

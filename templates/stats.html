@@ -354,3 +354,27 @@
 
 
 
+<table class="table collapse align-items-center" id="row{{ cmd.id }}">
+                    <thead class="collapse row">
+                    </thead>
+                    <tbody class="list">
+                        <tr class="">
+                            <td>Date de dépot : {{ cmd.date_depot|date:'j F, Y' }}</td>
+                            <td>Date de réception: {{ cmd.date_depot|date:'j F, Y' }}</td>
+                        </tr>
+                        <tr class="">
+                            <td>Ville de départ: {{ cmd.city_depart }}</td>
+                            <td>Ville d'arrivée: {{ cmd.city_arrive }}</td>
+                        </tr>
+
+                        <tr class="">
+                            <td> Poids: {{ cmd.colis.weight }} kg</td>
+                             <td>Taille: {{ cmd.colis.size }}</td>
+                        </tr>
+                        <tr>
+                            <td> Chauffeur : {{ cmd.driver.get_full_name }}</td>
+
+                        </tr>
+                    </tbody>
+
+                   </table>

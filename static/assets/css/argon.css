@@ -2183,7 +2183,7 @@ pre code
     margin-bottom: 1rem;
 
     color: #525f7f;
-    background-color: transparent;
+    background-color: white;
 }
 .table th,
 .table td
@@ -29837,4 +29837,7 @@ input.datetimepicker[data-color='yellow'] + .bootstrap-datetimepicker-widget.dro
 .bootstrap-datetimepicker-widget.dropdown-black table td .btn[data-action='togglePeriod']
 {
     background: transparent;
+}
+tr.hide-table-padding td {
+  padding: 0;
 }

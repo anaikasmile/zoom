@@ -92,16 +92,16 @@
                           <form>
                               <input type="text" name="cmdId" id="cmdId" value="" hidden/>
 
-                          </form>
                             <p>Etes-vous sûrs de vouloir accepter la commande?</p>
 
+                              <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                    <button class="btn btn-primary" id="btn-assign" type="button"
+                                            data-action="{% url 'commandes:assign_order_to_me' %}">Oui</button>
+                              </div>
+                          </form>
                       </div>
-                      <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                            <button class="btn btn-primary" id="btn-assign" type="button"
-                                    data-action="{% url 'commandes:assign_order_to_me' %}">Oui</button>
-                      </div>
-                      </form>
+
                 </div>
           </div>
     </div>

@@ -16,12 +16,11 @@
                 <thead class="thead-dark">
                   <tr>
                     <th scope="col" class="sort" data-sort="name">N° commande</th>
-                    <th scope="col" class="sort" data-sort="budget">Modele envoi</th>
+                    <th scope="col" class="sort" data-sort="budget">Modèle d'envoi</th>
+                    <th scope="col" class="sort" data-sort="status">Assurance</th>
+                    <th scope="col" class="sort" data-sort="status">Nature du colis</th>
                     <th scope="col" class="sort" data-sort="budget">Prix</th>
-
-                    <th scope="col" class="sort" data-sort="status">Date de départ</th>
-                    <th scope="col" class="sort" data-sort="status">Ville de départ</th>
-                    <th scope="col" class="sort" data-sort="status">Ville d'arrivée</th>
+                    <th scope="col" class="sort" data-sort="status">Image</th>
                     <th scope="col" class="sort" data-sort="status">Etat</th>
 
                     <th scope="col"></th>
@@ -29,13 +28,19 @@
                 </thead>
                 <tbody class="list">
                 {% for cmd in commandes %}
-                  <tr>
-                    <th scope="row">
+                  <tr id="accordion2" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ cmd.id }}">
+                    <td scope="row">
                       {{ cmd.numero_commande|upper }}
 
-                    </th>
+                    </td>
                     <td class="">
                         {{cmd.modele}}
+                    </td>
+                    <td class="">
+                        {{cmd.insurance.nom}}
+                    </td>
+                    <td class="">
+                        {{cmd.colis.nature}}
                     </td>
                     <td class="budget">
                         {% if cmd.price %}
@@ -43,14 +48,9 @@
                         {% endif %}
                     </td>
                     <td class="">
-                        {{ cmd.date_depot }}
+                         <img src="">
                     </td>
-                    <td class="">
-                        {{ cmd.city_depart.name }}
-                    </td>
-                    <td class="">
-                        {{ cmd.city_arrive.name }}
-                    </td>
+
                     <td>
                       <span class="badge badge-dot mr-4">
                         <i class="bg-warning"></i>
@@ -75,10 +75,37 @@
                       </div>
                     </td>
                   </tr>
+                  <tr class="hide-table-padding" style="background-color: #000;">
+                    <td></td>
+                    <td colspan="12">
+                    <div id="collapse{{ cmd.id }}" class="collapse in p-3" >
+                      <div class="row">
+                        <div class="col-6">Date de dépot : {{ cmd.date_depot|date:'j F, Y' }}</div>
+                        <div class="col-6">Date de réception: {{ cmd.date_depot|date:'j F, Y' }}</div>
+                      </div>
+                        <br>
+                      <div class="row">
+                        <div class="col-6">Ville de départ: {{ cmd.city_depart }}</div>
+                        <div class="col-6">Ville d'arrivée: {{ cmd.city_arrive }}</div>
+                      </div>
+                        <br>
+                      <div class="row">
+                        <div class="col-6">Poids: {{ cmd.colis.weight }} kg</div>
+                        <div class="col-6">Taille: {{ cmd.colis.size }}</div>
+                      </div>
+                        <br>
+                      <div class="row">
+                        <div class="col-6">Chauffeur : {{ cmd.driver.get_full_name }}</div>
+                        <div class="col-6"></div>
+                      </div>
+                    </div>
+                    </td>
+                   </tr>
                 {% endfor %}
 
                 </tbody>
               </table>
+
             </div>
           </div>
         </div>

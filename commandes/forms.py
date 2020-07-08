@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django import forms
-from .models import Colis, Insurance, Commandes, Reclamations
+from .models import Colis, Insurance, Commandes, Reclamations, ReclamationsHandler
 from agences.models import Agences
 from django.forms.models import inlineformset_factory
 from django.forms import ModelChoiceField
@@ -90,18 +90,21 @@ class Step2Form(forms.Form):
 
 
 class ReclamationForm(forms.ModelForm):
-    commande = forms.ModelChoiceField(queryset=Commandes.objects.filter(colis__client=user), widget=forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'})),
-
     class Meta:
         model = Reclamations
-        fields = ('type', 'observation', 'image')
+        fields = ('commande', 'type', 'observation', 'image')
         widgets = {
             'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'observation': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'image': forms.FileInput(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'custom-file-input'}),
         }
 
-    # def __init__(self, request, *args, **kwargs):
-    #     super(ReclamationForm, self).__init__(*args, **kwargs)
-    #     self.fields['commande'] = forms.ModelChoiceField(queryset=Commandes.objects.filter(colis__client=request.user), widget=forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'})),
-    #
+class ReclamationHandlerForm(forms.ModelForm):
+    class Meta:
+        model = ReclamationsHandler
+        fields = ('reclamation', 'type', 'commentaire')
+        widgets = {
+            'reclamation': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'commentaire': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+        }

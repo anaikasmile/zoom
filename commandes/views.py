@@ -1,11 +1,12 @@
 from django.shortcuts import render, reverse, get_object_or_404
 from django.http import JsonResponse
 
-from .models import Colis, Insurance, Commandes, HistoriqueCommandes
+from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations, ReclamationsHandler
 from agences.models import Agences
-from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm
+from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm
 from django.views.generic import ListView, CreateView
 from django.contrib import messages
+from django.core import serializers
 
 
 import random
@@ -102,6 +103,8 @@ def commandes_liste(request):
     }
     return render(request, "commandes/commandes_liste.html", context)
 
+def detail_commande(request):
+    return
 
 #Liste des commandes disponibles
 def avalaible_orders(request):
@@ -160,12 +163,49 @@ def assign_order_to_me(request):
 
 #Reclamations
 def add_reclamation(request):
-    form = ReclamationForm()
+    reclamations = Reclamations.objects.filter(commande__colis__client=request.user)
     # paginator = Paginator(agences, 25)  # Show 25  per page
     # page = request.GET.get('page')
     # agences = paginator.get_page(page)
+    if request.method == "POST":
+        form = ReclamationForm(request.POST)
 
-    context = {
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Votre demande a été enregistrée')
+        else:
+            pass
+    else:
+        form = ReclamationForm()
+
+    return render(request, "commandes/ajout_reclamation.html",  {
         'form': form,
-    }
-    return render(request, "commandes/ajout_reclamation.html", context)
+        'reclamations': reclamations
+    })
+#Traitement reclamation
+def add_handler_reclamation(request, commande_id):
+    if request.method == "POST":
+        form = ReclamationHandlerForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Votre demande a été enregistrée')
+        else:
+            pass
+    else:
+        form = ReclamationHandlerForm()
+
+    return render(request, "commandes/ajout_reclamation_handler.html",  {
+        'form': form,
+    })
+
+def handler_reclamation_cmd(request, commande_id):
+    cmd_id = request.GET.get('id')
+    handler = ReclamationsHandler.objects.filter(commande_id=cmd_id)
+    data = serializers.serialize('json', [handler, ])
+    if handler:
+        data = {
+            'statut': 'success',
+            'data': data
+        }
+    return JsonResponse(data)

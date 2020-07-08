@@ -23,6 +23,7 @@
               <h3 class="text-white mb-0">Liste des commandes</h3>
             </div>
             <!-- Light table -->
+
             <div class="table-responsive">
               <table class="table align-items-center table-dark table-flush">
                 <thead class="thead-dark">
@@ -41,7 +42,7 @@
                 </thead>
                 <tbody class="list">
                 {% for cmd in commandes %}
-                  <tr>
+                  <tr class="" data-toggle="collapse" data-target=".row3">
                     <th scope="row">
                       {{ cmd.numero_commande }} {{ cmd.id }}
                     </th>
@@ -75,18 +76,9 @@
                         </div>
                       </div>
                     </td>
-                  <td class="details hide">
+                   </tr>
+                  
 
-                    Date de dépot
-                    Date de reception
-                    Chauffeur
-                    Nature du colis
-                    Poids
-                    Taille
-                    Assurance
-
-                  </td>
-                  </tr>
                 {% endfor %}
 
                 </tbody>
@@ -155,8 +147,11 @@
 
         var etat = $('#id_etat').val();
         var cmd_id = $('#cmdId').val();
+        console.log(etat);
         switch (etat) {
-            case 4,5:
+            case '4':
+            case '5':
+                console.log('ok');
                  $('#step1').hide();
                  $('#step2').show();
                  break;
@@ -173,7 +168,8 @@
                         if(data.statut == "success"){
                             toastr.success(data.message);
                             $('#updateEtat').modal('hide');
-                            location.reload();
+                            setTimeout(function(){ location.reload();; }, 1000);
+                            //
                         }
                     }
                 });
@@ -200,7 +196,9 @@
                     if(data.statut == "success"){
                         toastr.success(data.message);
                         $('#updateEtat').modal('hide');
-                        location.reload();
+                        //
+                        setTimeout(function(){ location.reload();; }, 1000);
+
                     }
                 }
       });
