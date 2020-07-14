@@ -15,6 +15,6 @@ urlpatterns = [
     path('clients/', user_views.ClientListView.as_view(), name='user_client'),
     path('agents/', user_views.AgentListView.as_view(), name='user_agent'),
     path('drivers/', user_views.DriverListView.as_view(), name='user_driver'),
-    path('myprofile', user_views.my_profile, name='my_profile'),
+    path('profile', user_views.my_profile, name='my_profile'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

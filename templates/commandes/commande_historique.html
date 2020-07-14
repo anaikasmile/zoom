@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "base_frontend.html" %}
 {% block content %}
     <div class="row">
         <div class="col-xl-12">
 
 
         <div class="card mb-3">
-          <div class="p-4 text-center text-white text-lg bg-light rounded-top"><span class="text-uppercase">Historique Commande No - </span><span class="text-medium">{{ commande.numero_commande }}</span></div>
+          <div class="p-4 text-center text-white text-lg table-dark rounded-top"><span class="text-uppercase">Historique Commande No - </span><span class="text-medium">{{ commande.numero_commande }}</span></div>
           <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 bg-secondary">
             <div class="w-100 text-center py-1 px-2"><span class="text-medium">Date de dépôt:</span> {{ commande.date_depot|date:'j M Y' }}</div>
             <div class="w-100 text-center py-1 px-2"><span class="text-medium">Statut:</span> {{ commande.getEtatLibelle }}</div>
@@ -108,7 +108,8 @@
               </table>
             </div>{% endcomment %}
             <!-- Card footer -->
-        {% comment %}  <div class="pagination">
+        {% comment %}  
+            <div class="pagination">
                 <span class="step-links">
                     {% if contacts.has_previous %}
                         <a href="?page=1">&laquo; first</a>
@@ -129,6 +130,6 @@
           </div>
         </div>
 
-    </div>
+    
 {% endblock %}
 

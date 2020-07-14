@@ -68,7 +68,7 @@ class Commandes(models.Model):
         self.numero_commande = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
         super().save(*args, **kwargs)
     def __str__(self):
-        return self.colis.nature
+        return self.numero_commande
 
     def getEtatLibelle(self):
         if self.status == self.ETAT_NON_PAYE:

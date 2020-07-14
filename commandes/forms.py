@@ -94,10 +94,14 @@ class ReclamationForm(forms.ModelForm):
         model = Reclamations
         fields = ('commande', 'type', 'observation', 'image')
         widgets = {
+            'commande': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'observation': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'image': forms.FileInput(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'custom-file-input'}),
         }
+    def __init__(self, user, *args, **kwargs):
+        super(ReclamationForm, self).__init__(*args, **kwargs)
+        self.fields['commande'].queryset = Commandes.objects.filter(colis__client=user)
 
 class ReclamationHandlerForm(forms.ModelForm):
     class Meta:
@@ -108,3 +112,4 @@ class ReclamationHandlerForm(forms.ModelForm):
             'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'commentaire': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
         }
+

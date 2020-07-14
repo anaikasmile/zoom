@@ -48,7 +48,9 @@
                         {% endif %}
                     </td>
                     <td class="">
-                         <img src="">
+                        {% if cmd.colis.image %}
+                         <img src="{{ cmd.colis.image.url }}">
+                        {% endif %}
                     </td>
 
                     <td>
@@ -69,13 +71,13 @@
 
                           <a class="dropdown-item openModal" title="Commande terminée"  data-toggle="modal" href="updateEtat"  data-id="{{ cmd.id }}">Réceptionné</a>
                             {% endif %}
-                          <a class="dropdown-item" href="#">Historique</a>
+                          <a class="dropdown-item" href="{% url 'commandes:historique_commande' cmd.id %}">Historique</a>
                           <a class="dropdown-item" href="#">Détails</a>
                         </div>
                       </div>
                     </td>
                   </tr>
-                  <tr class="hide-table-padding" style="background-color: #000;">
+                  <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
                     <td></td>
                     <td colspan="12">
                     <div id="collapse{{ cmd.id }}" class="collapse in p-3" >
@@ -110,7 +112,9 @@
           </div>
         </div>
       </div>
-</div>
+        <!-- Card footer -->
+
+
 
            <!-- Modal  for Assign-->
     <div class="modal fade" id="updateEtat" tabindex="-1" role="dialog" aria-labelledby="">

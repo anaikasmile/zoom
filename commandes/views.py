@@ -1,13 +1,15 @@
 from django.shortcuts import render, reverse, get_object_or_404
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, CreateView
+from django.contrib import messages
+from django.core import serializers
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations, ReclamationsHandler
 from agences.models import Agences
 from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm
-from django.views.generic import ListView, CreateView
-from django.contrib import messages
-from django.core import serializers
-
 
 import random
 import string
@@ -63,12 +65,12 @@ class ColisCreateView(CreateView):
         messages.success(self.request, 'Commande enregistrée')
         return reverse("commandes:create_commande")
 
-
+@login_required
 def mes_commandes(request):
     commandes = Commandes.objects.filter(colis__client=request.user)
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(commandes, 1)  # Show 25  per page
+    page = request.GET.get('page')
+    commandes = paginator.get_page(page)
 
     context = {
         'commandes': commandes,
@@ -114,6 +116,12 @@ def avalaible_orders(request):
     }
     return render(request, "commandes/commandes_disponibles.html", context)
 
+def delivery_orders_by_driver(request):
+    commandes = Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE))
+    context = {
+        'commandes': commandes
+    }
+    return render(request, "commandes/commandes_livres.html", context)
 
 def etat_update(request):
     etat = request.GET.get('etat')
@@ -149,6 +157,7 @@ def historique_commande(request,commande_id):
     return render(request, "commandes/commande_historique.html", context)
 
 #Chauffeur: Choisir une commande
+@login_required
 def assign_order_to_me(request):
     cmd_id = request.GET.get('id')
     commande = get_object_or_404(Commandes, id=cmd_id)
@@ -162,13 +171,14 @@ def assign_order_to_me(request):
 
 
 #Reclamations
+@login_required
 def add_reclamation(request):
     reclamations = Reclamations.objects.filter(commande__colis__client=request.user)
     # paginator = Paginator(agences, 25)  # Show 25  per page
     # page = request.GET.get('page')
     # agences = paginator.get_page(page)
     if request.method == "POST":
-        form = ReclamationForm(request.POST)
+        form = ReclamationForm(request.user, request.POST)
 
         if form.is_valid():
             form.save()
@@ -176,17 +186,17 @@ def add_reclamation(request):
         else:
             pass
     else:
-        form = ReclamationForm()
+        form = ReclamationForm(request.user)
 
     return render(request, "commandes/ajout_reclamation.html",  {
         'form': form,
         'reclamations': reclamations
     })
 #Traitement reclamation
+
 def add_handler_reclamation(request, commande_id):
     if request.method == "POST":
         form = ReclamationHandlerForm(request.POST)
-
         if form.is_valid():
             form.save()
             messages.success(request, 'Votre demande a été enregistrée')
@@ -199,13 +209,19 @@ def add_handler_reclamation(request, commande_id):
         'form': form,
     })
 
-def handler_reclamation_cmd(request, commande_id):
-    cmd_id = request.GET.get('id')
-    handler = ReclamationsHandler.objects.filter(commande_id=cmd_id)
-    data = serializers.serialize('json', [handler, ])
-    if handler:
-        data = {
-            'statut': 'success',
-            'data': data
-        }
-    return JsonResponse(data)
+def handler_reclamation_cmd(request, cmd_id):
+    handler = ReclamationsHandler.objects.filter(reclamation__commande_id=cmd_id)
+    data = serializers.serialize('json', handler)
+    # if handler:
+    #     data = {
+    #         'statut': 'success',
+    #         'data': data
+    #     }
+    print(cmd_id)
+    return JsonResponse(data, safe=False)
+
+
+
+#Administation 
+def stats(request):
+    return render(request, "default/stats.html", {})
