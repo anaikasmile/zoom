@@ -6,7 +6,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'zoomdb',
-        'USER': 'postgres',
+        'USER': 'zoom_user',
         'PASSWORD': '@Azerty2020',
         'HOST': 'localhost',
         'PORT': '',
