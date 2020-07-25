@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django import forms
-from .models import Colis, Insurance, Commandes, Reclamations, ReclamationsHandler
+from .models import Colis, Insurance, Commandes, Reclamations, ReclamationsHandler, Tranche
 from agences.models import Agences
 from django.forms.models import inlineformset_factory
 from django.forms import ModelChoiceField
@@ -29,7 +29,7 @@ class ColisForm(forms.ModelForm):
             'weight': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'size': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
-            'image': forms.FileInput(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'custom-file-input'}),
+            'image': forms.FileInput(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': 'customFileLang', 'class': 'custom-file-input','lang' :'fr'}),
         }
 
 class CommandesForm(forms.ModelForm):
@@ -97,7 +97,7 @@ class ReclamationForm(forms.ModelForm):
             'commande': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'observation': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
-            'image': forms.FileInput(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'custom-file-input'}),
+            'image': forms.FileInput(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': 'customFileLang', 'class': 'custom-file-input','lang' :'fr'}),
         }
     def __init__(self, user, *args, **kwargs):
         super(ReclamationForm, self).__init__(*args, **kwargs)
@@ -113,3 +113,14 @@ class ReclamationHandlerForm(forms.ModelForm):
             'commentaire': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
         }
 
+class TrancheForm(forms.ModelForm):
+    class Meta:
+        model = Tranche
+        fields = ('min_weight', 'max_weight', 'price', 'commission')
+        widgets = {
+            'min_weight': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+            'max_weight': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+            'price': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+            'commission': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+
+             }

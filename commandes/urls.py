@@ -7,6 +7,14 @@ urlpatterns = [
     path('stats/', views.stats, name='dashboard'),
     path('dashboard/commandes/liste', views.commandes_liste, name='liste_commandes'),
     path('ajax/update/etat/', views.etat_update, name='update_etat'),
+    path('dashboard/reclamations/liste', views.list_reclamation, name='liste_reclamations'),
+    path('dashbord/commandes/historiques/<int:commande_id>/', views.historique_commande_admin, name='historique_commande_admin'),
+    path('dashboard/commandes/<int:commande_id>', views.commande_view, name='commande_view'),
+
+    path('dashboard/tranches/create', views.tranche_create, name='tranche_create'),
+    path('dashboard/tranches/create', views.tranche_create, name='tranche_create'),
+    path('dashboard/tranches/update/<int:tranche_id>/', views.tranche_update, name='tranche_update'),
+    path('dashboard/tranches/delete/<int:tranche_id>/', views.tranche_delete, name='tranche_delete'),
 
     #frontend
     path('', views.home, name='home'),
@@ -22,5 +30,9 @@ urlpatterns = [
 
     path('reclamations/', views.add_reclamation, name='add_reclamation'),
     path('ajax/reclamations/handler/<int:cmd_id>', views.handler_reclamation_cmd, name='handler_reclamation_cmd'),
+
+    path('facture', views.GeneratePdf.as_view(), name='create_facture'),
+
+    
 
 ]

@@ -12,7 +12,7 @@ class City(models.Model):
         return self.name
 
 class District(models.Model):
-    city = models.ForeignKey(City, related_name='district', verbose_name="Ville *", on_delete=models.CASCADE)
+    city = models.ForeignKey(City, related_name='district', verbose_name="Ville *", on_delete=models.PROTECT)
     name = models.CharField(max_length=200, verbose_name="Nom *")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Créé le")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Modifié le")

@@ -71,8 +71,9 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                           <a class="dropdown-item openModal" data-toggle="modal" href="updateEtat{{ cmd.id }}" data-id={{ cmd.id }}>Changer l'état</a>
-                          <a class="dropdown-item" href="{% url 'commandes:historique_commande' cmd.id %}">Historique</a>
-                          <a class="dropdown-item" href="#">Something else here</a>
+                          <a class="dropdown-item" href="{% url 'commandes:historique_commande_admin' cmd.id %}">Historique</a>
+                          <a class="dropdown-item" href="{% url 'commandes:commande_view' cmd.id %}">Détails</a>
+
                         </div>
                       </div>
                     </td>

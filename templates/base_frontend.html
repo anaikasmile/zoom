@@ -130,7 +130,13 @@
               <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div class="media align-items-center">
                   <span class="avatar avatar-sm rounded-circle">
-                    <img alt="" src="">
+                    {% if user.person.photo %}
+
+                      <img alt="" src="{{user.person.photo.url}}">
+                    {% else %}
+                      <img alt="" src="">
+
+                    {% endif %}
                   </span>
                   <div class="media-body  ml-2  d-none d-lg-block">
                     <span class="mb-0 text-sm  font-weight-bold">{{ user.username }}</span>

@@ -49,13 +49,12 @@
                     </td>
                     <td class="">
                         {% if cmd.colis.image %}
-                         <img src="{{ cmd.colis.image.url }}">
+                         <img src="{{ cmd.colis.image.url }}" style="width: 50px; height: 50px;">
                         {% endif %}
                     </td>
 
                     <td>
                       <span class="badge badge-dot mr-4">
-                        <i class="bg-warning"></i>
                         <span class="status">{{ cmd.getEtatLibelle }}</span>
                       </span>
                     </td>
@@ -78,30 +77,23 @@
                     </td>
                   </tr>
                   <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
-                    <td></td>
                     <td colspan="12">
-                    <div id="collapse{{ cmd.id }}" class="collapse in p-3" >
-                      <div class="row">
-                        <div class="col-6">Date de dépot : {{ cmd.date_depot|date:'j F, Y' }}</div>
-                        <div class="col-6">Date de réception: {{ cmd.date_depot|date:'j F, Y' }}</div>
-                      </div>
-                        <br>
-                      <div class="row">
-                        <div class="col-6">Ville de départ: {{ cmd.city_depart }}</div>
-                        <div class="col-6">Ville d'arrivée: {{ cmd.city_arrive }}</div>
-                      </div>
-                        <br>
-                      <div class="row">
-                        <div class="col-6">Poids: {{ cmd.colis.weight }} kg</div>
-                        <div class="col-6">Taille: {{ cmd.colis.size }}</div>
-                      </div>
-                        <br>
-                      <div class="row">
-                        <div class="col-6">Chauffeur : {{ cmd.driver.get_full_name }}</div>
-                        <div class="col-6"></div>
-                      </div>
-                    </div>
-                    </td>
+                        <div id="collapse{{ cmd.id }}" class="collapse in p-3" >
+                            
+                             
+                                <b>Date de dépot</b> : {{ cmd.date_depot|date:'j F, Y' }}<br><br>
+                                <b>Date de réception</b> : {{ cmd.date_depot|date:'j F, Y' }}<br><br>
+                             
+                                <b>Ville de départ</b>: {{ cmd.city_depart }}<br><br>
+                                <b>Ville d'arrivée</b>: {{ cmd.city_arrive }} <br><br>
+                             
+                                <b>Poids</b>: {{ cmd.colis.weight }} kg <br><br>
+                                <b>Taille</b>: {{ cmd.colis.size }}
+                            
+                         
+                          
+                        </div>
+                      </td>
                    </tr>
                 {% endfor %}
 

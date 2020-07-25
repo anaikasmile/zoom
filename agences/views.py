@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonRespons
 from django.views.generic import ListView, CreateView
 from .forms import AgenceForm, TypeVehiculeForm, VehiculesForm
 from .models import Agences, TypeVehicules, Vehicules
+from django.db.models import ProtectedError
 # Create your views here.
 def agence_create(request):
     agences = Agences.objects.filter().order_by('-created_at')
@@ -50,10 +51,25 @@ def agence_update(request, agence_id):
     return render(request, "agences/agences_list.html", context)
 
 
+def agence_view(request, agence_id):
+
+    agence = Agences.objects.get(id=agence_id)
+
+    context = {
+        'agence': agence
+    }
+    return render(request, "agences/agences_view.html", context)
+
+
 def agence_delete(request, agence_id):
     agence = get_object_or_404(Agences, id=agence_id)
-    agence.delete()
-    messages.success(request, 'Agence supprimée')
+    try:
+        agence.delete()
+        messages.success(request, 'Agence supprimée')
+
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible')
+
     return redirect('agences:agence-create')
 
 
@@ -115,8 +131,11 @@ def vehicule_detail(request, vehicule_id):
 
 def vehicule_delete(request, vehicule_id):
     vehicule = get_object_or_404(Vehicules, id=vehicule_id)
-    vehicule.delete()
-    messages.success(request, 'Véhicule supprimée')
+    try:
+        vehicule.delete()
+        messages.success(request, 'Véhicule supprimée')
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible')
     return redirect('agences:vehicule-create')
 
 def type_vehicule_create(request):
@@ -161,6 +180,9 @@ def type_vehicule_update(request, type_vehicule_id):
 
 def type_vehicule_delete(request, type_vehicule_id):
     type_vehicule = get_object_or_404(TypeVehicules, id=type_vehicule_id)
-    type_vehicule.delete()
-    messages.success(request, 'Type supprimé')
+    try:
+        type_vehicule.delete()
+        messages.success(request, 'Type supprimé')
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible')
     return redirect('agences:type-vehicule-create')

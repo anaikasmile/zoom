@@ -21,7 +21,7 @@
                 <div class="card-header">
                   <div class="row align-items-center">
                     <div class="col-8">
-                      <h3 class="mb-0">Agence </h3>
+                      <h3 class="mb-0">Agence</h3>
                     </div>
                   </div>
                 </div>
@@ -94,10 +94,10 @@
 
                     </td>
                     <td>
-                        {{agence.created_at|date:'F j, Y'}}
+                        {{agence.created_at|date:'j F Y'}}
                     </td>
                     <td class="">
-                        <a href="" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
+                        <a href="{% url 'agences:agence-view' agence.id %}" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
                         <a href="{% url 'agences:agence-update' agence.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
                         <a href="{% url 'agences:agence-delete' agence.id %}" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
 

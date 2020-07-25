@@ -12,7 +12,7 @@ class Colis(models.Model):
     client = models.ForeignKey(User, null=True, related_name='client', on_delete=models.CASCADE)
     nature = models.CharField(max_length=200, verbose_name='Nature', null=True, blank=True)
     description = models.TextField(blank=True, verbose_name="Description")
-    image = models.ImageField(blank=True,null=True)
+    image = models.ImageField(blank=True,null=True, upload_to="colis")
     weight = models.FloatField(blank=True, verbose_name="Poids")
     size = models.CharField(max_length=100, blank=True, verbose_name="Taille")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -56,6 +56,7 @@ class Commandes(models.Model):
     date_reception = models.DateField(null=True, blank=True)
     observation = models.TextField(null=True, blank=True, verbose_name="Remarques")
     price = models.FloatField(null=True, blank=True, verbose_name="Prix")
+    #commission = models.FloatField(null=True, blank=True, verbose_name="Commission")
     status = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_PAYE)
     modele = models.CharField(max_length=50, choices=MODELE_ENVOI, null=True, blank=True, verbose_name='Modèle envoi')
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -150,7 +151,7 @@ class Reclamations(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     type = models.CharField(max_length=50, choices=TYPES, null=True, blank=True, verbose_name='Type d incident')
     observation = models.TextField(blank=True, verbose_name='Observations')
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True, upload_to="reclamations")
 
     def __str__(self):
         return self.commande.numero_commande
@@ -168,3 +169,17 @@ class ReclamationsHandler(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     type = models.CharField(max_length=50, choices=TYPES, null=True, blank=True, verbose_name='Type d incident')
     commentaire = models.TextField(blank=True, verbose_name='Commentaire')
+
+
+class Tranche(models.Model):
+    min_weight = models.FloatField(verbose_name="Minimum")
+    max_weight = models.FloatField(verbose_name="Maximum")
+    price = models.FloatField(verbose_name="Prix")
+    commission = models.FloatField(verbose_name="Commission", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    class Meta:
+        """docstring for Meta"""
+        constraints = [
+                models.UniqueConstraint(fields=['min_weight', 'max_weight', 'price'], name='tranche_unique')
+            ]

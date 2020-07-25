@@ -39,15 +39,14 @@
                     
                     <div class="row">
                           <div class="col-md-12">
-                            <div class="form-group">
-                              <label class="bmd-label-floating">Photo </label>
-                                <div>
-                                <div class="custom-file">
-                                    {{ form.image }}
-                                    <label class="custom-file-label" for="customFileLang"></label>
-                                </div>
-                                </div>
-                            </div>
+                             <div class="form-group">
+                                <label class="bmd-label-floating">Photo </label>
+                                  <div class="custom-file">
+                                      {{ form.image }}
+                                      <label class="custom-file-label" for="customFileLang">Sélectionner un fichier</label>
+                                  </div>
+                                   
+                              </div>
                           </div>
                     </div>
                      <div class="row">
@@ -81,6 +80,7 @@
                     <th scope="col" class="sort" data-sort="nom">N° commande</th>
                     <th scope="col" class="sort" data-sort="quartier">Incident</th>
                     <th scope="col" class="sort" data-sort="quartier">Image</th>
+
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -96,12 +96,57 @@
                         {{ r.type }}
                     </td>
                     <td>
-                        <img>
+                      {% if r.image %}
+                        <img src="{{ r.image.url }}" style="width: 50px; height: 50px;" />
+                      {% else %}
+                      <img src="" />
+                      {% endif %}  
                     </td>
+                    
                     <td class="">
-                        <a href="#" class="btn btn-info" type="button" id="checkStatus" data-url="{% url 'commandes:handler_reclamation_cmd' r.commande.id %}"><i class="fa fa-eye" title="Voir l'état de la commande"></i></a>
+                        <a class="btn btn-info" data-toggle="modal" data-target="#reclamation{{r.id}}" type="button" id="checkStatus" data-url="{% url 'commandes:handler_reclamation_cmd' r.commande.id %}" title="Voir l'état de la commande"><i class="fa fa-eye" ></i></a>
                     </td>
                   </tr>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="reclamation{{r.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">N° commande: {{r.commande.numero_commande|upper}}</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          {% if r.reclamationHandler.all %}
+
+                          {% for hr in  r.reclamationHandler.all %} 
+                            <div class="row">
+                                <div class="col-md-5">Dernière mise à jour: </div>
+                                <div class="col-md-7">{{hr.updated_at|date:'j F, Y'}}</div>
+                            </div>
+                             <div class="row">
+                                <div class="col-md-5">Etat: </div>
+                                <div class="col-md-7">{{ hr.type}}</div>
+                            </div>
+                             <div class="row">
+                                <div class="col-md-5">Commentaire: </div>
+                                <div class="col-md-7">{{ hr.commentaire}}</div>
+                            </div>
+                          {% endfor %}
+
+                        
+                          {% else %}
+
+                          {% endif %}
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                     {% endfor %}
                 </tbody>
               </table>

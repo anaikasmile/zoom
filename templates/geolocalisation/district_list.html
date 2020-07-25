@@ -86,7 +86,7 @@
                       {{ district.city }}
                     </td>
                     <td>
-                        {{district.created_at|date:'F j, Y'}}
+                        {{district.created_at|date:'j F Y'}}
                     </td>
                     <td class="">
                         <a href="{% url 'geolocalisation:district_update' district.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>

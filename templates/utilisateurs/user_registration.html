@@ -79,7 +79,7 @@
                              <div class="row">
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">Email </label>
+                                  <label class="bmd-label-floating">Email *</label>
                                    {{ form.email }}
                                 </div>
                               </div>
@@ -185,6 +185,7 @@
                                     <div class="form-group">
                                       <label class="bmd-label-floating">Mot de passe *</label>
                                        {{ form.password1|add_class:'form-control' }}
+                                       <button type="button" class="float-right password-field btn btn-secondary" data-action="{% url 'utilisateurs:generate_password' %}" title="Générer mot de passe"><i class="fa fa-fw fa-lock field-icon"></i></button>
                                     </div>
                               </div>
 
@@ -205,5 +206,33 @@
             </div>
         </div>
     </form>
+
+{% endblock %}
+{% block javascript %}
+ <script type="text/javascript">
+
+     $(".password-field").click(function() {
+
+        $.ajax({
+          url: $(this).attr('data-action'),
+          dataType: 'json',
+          success: function (data) {
+              console.log(data.pwd);
+              $("#id_password1").val(data.pwd) ;
+              $("#id_password2").val(data.pwd);
+              console.log($("#id_password1").val());
+          }
+      });
+
+        /*  $(this).toggleClass("fa-eye fa-eye-slash");
+          var input = $("#id_password");
+          if (input.attr("type") == "password") {
+            input.attr("type", "text");
+          } else {
+            input.attr("type", "password");
+
+          }*/
+        });
+  </script>
 
 {% endblock %}

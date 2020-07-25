@@ -5,6 +5,8 @@ from .models import City, District
 from .forms import CityForm, DistrictForm
 from django.views.generic.edit import FormView, CreateView
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import ProtectedError
+
 from django.contrib import messages
 
 # Create your views here.
@@ -54,8 +56,11 @@ def city_update(request, city_id):
 
 def city_delete(request, city_id):
     city = get_object_or_404(City, id=city_id)
-    city.delete()
-    messages.success(request, 'Ville supprimée')
+    try:
+        city.delete()
+        messages.success(request, 'Ville supprimée')
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible!')
     return redirect('geolocalisation:city_create')
 
 # District views
@@ -103,8 +108,13 @@ def district_update(request, district_id):
 
 def district_delete(request, district_id):
     district = get_object_or_404(District, id=district_id)
-    district.delete()
-    messages.success(request, 'Quartier supprimée')
+    try:
+        district.delete()
+        messages.success(request, 'Quartier supprimée')
+
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible!')
+
     return redirect('geolocalisation:district_create')
 
 

@@ -19,6 +19,8 @@ postgres=# CREATE DATABASE dbname;
 > CREATE USER username WITH PASSWORD 'password';
 ALTER ROLE username SET client_encoding TO 'utf8'; 
 
+https://openclassrooms.com/fr/courses/4425101-deployez-une-application-django/4688553-utilisez-le-serveur-http-nginx
+
 ALTER ROLE username SET default_transaction_isolation TO 'read committed'; 
 
 ALTER ROLE username SET timezone TO 'Asia/Kolkata';
