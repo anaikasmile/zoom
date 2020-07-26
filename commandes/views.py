@@ -79,7 +79,7 @@ def mes_commandes(request):
     return render(request, "commandes/mes_commandes.html", context)
 
 
-def mes_commandes_detail(request,id):
+def mes_commandes_detail(request,commande_id):
     commande = get_object_or_404(Commandes, id=commande_id)
 
     #paginator = Paginator(agences, 25)  # Show 25  per page

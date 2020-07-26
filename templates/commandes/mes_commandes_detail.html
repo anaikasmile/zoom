@@ -1,0 +1,123 @@
+{% extends "base_frontend.html" %}
+{% load static %}
+
+
+
+{% block content %}
+<div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-header bg-transparent border-0">
+              <h3 class="text-center">Commande détail</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-8">
+                  <div class="row">
+                    <div class="col-4">
+                        {% if commande.colis.image %}
+                        <img src="{{commande.colis.image.url}}"  class="img-responsive" />
+                        {% endif %}
+                    </div>
+                    <div class="col-8">
+                      <h6 class="heading-small text-muted mb-4">#Commande Infos</h6>
+                      <table class="table align-items-center table-flush">
+
+                          <tr>
+                            <td>N° Commande: <b>{{commande.numero_commande|upper}}</b></td>
+                            <td>Prix: {% if commande.price %}<b> {{ commande.price }} F.CFA </b>{% endif %}</td>
+                          </tr>
+
+                          <tr>
+                            <td>
+                              Modèle d'envoi: <b>{{ commande.modele }}</b>
+                            </td>
+                            <td>
+                              Assurance: <b>{{ commande.insurance.name }}</b>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td>Ville départ: <b>{{commande.city_depart}} </b></td>
+                            <td>Ville d'arrivée: <b>{{commande.city_arrive}}</b></td>
+                          </tr>
+                          <tr>
+                            <td>Date dépot:  <b>{{ commande.date_depot|date:'j F, Y' }}</b></td>
+                            <td>Date de livraison (souhaité):  <b>{{ commande.date_reception|date:'j F, Y' }}</b></td>
+                          </tr>
+
+                          
+
+                          <tr>
+                            <td>Etat: <b>{{ commande.getEtatLibelle }}</b></td>
+                            <td></td>
+                          </tr>
+
+                        </table>
+
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-4">#Colis détails</h6>
+                        <table class="table align-items-center table-flush">
+                            <tr>
+                              <td>Nature du colis: <b>{{commande.colis.nature}}</b></td>
+                            </tr>
+                            <tr>
+                              <td>Poids: <b>{{commande.colis.weight}} kg</b></td>
+                              <td>Taille: <b> {{commande.colis.size}}</b></td>
+
+                            </tr>
+
+                            <tr>
+                              <td>{{commande.colis.description}} </td>
+                              <td></td>
+                            </tr>
+                            
+                        </table>
+                      </div>
+                    </div>
+                 
+
+                </div>
+
+                <div class="col-4">
+   <!-- Suivi du colis -->
+                   <h6 class="heading-small text-muted mb-4">#Historique</h6>
+                   <ul class="" style="list-style: none;">
+                    {% for h in commande.commandeHistorique.all %}
+                      <li>
+                        <p> 
+                        <div class="col-auto">
+                        <div class="icon icon-shape bg-orange text-white rounded-circle shadow" style="width: 4.5rem; height: 4.5rem;">
+                          {{ h.created_at|date:'d M Y' }}
+                        </div>
+                        Heure: {{ h.created_at|date:'H:i' }} | {{ h.getEtatLibelle }}
+                      </div>    
+                        <p>{% if h.agence %}{{ h.agence.name}} - {{ agence.district.city }}{% endif %}</p>
+                        <p> {{ h.commentaire }}</p>
+                      </li>
+                      
+                     {% endfor %}
+
+                   </ul>
+
+                </div>
+              </div>
+              <!-- Row -->
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+{% endblock %}
+
+
+
+{% block javascript %}
+
+{% endblock %}

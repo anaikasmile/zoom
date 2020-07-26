@@ -90,20 +90,16 @@ class Commandes(models.Model):
         return libelle
 
 
+# class Facture(models.Model):
+#     commande = models.ForeignKey(Commandes, related_name='commandeHistorique', on_delete=models.CASCADE)
+#     reference = models.CharField(max_length=50, verbose_name='Référence')
+#     link_facture = models.CharField (max_length=50, verbose_name='Lien facture')
+#     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+#     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-    # def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
-    #     return ''.join(random.choice(chars) for _ in range(size))
-    #
-    # def unique_order_id_generator(instance):
-    #     order_new_id = random_string_generator()
-    #
-    #     Klass = instance.__class__
-    #
-    #     qs_exists = Klass.objects.filter(order_id=order_new_id).exists()
-    #     if qs_exists:
-    #         return unique_order_id_generator(instance)
-    #     return order_new_id
 
+
+    
 class HistoriqueCommandes(models.Model):
      ETAT_NON_PAYE = 1
      ETAT_PAYE = 2
