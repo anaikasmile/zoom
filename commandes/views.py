@@ -1,19 +1,30 @@
 from django.shortcuts import render, reverse, get_object_or_404, redirect
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, View
 from django.contrib import messages
 from django.core import serializers
 from django.core.paginator import Paginator
+from django.core.files.storage import FileSystemStorage
+from django.template.loader import render_to_string
 from django.db.models import Q
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
+from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations, Tranche, Package, Facture
+from agences.models import Agences, Societe
+from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm,TrancheForm, PackageForm
+from .tables import CommandeTable, CommandeClientTable
 
-from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations, Tranche
-from agences.models import Agences
-from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm,TrancheForm
+from .filters import CommandesFilter
 import random
 import string
+from weasyprint import HTML
+from var_dump import var_dump
 
-from zoom_transport.utils import render_to_pdf
+
+
+
+
 # Create your views here.
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -52,11 +63,13 @@ class ColisCreateView(CreateView):
         context = self.get_context_data()
         commande = context["commande"]
         self.object = form.save(commit=False)
+        
         self.object.client = self.request.user
         self.object.save()
         if commande.is_valid():
             commande.instance = self.object
             commande.save()
+
             #reference = random_string_generator()
             # qs_exists = Commandes.objects.filter(numero_commande=reference).exists()
             # if qs_exists:
@@ -66,21 +79,23 @@ class ColisCreateView(CreateView):
         messages.success(self.request, 'Commande enregistrée')
         return reverse("commandes:create_commande")
 
+
+#Commande du client
 @login_required
 def mes_commandes(request):
-    commandes = Commandes.objects.filter(colis__client=request.user)
-    paginator = Paginator(commandes, 1)  # Show 25  per page
-    page = request.GET.get('page')
-    commandes = paginator.get_page(page)
+    table = CommandeClientTable(Commandes.objects.filter(colis__client=request.user))
+    table.paginate(page=request.GET.get("page", 1), per_page=2)
+    queryset = Commandes.objects.select_related().all()
+    f = CommandesFilter(request.GET, queryset=queryset)
 
     context = {
-        'commandes': commandes,
+        'table': table,
     }
     return render(request, "commandes/mes_commandes.html", context)
 
 
-def mes_commandes_detail(request,commande_id):
-    commande = get_object_or_404(Commandes, id=commande_id)
+def mes_commandes_detail(request,commande_ref):
+    commande = get_object_or_404(Commandes, numero_commande=commande_ref)
 
     #paginator = Paginator(agences, 25)  # Show 25  per page
     #page = request.GET.get('page')
@@ -113,25 +128,30 @@ def delivery_orders_by_driver(request):
 def etat_update(request):
     etat = request.GET.get('etat')
     cmd_id = request.GET.get('id')
+    agence = None
+    comment = ""
     commande = get_object_or_404(Commandes, id=cmd_id)
+    #Si la commande est a l'etat payé on enregistre le montant et la commission
+
     commande.status = etat
+    commande.agent = request.user 
     commande.save()
-    history = HistoriqueCommandes.objects.create(commande=commande, user=request.user, state=etat)
     if request.GET.get('agence'):
         agence = get_object_or_404(Agences, id=request.GET.get('agence'))
-        history.agence = agence
-        if request.GET.get('comment'):
-            comment = request.GET.get('comment')
-            history.comment = comment
-    history.save()
+    if request.GET.get('comment'):
+        comment = request.GET.get('comment')
+
+    history = HistoriqueCommandes.objects.create(commande=commande, user=request.user, state=etat, agence=agence, comment=comment)
+    
+
     data = {
         'statut': 'success',
         'message': 'La commande a été mise à jour'
     }
     return JsonResponse(data)
 
-def historique_commande(request,commande_id):
-    commande = get_object_or_404(Commandes, id=commande_id)
+def historique_commande(request,commande_ref):
+    commande = get_object_or_404(Commandes, numero_commande = commande_ref)
     historiques = HistoriqueCommandes.objects.filter(commande=commande).order_by('created_at')
     #paginator = Paginator(agences, 25)  # Show 25  per page
     #page = request.GET.get('page')
@@ -170,14 +190,18 @@ def assign_order_to_me(request):
     }
     return JsonResponse(data)
 
+# def mes_commissions(request):
+    
+#     return render ''
+
 
 #Reclamations
 @login_required
 def add_reclamation(request):
     reclamations = Reclamations.objects.filter(commande__colis__client=request.user)
-    # paginator = Paginator(agences, 25)  # Show 25  per page
-    # page = request.GET.get('page')
-    # agences = paginator.get_page(page)
+    paginator = Paginator(reclamations, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    reclamations = paginator.get_page(page)
     if request.method == "POST":
         form = ReclamationForm(request.user, request.POST)
 
@@ -197,7 +221,7 @@ def add_reclamation(request):
         'reclamations': reclamations
     })
 #Traitement reclamation
-
+@login_required
 def add_handler_reclamation(request, commande_id):
     if request.method == "POST":
         form = ReclamationHandlerForm(request.POST)
@@ -213,6 +237,8 @@ def add_handler_reclamation(request, commande_id):
         'form': form,
     })
 
+
+@login_required
 def handler_reclamation_cmd(request, cmd_id):
     handler = ReclamationsHandler.objects.filter(reclamation__commande_id=cmd_id)
     data = serializers.serialize('json', handler)
@@ -227,12 +253,29 @@ def handler_reclamation_cmd(request, cmd_id):
 
 
 #Administation 
+@login_required
 def stats(request):
     return render(request, "default/stats.html", {})
 
+@login_required
+class FilteredCommandesListView(SingleTableMixin, FilterView):
+    table_class = CommandeTable
+    model = Commandes
+
+    template_name = 'commandes/commandes_liste.html'
+    paginate_by = 2
+    ordering = ['date_depot']
+
+    filterset_class = CommandesFilter
+
+
 
 def commandes_liste(request):
-    commandes = Commandes.objects.all()
+    table = CommandeTable(Commandes.objects.filter().order_by('date_depot'))
+    table.paginate(page=request.GET.get("page", 1), per_page=2)
+    queryset = Commandes.objects.select_related().all()
+    f = CommandesFilter(request.GET, queryset=queryset)
+
     form_step1 = Step1Form
     form_step2 = Step2Form
     #paginator = Paginator(agences, 25)  # Show 25  per page
@@ -240,13 +283,14 @@ def commandes_liste(request):
     #agences = paginator.get_page(page)
 
     context = {
-        'commandes': commandes,
+        'table': table,
+        'filter': f,
         'form_step1': form_step1,
         'form_step2': form_step2
     }
     return render(request, "commandes/commandes_liste.html", context)
 
-
+@login_required
 def commande_view(request,commande_id):
     commande = get_object_or_404(Commandes, id=commande_id)
     #paginator = Paginator(agences, 25)  # Show 25  per page
@@ -258,6 +302,7 @@ def commande_view(request,commande_id):
         }    
     return render(request, "commandes/commande_view.html", context)
 
+@login_required
 def list_reclamation(request):
     reclamations = Reclamations.objects.all()
    
@@ -267,8 +312,71 @@ def list_reclamation(request):
     return render (request, "commandes/liste_reclamations.html", context)
 
 
-#Tranches
 
+
+#PaKAGE Envoi
+@login_required
+def package_create(request):
+    packages = Package.objects.filter().order_by('created_at')
+    # paginator = Paginator(agences, 25)  # Show 25  per page
+    # page = request.GET.get('page')
+    # agences = paginator.get_page(page)
+    if request.method == "POST":
+        form = PackageForm()
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Package enregistré')
+            return redirect('commandes:package_create')
+
+        else:
+            messages.error(request, 'Certaines données sont invalides')
+
+    else:
+        form = PackageForm()
+
+    return render(request, "commandes/ajout_package.html",  {
+        'form': form,
+        'packages': packages
+    })
+
+@login_required
+def package_update(request, package_id):
+    package = Package.objects.get(id=package_id)
+    packages = Package.objects.filter().order_by('created_at')
+    #paginator = Paginator(agences, 25)  # Show 25  per page
+    #page = request.GET.get('page')
+    #agences = paginator.get_page(page)
+    if request.method == "POST":
+        form = PackageForm(request.POST, instance=package)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Package mis à jour')
+        return redirect('commandes:package_create')
+    else:
+        form = PackageForm(instance=package)
+
+    context = {
+        'form': form,
+        'packages': packages
+    }
+    return render(request, "commandes/ajout_package.html", context)
+
+
+@login_required
+def package_delete(request, package_id):
+    package = get_object_or_404(Package, id=package_id)
+    try:
+        package.delete()
+        messages.success(request, 'Package supprimée')
+
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible')
+
+    return redirect('commandes:package_create')
+
+#Tranches
+@login_required
 def tranche_create(request):
     tranches = Tranche.objects.filter().order_by('created_at')
     if request.method == "POST":
@@ -290,7 +398,7 @@ def tranche_create(request):
 
     return render(request, 'commandes/tranches_liste.html', context)
 
-
+@login_required
 def tranche_update(request, tranche_id):
     tranche = Tranche.objects.get(id=tranche_id)
     tranches = Tranche.objects.filter().order_by('created_at')
@@ -312,9 +420,9 @@ def tranche_update(request, tranche_id):
     }
     return render(request, "commandes/tranches_liste.html", context)
 
-
+@login_required
 def tranche_delete(request, tranche_id):
-    tranche = get_object_or_404(Tranches, id=tranche_id)
+    tranche = get_object_or_404(Tranche, id=tranche_id)
     try:
         tranche.delete()
         messages.success(request, 'Tranche supprimée')
@@ -325,12 +433,53 @@ def tranche_delete(request, tranche_id):
     return redirect('commandes:tranche_create')
 
 
+
+
 class GeneratePdf(View):
     def get(self, request, *args, **kwargs):
-        data = {
-             'amount': 39.99,
-            'customer_name': 'Cooper Mann',
-            'order_id': 1233434,
-        }
-        pdf = render_to_pdf('commandes/invoice.html', data)
+        commande = get_object_or_404(Commandes, numero_commande=self.kwargs['commande_ref'])
+        societe = get_object_or_404(Societe, id=1)
+        data = getTrancheData(commande)
+
+        pdf = render_to_pdf('commandes/invoice.html', {"commande":commande, 'data':data, 'societe':societe})
         return HttpResponse(pdf, content_type='application/pdf')
+
+
+def generate(request, commande_ref):
+    commande = get_object_or_404(Commandes, numero_commande=commande_ref)
+    facture = Facture.objects.get(commande = commande)
+    if facture == None:
+        facture = Facture.objects.create(commande=commande, status="Payé")
+
+    societe = get_object_or_404(Societe, id=1)
+
+    filename = 'facture_'+commande_ref+'.pdf'
+    html_string = render_to_string('commandes/facture.html', {'facture': facture})
+    
+    html = HTML(string=html_string)
+    html.write_pdf(target='/tmp/'+filename);
+
+    fs = FileSystemStorage('/tmp')
+    with fs.open(filename) as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        #response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
+    return response 
+
+
+
+def getTrancheData(colis):
+    tranches = Tranche.objects.all()
+    data = {
+            "amount": 0,
+            "commission": 0
+        }
+    for t in tranches:
+        minimum = colis.weight
+        if colis.weight >= t.min_weight and colis.weight  <= t.max_weight:
+            data = {
+                "amount": t.price,
+                "commission":  t.commission
+            }
+        return data
+    return data

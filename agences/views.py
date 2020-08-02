@@ -7,15 +7,16 @@ from django.views.generic import ListView, CreateView
 from .forms import AgenceForm, TypeVehiculeForm, VehiculesForm
 from .models import Agences, TypeVehicules, Vehicules
 from django.db.models import ProtectedError
+from .tables import AgenceTable
 # Create your views here.
 def agence_create(request):
-    agences = Agences.objects.filter().order_by('-created_at')
+    table = AgenceTable(Agences.objects.filter().order_by('-created_at'))
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
     if request.method == "POST":
         form = AgenceForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Agence bien enregistrée')
-            # return HttpResponseRedirect("/recipe/new/category")
             return redirect('agences:agence-create')
         else:
             pass
@@ -23,18 +24,15 @@ def agence_create(request):
         form = AgenceForm()
     context = {
         'form': form,
-        'object_list': agences
+        'table': table
 
     }
     return render(request, 'agences/agences_list.html', context)
 
 def agence_update(request, agence_id):
-
     agence = Agences.objects.get(id=agence_id)
-    agences = Agences.objects.filter().order_by('-created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    table = AgenceTable(Agences.objects.filter().order_by('-created_at'))
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
     if request.method == "POST":
         form = AgenceForm(request.POST, request.FILES, instance=agence)
         if form.is_valid():
@@ -46,7 +44,7 @@ def agence_update(request, agence_id):
 
     context = {
         'form': form,
-        'object_list': agences
+        'table': table
     }
     return render(request, "agences/agences_list.html", context)
 

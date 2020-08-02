@@ -9,7 +9,10 @@
         <div class="col">
           <div class="card">
             <div class="card-header bg-transparent border-0">
-              <h3 class="text-center">Commande détail</h3>
+              <h3 class="text-center">COMMANDE  DETAIL - #{{commande.numero_commande|upper}}</h3>
+            </div>
+            <div class="card-header bg-transparent border-0">
+              
             </div>
             <div class="card-body">
               <div class="row">
@@ -17,11 +20,13 @@
                   <div class="row">
                     <div class="col-4">
                         {% if commande.colis.image %}
-                        <img src="{{commande.colis.image.url}}"  class="img-responsive" />
+                        <img src="{{commande.colis.image.url}}"  class="img-responsive" width="50%" />
                         {% endif %}
                     </div>
                     <div class="col-8">
-                      <h6 class="heading-small text-muted mb-4">#Commande Infos</h6>
+                      <h6 class="heading-small text-muted mb-4">Commande Infos</h6>
+                                          <hr class="my-4" />
+
                       <table class="table align-items-center table-flush">
 
                           <tr>
@@ -31,10 +36,10 @@
 
                           <tr>
                             <td>
-                              Modèle d'envoi: <b>{{ commande.modele }}</b>
+                              Modèle d'envoi: <b>{{ commande.package }}</b>
                             </td>
                             <td>
-                              Assurance: <b>{{ commande.insurance.name }}</b>
+                              Assurance: <b>{{ commande.insurance }}</b>
                             </td>
                           </tr>
 
@@ -43,8 +48,8 @@
                             <td>Ville d'arrivée: <b>{{commande.city_arrive}}</b></td>
                           </tr>
                           <tr>
-                            <td>Date dépot:  <b>{{ commande.date_depot|date:'j F, Y' }}</b></td>
-                            <td>Date de livraison (souhaité):  <b>{{ commande.date_reception|date:'j F, Y' }}</b></td>
+                            <td>Date dépot:  <b>{{ commande.date_depot|date:'j/m/Y' }}</b></td>
+                            <td>Date de livraison (souhaité):  <b>{{ commande.date_reception|date:'j/m/Y' }}</b></td>
                           </tr>
 
                           
@@ -55,23 +60,22 @@
                           </tr>
 
                         </table>
+                        <br>
+                        <h6 class="heading-small text-muted mb-4">Colis détails</h6>
+                          <hr class="my-4" />
 
-                        <hr class="my-4" />
-                        <h6 class="heading-small text-muted mb-4">#Colis détails</h6>
                         <table class="table align-items-center table-flush">
                             <tr>
                               <td>Nature du colis: <b>{{commande.colis.nature}}</b></td>
-                            </tr>
-                            <tr>
                               <td>Poids: <b>{{commande.colis.weight}} kg</b></td>
-                              <td>Taille: <b> {{commande.colis.size}}</b></td>
-
                             </tr>
-
                             <tr>
+                              
+                              <td>Taille: <b> {{commande.colis.size}}</b></td>
                               <td>{{commande.colis.description}} </td>
-                              <td></td>
+
                             </tr>
+
                             
                         </table>
                       </div>
@@ -80,21 +84,28 @@
 
                 </div>
 
-                <div class="col-4">
+                <div class="col-4" style="border-left: 1px solid #ddd;">
    <!-- Suivi du colis -->
-                   <h6 class="heading-small text-muted mb-4">#Historique</h6>
+                   <h6 class="heading-small text-muted mb-4">Historique</h6>
+                    <hr class="my-4" />
+
                    <ul class="" style="list-style: none;">
-                    {% for h in commande.commandeHistorique.all %}
+                    {% for h in commande.commandeHistorique.all|dictsortreversed:"created_at"  %}
                       <li>
                         <p> 
                         <div class="col-auto">
-                        <div class="icon icon-shape bg-orange text-white rounded-circle shadow" style="width: 4.5rem; height: 4.5rem;">
-                          {{ h.created_at|date:'d M Y' }}
-                        </div>
-                        Heure: {{ h.created_at|date:'H:i' }} | {{ h.getEtatLibelle }}
+                          <div class="icon icon-shape bg-orange text-white rounded-circle shadow" style="width: 4.5rem; height: 4.5rem;">
+                            {% if h.state == h.ETAT_RECEPTIONNE %} <i class="fa fa-check" title="{{ h.getEtatLibelle }}"></i>{% endif %}
+                            {% if h.state == h.ETAT_LIVRE %} <i class="fa fa-gift" title="{{ h.getEtatLibelle }}"></i>{% endif %}
+                            {% if h.state == h.ETAT_EN_TRANSIT %} <i class="fa fa-car" title="{{ h.getEtatLibelle }}"></i>{% endif %}
+                            {% if h.state == h.ETAT_EN_AGENCE %} <i class="fa fa-h-square" title="{{ h.getEtatLibelle }}"></i>{% endif %}
+                            {% if h.state == h.ETAT_PAYE %} <i class="fa fa-money" title="{{ h.getEtatLibelle }}"></i>{% endif %}
+                          </div>
+                          {{ h.created_at|date:'d/m/Y H:i' }}
+                          <p class="text-right">{% if h.agence %}{{ h.agence.name}} - {{ h.agence.district.city }}{% endif %}</p>
+                          <p class="text-right"> {{ h.commentaire }}</p> 
                       </div>    
-                        <p>{% if h.agence %}{{ h.agence.name}} - {{ agence.district.city }}{% endif %}</p>
-                        <p> {{ h.commentaire }}</p>
+                        
                       </li>
                       
                      {% endfor %}

@@ -34,9 +34,10 @@
                     <th scope="col" class="sort" data-sort="">Observation</th>
 
                     <th scope="col" class="sort" data-sort="">Image</th>
+                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
+
                     <th scope="col" class="sort" data-sort="">Etat</th>
 
-                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
 
                     <th scope="col">Actions</th>
                   </tr>
@@ -58,15 +59,21 @@
                     <td class="budget">
                         <img src="" />
                     </td>
-                    <td>
-                        Etat
-                    </td>
-                     
                     <td class="budget">
                        {{ r.created_at|date:'F j, Y'}}
                     </td>
 
                    
+                    <td>
+                        {% if r.reclamationHandler.all %}
+                         {% for hr in  r.reclamationHandler.all %} 
+                            {{ hr.type}} | {{hr.updated_at|date:'j/m/Y à h:i'}}<br>
+                            {{ hr.commentaire}}  Traité par : <b>{{hr.agent}}</b>
+                          {% endfor %}
+                      {% endif %}
+                    </td>
+                     
+                    
                     <td class="">
                         <a href="" class="btn btn-info"><i class="fa fa-eye" title="Détail traitement"></i></a>
                         <a href="" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>

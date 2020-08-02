@@ -8,12 +8,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import ProtectedError
 
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 # Create your views here.
 
 # City views
 def city_create(request):
     cities = City.objects.filter().order_by('-created_at')
+    paginator = Paginator(cities, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    cities = paginator.get_page(page)
     if request.method == "POST":
         form = CityForm(request.POST)
         if form.is_valid():
@@ -35,9 +39,9 @@ def city_update(request, city_id):
 
     city = City.objects.get(id=city_id)
     cities = City.objects.filter().order_by('-created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(cities, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    cities = paginator.get_page(page)
     if request.method == "POST":
         form = CityForm(request.POST, request.FILES, instance=city)
         if form.is_valid():
@@ -67,6 +71,9 @@ def city_delete(request, city_id):
 # Create your views here.
 def district_create(request):
     district = District.objects.filter().order_by('-created_at')
+    paginator = Paginator(district, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    district = paginator.get_page(page)
     if request.method == "POST":
         form = DistrictForm(request.POST)
         if form.is_valid():
@@ -87,9 +94,9 @@ def district_update(request, district_id):
 
     district = District.objects.get(id=district_id)
     districts = District.objects.filter().order_by('-created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(districts, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    districts = paginator.get_page(page)
     if request.method == "POST":
         form = DistrictForm(request.POST, request.FILES, instance=district)
         if form.is_valid():

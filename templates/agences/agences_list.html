@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% block header %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
 
 <div class="row align-items-center py-4">
     <div class="col-lg-6 col-7">
@@ -69,87 +71,12 @@
             </div>
             <!-- Light table -->
             <div class="table-responsive">
-              <table class="table align-items-center table-flush">
-                <thead class="thead-light">
-                  <tr>
-                    <th scope="col" class="sort" data-sort="nom">#</th>
+              {% render_table table %}
 
-                    <th scope="col" class="sort" data-sort="nom">Nom</th>
-                    <th scope="col" class="sort" data-sort="quartier">Quartier</th>
-                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
-
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody class="list">
-                {% for agence in object_list %}
-                  <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>
-                      {{ agence.name }}
-                    </td>
-                    <td class="budget">
-                      {{ agence.district }}
-
-
-                    </td>
-                    <td>
-                        {{agence.created_at|date:'j F Y'}}
-                    </td>
-                    <td class="">
-                        <a href="{% url 'agences:agence-view' agence.id %}" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
-                        <a href="{% url 'agences:agence-update' agence.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
-                        <a href="{% url 'agences:agence-delete' agence.id %}" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
-
-                    </td>
-                  </tr>
-                {% endfor %}
-                </tbody>
-              </table>
+              
             </div>
             <!-- Card footer -->
-        {% comment %}  <div class="pagination">
-                <span class="step-links">
-                    {% if contacts.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ contacts.previous_page_number }}">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
-                    </span>
-
-                    {% if contacts.has_next %}
-                        <a href="?page={{ contacts.next_page_number }}">next</a>
-                        <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                </span>
-            </div>{% endcomment %}
-            <div class="card-footer py-4">
-              <nav aria-label="...">
-                <ul class="pagination justify-content-end mb-0">
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">
-                      <i class="fas fa-angle-left"></i>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">
-                      <i class="fas fa-angle-right"></i>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
+       
           </div>
         </div>
 

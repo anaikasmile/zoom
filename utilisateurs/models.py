@@ -44,6 +44,8 @@ class Person(models.Model):
     birth_date = models.DateField(null=True, blank=True, verbose_name="Date de naissance")
     tel = models.CharField(max_length=50, unique=True, verbose_name=_(u'Téléphone'), blank=True, help_text=_(u'90 00 00 00'))
     photo = models.ImageField(upload_to="utilisateurs", blank=True, null=True)
+    #agence  = models.ForeignKey(Agences, null=True, related_name='agencePerson', on_delete=models.CASCADE)
+
     created_at = models.DateTimeField(blank=True, auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 

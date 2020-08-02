@@ -45,7 +45,10 @@ INSTALLED_APPS = [
     'utilisateurs',
     'agences',
     'commandes',
-    'wkhtmltopdf'
+    'wkhtmltopdf',
+    'django_tables2',
+    'django_filters',
+
 ]
 
 MIDDLEWARE = [

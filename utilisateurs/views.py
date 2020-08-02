@@ -16,10 +16,12 @@ from django.views.generic import ListView, CreateView
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.base_user import BaseUserManager
-
-
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
 
 from .models import Person
+from .tables import UserTable
+from .filters import UserFilter
 # Create your views here.
 
 def generate_password(request):
@@ -163,12 +165,18 @@ class ClientListView(ListView):
     def get_queryset(self):
         return User.objects.exclude(Q(user_type=1) | Q(user_type=2)|Q(user_type=3))
 
-class AgentListView(ListView):
-    template_name = 'utilisateurs/user_list.html'
-    paginate_by = 10
-    ordering = ['-created']
+class AgentListView(SingleTableMixin, FilterView):
+    table_class = UserTable
+    template_name = "utilisateurs/user_list.html"
+    filterset_class = UserFilter
     def get_queryset(self):
         return User.objects.filter(user_type=2)
+# class AgentListView(ListView):
+#     template_name = 'utilisateurs/user_list.html'
+#     paginate_by = 10
+#     ordering = ['-created']
+#     def get_queryset(self):
+#         return User.objects.filter(user_type=2)
 
 class DriverListView(ListView):
     template_name = 'utilisateurs/user_list.html'

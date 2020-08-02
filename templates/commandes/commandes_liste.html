@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
+
 {% block header %}
 
 <div class="row align-items-center py-4">
@@ -24,131 +27,44 @@
             </div>
             <!-- Light table -->
 
-            <div class="table-responsive">
-              <table class="table align-items-center table-dark table-flush">
-                <thead class="thead-dark">
-                  <tr>
-                    <th scope="col" class="sort" data-sort="name">N° commande</th>
-                    <th scope="col" class="sort" data-sort="budget">Modele envoi</th>
-                    <th scope="col" class="sort" data-sort="budget">Prix</th>
+            <div class="table-responsive">        
+              {% render_table table %}
 
-                    <th scope="col" class="sort" data-sort="status">Etat</th>
-                    <th scope="col" class="sort" data-sort="budget">Client</th>
-
-
-                    <th scope="col"></th>
-                  </tr>
-
-                </thead>
-                <tbody class="list">
-                {% for cmd in commandes %}
-                  <tr class="" data-toggle="collapse" data-target=".row3">
-                    <th scope="row">
-                      {{ cmd.numero_commande }} {{ cmd.id }}
-                    </th>
-                    <td class="">
-                        {{cmd.modele}}
-                    </td>
-                    <td class="budget">
-                        {% if cmd.price %}
-                            {{cmd.price}}
-                        {% endif %}
-                    </td>
-                    <td>
-                      <span class="badge badge-dot mr-4">
-                        <i class="bg-warning"></i>
-                        <span class="status">{{ cmd.getEtatLibelle }} </span>
-                      </span>
-                    </td>
-
-                    <td class="">
-                        {{ cmd.colis.client.get_full_name }}
-                    </td>
-                    <td class="text-right">
-                      <div class="dropdown">
-                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                          <a class="dropdown-item openModal" data-toggle="modal" href="updateEtat{{ cmd.id }}" data-id={{ cmd.id }}>Changer l'état</a>
-                          <a class="dropdown-item" href="{% url 'commandes:historique_commande_admin' cmd.id %}">Historique</a>
-                          <a class="dropdown-item" href="{% url 'commandes:commande_view' cmd.id %}">Détails</a>
-
-                        </div>
-                      </div>
-                    </td>
-                   </tr>
-                  
-
-                {% endfor %}
-
-                </tbody>
-              </table>
             </div>
-            <!-- Card footer -->
-        {% comment %}  <div class="pagination">
-                <span class="step-links">
-                    {% if contacts.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ contacts.previous_page_number }}">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
-                    </span>
-
-                    {% if contacts.has_next %}
-                        <a href="?page={{ contacts.next_page_number }}">next</a>
-                        <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                </span>
-            </div>{% endcomment %}
-            <div class="card-footer py-4">
-              <nav aria-label="...">
-                <ul class="pagination justify-content-end mb-0">
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">
-                      <i class="fas fa-angle-left"></i>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">
-                      <i class="fas fa-angle-right"></i>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
+       
+            
           </div>
         </div>
 
     </div>
-    {% include 'commandes/modal_update_etat.html' %}
+    {% include 'commandes/includes/modal_update_etat.html' %}
+
 {% endblock %}
 {% block javascript %}
   <script>
-  $(document).on('click','.openModal', function () {
+
+  $(document).ready(function()
+    
+{
+   $(document).on('click','.openModal', function () {
       var cmdId = $(this).data('id');
       $(".modal-body #cmdId").val( cmdId );
+      $('#btn-step1').attr('data-cmd',$(this).data('id'));
+      $('#btn-step2').attr('data-cmd',$(this).data('id'));
+
       $('#updateEtat').modal('show');
 
 
 
-  });
-  $(document).on('click','#btn-step1', function () {
 
-        var etat = $('#id_etat').val();
-        var cmd_id = $('#cmdId').val();
-        console.log(etat);
+  });
+
+
+  $(document).on('click','#btn-step1', function () {
+      
+        var etat =  $('#id_etat').val();
+        var cmd_id = $(this).attr('data-cmd');
+        console.log(etat,cmd_id);
         switch (etat) {
             case '4':
             case '5':
@@ -168,6 +84,7 @@
                     success: function (data) {
                         if(data.statut == "success"){
                             toastr.success(data.message);
+                             $('#updateEtat').html('');
                             $('#updateEtat').modal('hide');
                             setTimeout(function(){ location.reload();; }, 1000);
                             //
@@ -182,9 +99,9 @@
    $(document).on('click','#btn-step2', function () {
 
       var data =  {
-                  'etat': $('#id_etat').val(),
-                  'id': $('#cmdId').val(),
-                  'agent': $('#id_agence').val(),
+                  'etat' : $('#id_etat').val(),
+                  'id' : $(this).attr('data-cmd'),
+                  'agence': $('#id_agence').val(),
                   'comment': $('#id_commentaire').val(),
                 };
       console.log(data, $(this).attr('data_url'));
@@ -196,6 +113,7 @@
                     console.log(data);
                     if(data.statut == "success"){
                         toastr.success(data.message);
+                        $('#updateEtat').html('');
                         $('#updateEtat').modal('hide');
                         //
                         setTimeout(function(){ location.reload();; }, 1000);
@@ -205,5 +123,6 @@
       });
   });
 
+});
   </script>
 {% endblock %}

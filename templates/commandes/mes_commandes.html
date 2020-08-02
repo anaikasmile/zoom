@@ -1,110 +1,57 @@
 {% extends 'base_frontend.html' %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
 {% load widget_tweaks %}
+
+
 {% block header %}
+
 {% endblock %}
+
 {% block content %}
-<div class="container-fluid mt--6">
 <!-- Dark table -->
       <div class="row">
-        <div class="col">
-          <div class="card bg-default shadow">
-            <div class="card-header bg-transparent border-0">
-              <h3 class="text-white mb-0">Mes commandes</h3>
+        <div class="col-12">
+            <br>
+            <h3 class="mb-0">Mes commandes</h3>
+            <div class="nav-wrapper">
+              <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-cloud-upload-96 mr-2"></i>En cours</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-bell-55 mr-2"></i>Livrés</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-calendar-grid-58 mr-2"></i>En attente</a>
+                  </li>
+              </ul>
             </div>
-            <div class="table-responsive">
-              <table class="table align-items-center table-dark table-flush">
-                <thead class="thead-dark">
-                  <tr>
-                    <th scope="col" class="sort" data-sort="name">N° commande</th>
-                    <th scope="col" class="sort" data-sort="budget">Modèle d'envoi</th>
-                    <th scope="col" class="sort" data-sort="status">Assurance</th>
-                    <th scope="col" class="sort" data-sort="status">Nature du colis</th>
-                    <th scope="col" class="sort" data-sort="budget">Prix</th>
-                    <th scope="col" class="sort" data-sort="status">Image</th>
-                    <th scope="col" class="sort" data-sort="status">Etat</th>
+            <div class="card shadow">
 
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody class="list">
-                {% for cmd in commandes %}
-                  <tr id="accordion2" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ cmd.id }}">
-                    <td scope="row">
-                      {{ cmd.numero_commande|upper }}
-
-                    </td>
-                    <td class="">
-                        {{cmd.modele}}
-                    </td>
-                    <td class="">
-                        {{cmd.insurance.nom}}
-                    </td>
-                    <td class="">
-                        {{cmd.colis.nature}}
-                    </td>
-                    <td class="budget">
-                        {% if cmd.price %}
-                            {{cmd.price}}
-                        {% endif %}
-                    </td>
-                    <td class="">
-                        {% if cmd.colis.image %}
-                         <img src="{{ cmd.colis.image.url }}" style="width: 50px; height: 50px;">
-                        {% endif %}
-                    </td>
-
-                    <td>
-                      <span class="badge badge-dot mr-4">
-                        <span class="status">{{ cmd.getEtatLibelle }}</span>
-                      </span>
-                    </td>
+              <div class="card-body">
+                  <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                           <div class="table-responsive">
+                              {% render_table table %}
 
 
-                    <td class="text-right">
-                      <div class="dropdown">
-                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                            {% if cmd.status == 5 %}
-
-                          <a class="dropdown-item openModal" title="Commande terminée"  data-toggle="modal" href="updateEtat"  data-id="{{ cmd.id }}">Réceptionné</a>
-                            {% endif %}
-                          <a class="dropdown-item" href="{% url 'commandes:historique_commande' cmd.id %}">Historique</a>
-                          <a class="dropdown-item" href="#">Détails</a>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
-                    <td colspan="12">
-                        <div id="collapse{{ cmd.id }}" class="collapse in p-3" >
-                            
-                             
-                                <b>Date de dépot</b> : {{ cmd.date_depot|date:'j F, Y' }}<br><br>
-                                <b>Date de réception</b> : {{ cmd.date_depot|date:'j F, Y' }}<br><br>
-                             
-                                <b>Ville de départ</b>: {{ cmd.city_depart }}<br><br>
-                                <b>Ville d'arrivée</b>: {{ cmd.city_arrive }} <br><br>
-                             
-                                <b>Poids</b>: {{ cmd.colis.weight }} kg <br><br>
-                                <b>Taille</b>: {{ cmd.colis.size }}
-                            
-                         
-                          
+
+
+                        <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                            <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
                         </div>
-                      </td>
-                   </tr>
-                {% endfor %}
-
-                </tbody>
-              </table>
-
+                        <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+                            <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
+                        </div>
+                    </div>
+              </div>
             </div>
+            
           </div>
-        </div>
-      </div>
-        <!-- Card footer -->
+           
 
 
 
@@ -138,6 +85,8 @@
           </div>
     </div>
 <!-- End modal -->
+
+ 
 {% endblock %}
 {% block javascript %}
   <script>
@@ -159,7 +108,7 @@
                 if(data.statut == "success"){
                     toastr.success(data.message);
                     $('#updateEtat').modal('hide');
-                    //location.reload();
+                    location.reload();
                 }
             }
         });

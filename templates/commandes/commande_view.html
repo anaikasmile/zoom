@@ -27,9 +27,13 @@
           <div class="card">
             <div class="card-header">
               <div class="row align-items-center">
-                <div class="col-8">
-                  <h3 class="mb-0"># {{commande.numero_commande}} </h3>
+                <div class="col-2">
+                  <h3 class="mb-0"># {{commande.numero_commande|upper}} </h3>
                 </div>
+                <div class="col-10 text-right">
+                  <a href="#historique" class="btn btn-primary">Historique</a><a href="{% url 'commandes:generate_facture' commande.numero_commande %}" class="btn btn-primary" title="Imprimer la facture"><i class="fa fa-print"></i></a>
+                </div>
+
 
               </div>
             </div>
@@ -40,20 +44,22 @@
                
               <div class="row">
                 <div class="col-md-6">
-                    <h6 class="heading-small text-muted mb-4">Commande infos</h6>
+                    <h6 class="heading-small text-muted mb-4">Détails Commande</h6>
+                    <hr class="my-4" />
+
                     <div class="pl-lg-4">
 
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                          Date départ : <label class="form-control-label" for="input-first-name"> {{ commande.date_depot|date:'j F, Y' }}</label> 
+                          Date départ : <label class="form-control-label" for="input-first-name"> {{ commande.date_depot|date:'j/M/Y' }}</label> 
                           
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group">
                           Date arrivée :
-                          <label class="form-control-label" for="input-last-name">{{ commande.date_reception|date:'j F, Y' }}</label>
+                          <label class="form-control-label" for="input-last-name">{{ commande.date_reception|date:'j/M/Y' }}</label>
                           
                         </div>
                       </div>
@@ -78,14 +84,14 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                          Modèle d'envoi : <label class="form-control-label" for="input-first-name">{{ commande.modele }} </label> 
+                          Modèle d'envoi : <label class="form-control-label" for="input-first-name">{{ commande.package }} </label> 
                           
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group">
                           Assurance :
-                          <label class="form-control-label" for="input-last-name">{{ commande.insurance.name }}</label>
+                          <label class="form-control-label" for="input-last-name">{{ commande.insurance }}</label>
                           
                         </div>
                       </div>
@@ -96,25 +102,36 @@
                         <div class="form-group">
                           Prix:
                           <label class="form-control-label" for="input-first-name"></label>
-                            {{ commande.price }}
+                            {% if commande.price %}{{ commande.price }} {% endif %}
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group">
-                          Etat :
-                          <label class="form-control-label" for="input-last-name">{{commande.status}}</label>
+                          Commission :
+                          <label class="form-control-label" for="input-last-name">{{commande.commision}}</label>
                            
                         </div>
                       </div>
                     </div>
 
-                  
+                  <div class="row">
+                      
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          Etat :
+                          <label class="form-control-label" for="input-last-name">{{commande.getEtatLibelle}}</label>
+                           
+                        </div>
+                      </div>
+                    </div>
 
                   </div>
                 </div>
 
                 <div class="col-md-6">
                     <h6 class="heading-small text-muted mb-4">Client</h6>
+                                        <hr class="my-4" />
+
                     <div class="pl-lg-4">
                       <div class="row">
                         <div class="col-lg-6">
@@ -158,13 +175,14 @@
           <!-- Section 1 -->
 
           <!-- Section 2 -->
-
+              <br>
               <div class="row">
 
                 <div class="col-md-6">
+
+                    <h6 class="heading-small text-muted mb-4">Colis</h6>
                     <hr class="my-4" />
 
-                    <h6 class="heading-small text-muted mb-4">Colis détails</h6>
                     <div class="pl-lg-4">
                       <div class="row">
                         <div class="col-lg-6">
@@ -221,9 +239,10 @@
                 </div>
 
                 <div class="col-lg-6">
-                   <hr class="my-4" />
 
                     <h6 class="heading-small text-muted mb-4">Conducteur</h6>
+                    <hr class="my-4" />
+
                     <div class="pl-lg-4">
                       <div class="row">
                         <div class="col-lg-6">
@@ -270,7 +289,7 @@
   
         </div>
 
-      <div class="card">
+      <div class="card" id="historique">
         <div class="card-body">
           <h3> Suivi du colis</h3>
 
@@ -299,10 +318,11 @@
                     <td>{{ forloop.counter }}</td>
                     <td>
                       {{ h.getEtatLibelle }} <br>
+                      {% if h.agence %}{{ h.agence}} {% endif %}
+
                     </td>
                     <td class="">
-                        {{ h.created_at|date:'j M Y' }} <br>
-                        {% if h.agence %}{{ h.agence.name}} {% endif %}
+                        {{ h.created_at|date:'j/m/Y' }} <br>
 
                     </td>
                     <td class="">
@@ -310,10 +330,10 @@
 
                     </td>
                     <td class="">
-                       Agent
+                      {{ h.user}}
                     </td>
                     <td>
-                      {{ h.commentaire }}
+                      {% if h.comment %}{{ h.comment }} {% endif %}
                     </td>
                   </tr>
                 {% endfor %}

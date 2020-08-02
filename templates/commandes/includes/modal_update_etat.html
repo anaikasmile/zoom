@@ -1,9 +1,9 @@
 <!-- Modal  step 1-->
-    <div class="modal fade" id="updateEtat{{ cmd.id }}" tabindex="-1" role="dialog" aria-labelledby="">
+    <div class="modal fade" id="updateEtat" tabindex="-1" role="dialog" aria-labelledby="">
           <div class="modal-dialog" role="document">
                 <div class="modal-content">
                       <div class="modal-header">
-                           <h5 class="modal-title" id="changerEtat">Modifier l'état</h5>
+                           <h5 class="modal-title" id="changerEtat">Modifier l'état de la commande N°{{ record.id }} {{record.numero_commande}}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -16,7 +16,7 @@
                                            <div class="form-group">
                                           {{ form_step1.etat }}
                                            </div>
-                                                  <input type="text" name="cmdId" id="cmdId" value="" hidden/>
+                                          <input type="text" name="cmdId" id="cmdId" value="{{record.numero_commande}}" hidden/>
 
                                       </div>
                                       <div class="col-lg-4">

@@ -10,7 +10,7 @@
             {% block head_title %}{% trans "" %}{% endblock %}
         </title>
          <meta charset="utf-8" />
-          <link rel="icon" type="image/png" href="{% static 'assets/img/brand/favicon.png' %}" />
+          <link rel="icon" type="image/png" href="" />
           <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
           <title>
             Material Dashboard by Creative Tim
@@ -116,7 +116,7 @@
                                     </div>
                                 </a>
                             </li>
-                             <li class="nav-item">
+                            <li class="nav-item">
                                   <a class="nav-link" href="" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
                                     <i class="ni ni-single-02 text-success"></i>
 
@@ -133,7 +133,7 @@
 
                             </li>
 
-                              <li class="nav-item dropdown">
+                            <li class="nav-item dropdown">
                                  <a class="nav-link {% if "/vehicules" in request.path %} active {% endif %}" href="" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
                                     <i class="ni ni-bus-front-12 text-black-50"></i>
                                     <span class="nav-link-text">Véhicules</span>
@@ -164,7 +164,14 @@
                             </li>
 
                               <li class="nav-item">
-                                <a class="nav-link" href="{% url 'commandes:tranche_create' %}" target="_blank">
+                                <a class="nav-link" href="{% url 'commandes:package_create' %}">
+                                    <i class="ni ni-chart-pie-35 text-danger"></i>
+                                    <span class="nav-link-text">Packages d'envoi</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'commandes:tranche_create' %}">
                                     <i class="ni ni-ui-04"></i>
                                     <span class="nav-link-text">Fixer les prix</span>
                                 </a>

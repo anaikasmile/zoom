@@ -1,0 +1,146 @@
+{% load static %}
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="{% static 'assets/css/invoice.css' %}" media="print" rel="stylesheet">
+    <title>Facture</title>
+    <meta name="description" content="Invoice">
+    <meta name="author" content="Kozea">
+    <style type="text/css">@charset "UTF-8";
+        @import url("https://fonts.googleapis.com/css?family=Pacifico|Source+Sans+Pro:400,700");
+        @page {
+          margin: 3cm;
+          @bottom-left {
+            color: #1ee494;
+            font-family: Pacifico;
+            content: ' '; }
+          @bottom-right {
+            color: #a9a;
+            content: '{{societe.email}} | {{societe.tel}} | {{societe.email}}';
+            font-family: Pacifico;
+            font-size: 9pt; } }
+
+        html {
+          color: #14213d;
+          font-family: Source Sans Pro;
+          font-size: 11pt;
+          line-height: 1.6; }
+          html body {
+            margin: 0; }
+          html h1 {
+            color: #1ee494;
+            font-family: Pacifico;
+            font-size: 40pt;
+            margin: 0; }
+          html aside {
+            display: flex;
+            margin: 2em 0 4em; }
+            html aside address {
+              font-style: normal;
+              white-space: pre-line; }
+              html aside address#from {
+                color: #a9a;
+                flex: 1; }
+              html aside address#to {
+                text-align: right; }
+          html dl {
+            text-align: right;
+            position: absolute;
+            right: 0;
+            top: 0; }
+            html dl dt, html dl dd {
+              display: inline;
+              margin: 0; }
+            html dl dt {
+              color: #a9a; }
+              html dl dt::before {
+                content: '';
+                display: block; }
+              html dl dt::after {
+                content: ':'; }
+          html table {
+            border-collapse: collapse;
+            width: 100%; }
+            html table th {
+              border-bottom: .2mm solid #a9a;
+              color: #a9a;
+              font-size: 10pt;
+              font-weight: 400;
+              padding-bottom: .25cm;
+              text-transform: uppercase; }
+            html table td {
+              padding-top: 7mm; }
+              html table td:last-of-type {
+                color: #1ee494;
+                font-weight: bold;
+                text-align: right; }
+            html table th, html table td {
+              text-align: center; }
+              html table th:first-of-type, html table td:first-of-type {
+                text-align: left; }
+              html table th:last-of-type, html table td:last-of-type {
+                text-align: right; }
+            html table#total {
+              background: #f6f6f6;
+              border-color: #f6f6f6;
+              border-style: solid;
+              border-width: 2cm 3cm;
+              bottom: 0;
+              font-size: 20pt;
+              margin: 0 -3cm;
+              position: absolute;
+              width: 18cm; }
+
+  </style>
+  </head>
+
+  <body>
+    <h1>La Générale des transports</h1>
+
+    <aside>
+      <address id="from">
+        {{societe.name}}
+        {{societe.tel}}
+        {{societe.email}}
+        {{societe.adresses}}
+        {{societe.district.city}} - {{societe.district.city.country}} 
+      </address>
+
+      <address id="to">
+        <h3>CLIENT</h3>
+         {{commande.colis.client}}
+        {{commande.colis.client.person.tel}}
+        {{ commande.colis.client.email}}
+      </address>
+    </aside>
+
+    <dl id="informations">
+      <dt>Réf. Facture: {{ facture.reference }} </dt>
+      <dt>Date: {{facture.created_at|date:'j/m/Y' }}</dt>
+    </dl>
+
+    <table>
+      <thead>
+        <th>Description</th>
+        <th>Prix</th>
+        <th>Total</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>N° Commande: {{commande.numero_commande|upper}}<br>
+              Poids: {{commande.colis.weight}}kg Taille: {{commande.colis.size}} <br>
+              Package: {{commande.package}}<br>
+              Destination: {{commande.city_depart}} - {{commande.city_arrive}}
+          </td>
+          <td> {% if commande.price %}{{ commande.price }} {% endif %} CFA</td>
+          <td> {% if commande.price %}{{ commande.price }} {% endif %} CFA</td>
+        </tr>
+        
+      </tbody>
+    </table>
+
+
+   
+  </body>
+</html>

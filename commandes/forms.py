@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django import forms
-from .models import Colis, Insurance, Commandes, Reclamations, ReclamationsHandler, Tranche
+from .models import Colis, Insurance, Commandes, Reclamations, ReclamationsHandler, Tranche, Package
 from agences.models import Agences
 from django.forms.models import inlineformset_factory
 from django.forms import ModelChoiceField
@@ -35,7 +35,7 @@ class ColisForm(forms.ModelForm):
 class CommandesForm(forms.ModelForm):
     class Meta:
         model = Commandes
-        fields = ('numero_commande', 'city_depart', 'city_arrive', 'date_depot', 'date_reception', 'price', 'modele',
+        fields = ('numero_commande', 'city_depart', 'city_arrive', 'date_depot', 'date_reception', 'price', 'package',
                   'colis', 'insurance', 'observation', 'status')
         widgets = {
             'numero_commande': forms.TextInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
@@ -45,7 +45,7 @@ class CommandesForm(forms.ModelForm):
             'city_depart': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'date_depot': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date','placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'date_reception': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date', 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
-            'modele': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'package': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'weight': forms.NumberInput(attrs={'required': False, 'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'observation': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'price': forms.NumberInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
@@ -55,7 +55,7 @@ class CommandesForm(forms.ModelForm):
 
 CommandesFormset = inlineformset_factory(
     Colis, Commandes,
-    fields=('city_depart', 'city_arrive', 'date_depot', 'date_reception', 'modele',
+    fields=('city_depart', 'city_arrive', 'date_depot', 'date_reception', 'package', 
                    'insurance'),
     widgets = {
             'numero_commande': forms.TextInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
@@ -65,7 +65,7 @@ CommandesFormset = inlineformset_factory(
             'city_depart': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'date_depot': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date','placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'date_reception': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date', 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
-            'modele': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'package': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             #'weight': forms.NumberInput(attrs={'required': False, 'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             #'observation': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             #'price': forms.NumberInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
@@ -80,7 +80,7 @@ class Step1Form(forms.Form):
         (2, 'Payé'),
         (3, 'En transit'),
         (4, 'En agence'),
-        (5, 'Collecté'),
+        (5, 'Livré'),
     )
     etat = forms.ChoiceField(choices = ETAT_CMD,widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -113,14 +113,26 @@ class ReclamationHandlerForm(forms.ModelForm):
             'commentaire': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
         }
 
+
+class PackageForm(forms.ModelForm):
+    class Meta:
+        model = Package
+        fields = ('libelle', 'description')
+        widgets = {
+            'libelle': forms.TextInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+            'description': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+
+             }
+
 class TrancheForm(forms.ModelForm):
     class Meta:
         model = Tranche
-        fields = ('min_weight', 'max_weight', 'price', 'commission')
+        fields = ('min_weight', 'max_weight', 'price', 'commission','package')
         widgets = {
             'min_weight': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'max_weight': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'price': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'commission': forms.NumberInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+            'package': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
 
              }

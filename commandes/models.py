@@ -13,10 +13,10 @@ class Colis(models.Model):
     nature = models.CharField(max_length=200, verbose_name='Nature', null=True, blank=True)
     description = models.TextField(blank=True, verbose_name="Description")
     image = models.ImageField(blank=True,null=True, upload_to="colis")
-    weight = models.FloatField(blank=True, verbose_name="Poids")
+    weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, verbose_name="Poids")
     size = models.CharField(max_length=100, blank=True, verbose_name="Taille")
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Créé le")
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name="Modifié le")
     def __str__(self):
         return self.nature
 
@@ -30,6 +30,16 @@ class Insurance(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     def __str__(self):
         return self.nom
+
+
+class Package(models.Model):
+    libelle = models.CharField(max_length=50, null=True, blank=True, verbose_name='Libelle')
+    description = models.TextField(null=True, blank=True, verbose_name='Description')
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Créé le")
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name="Modifié le")
+    def __str__(self):
+        return self.libelle
+
 
 class Commandes(models.Model):
     ETAT_NON_PAYE = 1
@@ -45,22 +55,24 @@ class Commandes(models.Model):
         ('PREMIUM', 'PREMIUM'),
 
     )
-    numero_commande = models.CharField(max_length=200, verbose_name='Réference', null=True, blank=True)
-    driver = models.ForeignKey(User, null=True, related_name='commandes_drivers', on_delete=models.CASCADE)
+    numero_commande = models.CharField(max_length=200, verbose_name='N° Commande', null=True, blank=True)
 
-    colis = models.OneToOneField(Colis, related_name='colis', on_delete=models.CASCADE)
-    insurance = models.ForeignKey(Insurance, null=True, related_name='insurance', on_delete=models.CASCADE)
-    city_depart = models.ForeignKey(City, null=True, related_name='cityDepart', on_delete=models.CASCADE)
-    city_arrive = models.ForeignKey(City, null=True, related_name='cityArrival', on_delete=models.CASCADE)
-    date_depot = models.DateField(null=True, blank=True)
-    date_reception = models.DateField(null=True, blank=True)
+    colis = models.OneToOneField(Colis, related_name='colis', on_delete=models.CASCADE, verbose_name="Nature du colis")
+    insurance = models.ForeignKey(Insurance, null=True, related_name='insurance', verbose_name="Assurance", on_delete=models.CASCADE)
+    city_depart = models.ForeignKey(City, null=True, related_name='cityDepart', verbose_name="Ville de départ", on_delete=models.CASCADE)
+    city_arrive = models.ForeignKey(City, null=True, related_name='cityArrival', verbose_name="Ville d'arrivée", on_delete=models.CASCADE)
+    date_depot = models.DateField(null=True, blank=True, verbose_name="Date de dépot")
+    date_reception = models.DateField(null=True, blank=True, verbose_name="Date de réception")
     observation = models.TextField(null=True, blank=True, verbose_name="Remarques")
-    price = models.FloatField(null=True, blank=True, verbose_name="Prix")
-    #commission = models.FloatField(null=True, blank=True, verbose_name="Commission")
-    status = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_PAYE)
-    modele = models.CharField(max_length=50, choices=MODELE_ENVOI, null=True, blank=True, verbose_name='Modèle envoi')
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    price = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True, verbose_name="Prix")
+    commission = models.FloatField(null=True, blank=True, verbose_name="Commission")
+    status = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_PAYE, verbose_name="Etat")
+    package = models.ForeignKey(Package, verbose_name="Package d'envoi", on_delete=models.CASCADE)
+    driver = models.ForeignKey(User, null=True, related_name='commandes_drivers', on_delete=models.CASCADE, verbose_name="Conducteur")
+    agent = models.ForeignKey(User, null=True, related_name='commandes_agent', on_delete=models.CASCADE, verbose_name="Agent")
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Créé le")
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name="Modifié le")
 
     def create_ref_code(self):
         return ''.join(random.choice(string.ascii_lowercase + string.digits, k=20))
@@ -89,16 +101,41 @@ class Commandes(models.Model):
             libelle = ""
         return libelle
 
+    def getTrancheData(colis):
+        tranches = Tranche.objects.all()
+        data = {
+            "amount": 0,
+            "commission": 0
+        }
+        for t in tranches:
+            minimum = colis.weight
+            if colis.weight >= t.min_weight and colis.weight  <= t.max_weight:
+                data = {
+                   "amount": t.price,
+                   "commission":  t.commission
+                }
+        return data
 
-# class Facture(models.Model):
-#     commande = models.ForeignKey(Commandes, related_name='commandeHistorique', on_delete=models.CASCADE)
-#     reference = models.CharField(max_length=50, verbose_name='Référence')
-#     link_facture = models.CharField (max_length=50, verbose_name='Lien facture')
-#     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-#     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+class Facture(models.Model):
+    ETAT = (
+        ('Non payé', 'Non payé'),
+        ('Payé', 'Payé'),
 
+    )
+    commande = models.ForeignKey(Commandes, related_name='commandeFacture', on_delete=models.CASCADE)
+    reference = models.CharField(max_length=50, verbose_name='Référence')
+    status = models.CharField(null=True, blank=True, choices=ETAT, verbose_name="Etat", max_length=15)
+    link_facture = models.CharField (max_length=50, null=True, blank=True, verbose_name='Lien facture')
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        self.reference = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.reference
     
 class HistoriqueCommandes(models.Model):
      ETAT_NON_PAYE = 1
@@ -134,6 +171,11 @@ class HistoriqueCommandes(models.Model):
      def __str__(self):
          return self.commande.numero_commande+" "+self.getEtatLibelle()
 
+     @property
+     def sorted_historique(self):
+         return self.sorted_historique.order_by('-created_at')
+
+
 
 class Reclamations(models.Model):
     TYPES = (
@@ -167,15 +209,20 @@ class ReclamationsHandler(models.Model):
     commentaire = models.TextField(blank=True, verbose_name='Commentaire')
 
 
+
+
 class Tranche(models.Model):
-    min_weight = models.FloatField(verbose_name="Minimum")
-    max_weight = models.FloatField(verbose_name="Maximum")
-    price = models.FloatField(verbose_name="Prix")
-    commission = models.FloatField(verbose_name="Commission", null=True, blank=True)
+    min_weight = models.IntegerField(verbose_name="Minimum")
+    max_weight = models.IntegerField(verbose_name="Maximum")
+    price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name="Prix")
+    package = models.ForeignKey(Package,related_name='packageTranche', verbose_name="Package d'envoi", on_delete=models.CASCADE)
+    commission = models.FloatField(verbose_name="Commission")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     class Meta:
         """docstring for Meta"""
         constraints = [
-                models.UniqueConstraint(fields=['min_weight', 'max_weight', 'price'], name='tranche_unique')
+                models.UniqueConstraint(fields=['package', 'min_weight', 'max_weight', 'price'], name='tranche_unique')
             ]
+    #def __str__(self):
+    #   return self.min_weight
