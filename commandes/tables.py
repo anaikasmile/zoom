@@ -50,3 +50,31 @@ class CommandeClientTable(tables.Table):
 
     def render_ID(self):
         return "%d" % next(self.counter)
+
+
+class CommandeDriverTable(tables.Table):
+    etat = tables.Column(accessor="getEtatLibelle")
+    ID  = tables.Column(empty_values=())
+    actions  = TemplateColumn(template_name="commandes/includes/commande_driver_actions.html", attrs={"td": {"class": "text-right"}})
+
+    class Meta:
+        model = Commandes
+        sequence = ('ID', 'numero_commande','colis','city_depart', 'city_arrive','date_depot','date_reception','commission','etat','actions')
+        exclude = {'status', 'id','observation','insurance','updated_at','created_at',  'price', 'package','agent','driver','accepted'}
+        template_name = "django_tables2/bootstrap.html"
+        attrs = {
+	        "th" : {
+	            "_ordering": {
+	                "orderable": "sortable", # Instead of `orderable`
+	                "ascending": "ascend",   # Instead of `asc`
+	                "descending": "descend"  # Instead of `desc`
+	            }
+        	}
+    	}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.counter = itertools.count()
+
+    def render_ID(self):
+        return "%d" % next(self.counter)

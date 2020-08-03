@@ -4,26 +4,22 @@
 {% endblock %}
 {% block content %}
 
-    <form method="post" autocomplete="off">
-    {% csrf_token %}
-        {{ form.errors }}
-        {{ commande.management_form }}
+    
         <div class="row">
-            <div class="col-xl-4 order-xl-2">
+            <div class="col-xl-5">
                 <div class="card card-profile">
                      <div class="card-body">
                      <div class="row">
                           <div class="col-md-6">
-                                <div class="form-group">
-                                  <label class="bmd-label-floating">Ville départ *</label>
-                                    {{ commande.0.city_depart }}
+                                <p><label class="bmd-label-floating">Ville de départ : </label>                                    {{ commande.city_depart }}
+</p>
+                                
 
-                                </div>
                           </div>
                           <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="bmd-label-floating">Ville d'arrivée  *</label>
-                                    {{ commande.0.city_arrive }}
+                                    <label class="bmd-label-floating">Ville d'arrivée : </label>
+                                    {{ commande.city_arrive }}
                                 </div>
                           </div>
                      </div>
@@ -31,40 +27,38 @@
                      <div class="row">
                           <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">Date de dépôt *</label>
-                                    {{ commande.0.date_depot }}
+                                  <label class="bmd-label-floating">Date de dépôt : </label>
+                                    {{ commande.date_depot|date:'j/m/Y' }}
                                 </div>
                           </div>
                           <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="bmd-label-floating">Date de réception *</label>
-                                    {{ commande.0.date_reception }}
+                                    <label class="bmd-label-floating">Date de réception : </label>
+                                    {{ commande.date_reception|date:'j/m/Y' }}
                                 </div>
                           </div>
                      </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-8 order-xl-1">
+            <div class="col-xl-7">
                 <div class="card">
                     <div class="card-header card-header-primary">
-                      <h4 class="card-title">Faire une réservation</h4>
                     </div>
                     <div class="card-body">
                             <!-- Infos personnel -->
-                        <h6 class="heading-small text-muted mb-4">Informations</h6>
 
                         <div class="row">
                               <div class="col-md-6">
                                     <div class="form-group">
-                                      <label class="bmd-label-floating">Nature *</label>
-                                        {{ form.nature }}
+                                      <label class="bmd-label-floating">Nature du colis: </label>
+                                        {{ commande.colis.nature }}
                                     </div>
                               </div>
                               <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="bmd-label-floating">Poids (en kg) *</label>
-                                        {{ form.weight }}
+                                        <label class="bmd-label-floating">Poids (en kg) : </label>
+                                        {{ commande.colis.weight }}
                                     </div>
                               </div>
                         </div>
@@ -72,17 +66,14 @@
                               <div class="col-md-6">
                                     <div class="form-group">
                                       <label class="bmd-label-floating">Photo </label>
-                                        <div class="custom-file">
-                                            {{ form.image }}
-                                            <label class="custom-file-label" for="customFileLang">Sélectionner un fichier</label>
-                                        </div>
+                                            {{ commande.colis.image }}
                                          
                                     </div>
                               </div>
                               <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="bmd-label-floating">Taille</label>
-                                        {{ form.size }}
+                                        {{ commande.colis.size }}
                                     </div>
                               </div>
                         </div>
@@ -90,14 +81,14 @@
                               <div class="col-md-6">
                                     <div class="form-group">
                                       <label class="bmd-label-floating">Assurance</label>
-                                        {{ commande.0.insurance }}
+                                        {{ commande.insurance }}
                                     </div>
                               </div>
                               <div class="col-md-6">
                                     <div class="form-group">
 
                                         <label class="bmd-label-floating">Modèle d'envoi *</label>
-                                        {{ commande.0.package }}
+                                        {{ commande.package }}
                                     </div>
                               </div>
                         </div>
@@ -105,19 +96,16 @@
                          <div class="row">
                               <div class="col-md-12">
                                     <div class="form-group">
-                                      <label class="bmd-label-floating">Plus de détails</label>
-                                        {{ form.description }}
+                                        {{ commande.description }}
                                     </div>
                               </div>
 
                         </div>
 
-                        <button type="submit" class="btn btn-primary pull-right">Enregistrer</button>
 
 
                      </div>
                 </div>
 
             </div>
-    </form>
 {% endblock %}

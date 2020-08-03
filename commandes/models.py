@@ -42,6 +42,10 @@ class Package(models.Model):
 
 
 class Commandes(models.Model):
+    ETAT_NON_ACCEPTE = 0
+
+    ETAT_ACCEPTE = 1
+
     ETAT_NON_PAYE = 1
     ETAT_PAYE = 2
     ETAT_EN_TRANSIT = 3
@@ -67,6 +71,8 @@ class Commandes(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True, verbose_name="Prix")
     commission = models.FloatField(null=True, blank=True, verbose_name="Commission")
     status = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_PAYE, verbose_name="Etat")
+    accepted = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_ACCEPTE, verbose_name="Accepté")
+
     package = models.ForeignKey(Package, verbose_name="Package d'envoi", on_delete=models.CASCADE)
     driver = models.ForeignKey(User, null=True, related_name='commandes_drivers', on_delete=models.CASCADE, verbose_name="Conducteur")
     agent = models.ForeignKey(User, null=True, related_name='commandes_agent', on_delete=models.CASCADE, verbose_name="Agent")
@@ -97,6 +103,16 @@ class Commandes(models.Model):
             libelle = "Livré"
         elif self.status == self.ETAT_EN_TRANSIT:
             libelle = "En transit"
+        else:
+            libelle = ""
+        return libelle
+
+    def getAcceptedLibelle(self):
+        if self.accepted == self.ETAT_NON_ACCEPTE:
+            libelle = "Non"
+
+        elif self.accepted == self.ETAT_ACCEPTE:
+            libelle = "Oui"
         else:
             libelle = ""
         return libelle

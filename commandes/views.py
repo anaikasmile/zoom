@@ -13,7 +13,7 @@ from django_tables2.views import SingleTableMixin
 from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations, Tranche, Package, Facture
 from agences.models import Agences, Societe
 from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm,TrancheForm, PackageForm
-from .tables import CommandeTable, CommandeClientTable
+from .tables import CommandeTable, CommandeClientTable, CommandeDriverTable
 
 from .filters import CommandesFilter
 import random
@@ -83,13 +83,24 @@ class ColisCreateView(CreateView):
 #Commande du client
 @login_required
 def mes_commandes(request):
-    table = CommandeClientTable(Commandes.objects.filter(colis__client=request.user))
-    table.paginate(page=request.GET.get("page", 1), per_page=2)
+    #Mes commandes en attente
+    table = CommandeClientTable(Commandes.objects.filter(colis__client=request.user,status=Commandes.ETAT_PAYE))
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
+    #Commande livrés
+    table2 = CommandeDriverTable(Commandes.objects.filter(colis__client=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE)))
+    table2.paginate(page=request.GET.get("page", 1), per_page=25)
+
+    #Commande En cours
+    table3 = CommandeDriverTable(Commandes.objects.filter(colis__client=request.user).filter(Q(status=Commandes.ETAT_EN_TRANSIT) | Q(status=Commandes.ETAT_EN_AGENCE)))
+    table3.paginate(page=request.GET.get("page", 1), per_page=25)
+ 
     queryset = Commandes.objects.select_related().all()
     f = CommandesFilter(request.GET, queryset=queryset)
 
     context = {
         'table': table,
+        'table2': table2,
+        'table3': table3
     }
     return render(request, "commandes/mes_commandes.html", context)
 
@@ -103,6 +114,7 @@ def mes_commandes_detail(request,commande_ref):
 
     context = {
         'commande': commande,
+
     }
     return render(request, "commandes/mes_commandes_detail.html", context)
 
@@ -110,13 +122,30 @@ def mes_commandes_detail(request,commande_ref):
 def detail_commande(request):
     return
 
-#Liste des commandes disponibles
+#Vue commande du chauffeur
 def avalaible_orders(request):
-    commandes = Commandes.objects.filter(driver__isnull=True, status=Commandes.ETAT_PAYE)
+
+    #Commande disponible
+    table = CommandeDriverTable(Commandes.objects.filter(driver__isnull=True, status=Commandes.ETAT_PAYE))
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
+
+    #Commande livrés
+    table2 = CommandeDriverTable(Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE)))
+    table2.paginate(page=request.GET.get("page", 1), per_page=25)
+
+    #Commande En cours
+    table3 = CommandeDriverTable(Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_EN_TRANSIT) | Q(status=Commandes.ETAT_EN_AGENCE)))
+    table3.paginate(page=request.GET.get("page", 1), per_page=25)
+
+
+    queryset = Commandes.objects.select_related().all()
+    f = CommandesFilter(request.GET, queryset=queryset)
     context = {
-        'commandes': commandes
+        'table': table,
+        'table2': table2,
+        'table3': table3
     }
-    return render(request, "commandes/commandes_disponibles.html", context)
+    return render(request, "commandes/commandes_drivers.html", context)
 
 def delivery_orders_by_driver(request):
     commandes = Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE))
@@ -180,9 +209,16 @@ def historique_commande_admin(request,commande_id):
 #Chauffeur: Choisir une commande
 @login_required
 def assign_order_to_me(request):
-    cmd_id = request.GET.get('id')
-    commande = get_object_or_404(Commandes, id=cmd_id)
-    commande.driver = request.user
+    cmd_num = request.GET.get('id')
+    commande = get_object_or_404(Commandes, numero_commande=cmd_num)
+    if commande.accepted == Commandes.ETAT_NON_ACCEPTE:
+        commande.accepted = Commandes.ETAT_ACCEPTE
+        commande.driver = request.user
+
+    else:
+        commande.accepted = Commandes.ETAT_NON_ACCEPTE
+        commande.driver = None
+
     commande.save()
     data = {
         'statut': 'success',
@@ -293,14 +329,20 @@ def commandes_liste(request):
 @login_required
 def commande_view(request,commande_id):
     commande = get_object_or_404(Commandes, id=commande_id)
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
-
     context = {
         'commande': commande
         }    
     return render(request, "commandes/commande_view.html", context)
+
+
+@login_required
+def commande_view_driver(request,commande_ref):
+    commande = get_object_or_404(Commandes, numero_commande=commande_ref)
+    context = {
+        'commande': commande
+        }    
+    return render(request, "commandes/detail.html", context)
+
 
 @login_required
 def list_reclamation(request):
