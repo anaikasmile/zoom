@@ -3,7 +3,7 @@
           <i class="fas fa-ellipsis-v"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-          <a class="dropdown-item openModal" data-toggle="modal" data-target="#updateEtat{{ record.id }}" data-id={{ record.id }}>Changer l'état</a>
+          <a class="dropdown-item openModal" data-toggle="modal" data-target="#updateEtat{{ record.id }}" data-cmd="{{record.numero_commande}}" data-id={{ record.id }}>Changer l'état</a>
           <a class="dropdown-item" href="{% url 'commandes:commande_view' record.id %}">Détails</a>
 
         </div>

@@ -1,6 +1,6 @@
 import django_tables2 as tables
 from django_tables2 import TemplateColumn
-from .models import User
+from .models import User, Person
 
 
 class UserTable(tables.Table):
@@ -23,4 +23,25 @@ class UserTable(tables.Table):
         	}
     	}
 
-   
+
+class ClientTable(tables.Table):
+    nom  = tables.Column(accessor="person.user.last_name")
+    prenom  = tables.Column(accessor="person.user.first_name")
+    birth_date = tables.DateTimeColumn(format ='d/m/Y')
+
+
+    actions  = TemplateColumn(template_name="utilisateurs/includes/users_actions.html", attrs={"td": {"class": "text-right"}})
+    class Meta:
+        model = Person
+        sequence = ('id', 'nom', 'prenom','sexe', 'tel','birth_date','job','actions')
+
+        template_name = "django_tables2/bootstrap.html"
+        attrs = {
+            "th" : {
+                "_ordering": {
+                    "orderable": "sortable", # Instead of `orderable`
+                    "ascending": "ascend",   # Instead of `asc`
+                    "descending": "descend"  # Instead of `desc`
+                }
+            }
+        }

@@ -6,6 +6,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import random
 import string
+from datetime import datetime
+
+
 
 # Create your models here.
 class Colis(models.Model):
@@ -84,6 +87,8 @@ class Commandes(models.Model):
         return ''.join(random.choice(string.ascii_lowercase + string.digits, k=20))
 
     def save(self, *args, **kwargs):
+        amount = getTrancheData(self.colis)
+        self.price = amount
         self.numero_commande = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
         super().save(*args, **kwargs)
     def __str__(self):
@@ -118,18 +123,19 @@ class Commandes(models.Model):
         return libelle
 
     def getTrancheData(colis):
-        tranches = Tranche.objects.all()
-        data = {
-            "amount": 0,
-            "commission": 0
-        }
-        for t in tranches:
-            minimum = colis.weight
-            if colis.weight >= t.min_weight and colis.weight  <= t.max_weight:
-                data = {
-                   "amount": t.price,
-                   "commission":  t.commission
-                }
+        #tranches = Tranche.objects.all()
+        data = 0.00
+        # data = {
+        #     "amount": 0.00,
+        #     "commission": 0.00
+        # }
+        # for t in tranches:
+        #     minimum = colis.weight
+        #     if colis.weight >= t.min_weight and colis.weight  <= t.max_weight:
+        #         data = {
+        #            "amount": t.price,
+        #            "commission":  t.commission
+        #         }
         return data
 
 
@@ -147,7 +153,9 @@ class Facture(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        self.reference = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
+        now = datetime.now()
+
+        self.reference = now.strftime("%d%m%Y")+'_'+''.join(random.choice(string.ascii_uppercase) for _ in range(5))
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -201,8 +209,8 @@ class Reclamations(models.Model):
 
     )
     commande = models.ForeignKey(Commandes, related_name='commandeIncident', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True,verbose_name="Créé le")
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True,verbose_name="Mis à jour le")
     type = models.CharField(max_length=50, choices=TYPES, null=True, blank=True, verbose_name='Type d incident')
     observation = models.TextField(blank=True, verbose_name='Observations')
     image = models.ImageField(blank=True, null=True, upload_to="reclamations")
@@ -221,7 +229,7 @@ class ReclamationsHandler(models.Model):
     agent = models.ForeignKey(User,related_name='userReclamations', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    type = models.CharField(max_length=50, choices=TYPES, null=True, blank=True, verbose_name='Type d incident')
+    type = models.CharField(max_length=50, choices=TYPES, null=True, blank=True, verbose_name='Action faite')
     commentaire = models.TextField(blank=True, verbose_name='Commentaire')
 
 

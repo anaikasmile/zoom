@@ -13,7 +13,7 @@ from django_tables2.views import SingleTableMixin
 from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations, Tranche, Package, Facture
 from agences.models import Agences, Societe
 from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm,TrancheForm, PackageForm
-from .tables import CommandeTable, CommandeClientTable, CommandeDriverTable
+from .tables import CommandeTable, CommandeClientTable, CommandeDriverTable, ReclamationTable
 
 from .filters import CommandesFilter
 import random
@@ -65,10 +65,16 @@ class ColisCreateView(CreateView):
         self.object = form.save(commit=False)
         
         self.object.client = self.request.user
-        self.object.save()
-        if commande.is_valid():
+        if  commande.is_valid():
+            self.object.save()
+
             commande.instance = self.object
             commande.save()
+
+            messages.success(self.request, 'Commande enregistrée')
+
+        else:
+            messages.success(self.request, 'Certaines données sont invalides')
 
             #reference = random_string_generator()
             # qs_exists = Commandes.objects.filter(numero_commande=reference).exists()
@@ -76,7 +82,7 @@ class ColisCreateView(CreateView):
             #     reference = random_string_generator()
         return super().form_valid(form)
     def get_success_url(self):
-        messages.success(self.request, 'Commande enregistrée')
+
         return reverse("commandes:create_commande")
 
 
@@ -226,12 +232,22 @@ def assign_order_to_me(request):
     }
     return JsonResponse(data)
 
+
+@login_required
+def commande_view_driver(request,commande_ref):
+    commande = get_object_or_404(Commandes, numero_commande=commande_ref)
+    context = {
+        'commande': commande
+        }    
+    return render(request, "commandes/detail.html", context)
+
+
 # def mes_commissions(request):
     
 #     return render ''
 
 
-#Reclamations
+#Enregistrer une Reclamations
 @login_required
 def add_reclamation(request):
     reclamations = Reclamations.objects.filter(commande__colis__client=request.user)
@@ -256,7 +272,8 @@ def add_reclamation(request):
         'form': form,
         'reclamations': reclamations
     })
-#Traitement reclamation
+
+#Traitement d'une reclamation
 @login_required
 def add_handler_reclamation(request, commande_id):
     if request.method == "POST":
@@ -308,7 +325,7 @@ class FilteredCommandesListView(SingleTableMixin, FilterView):
 
 def commandes_liste(request):
     table = CommandeTable(Commandes.objects.filter().order_by('date_depot'))
-    table.paginate(page=request.GET.get("page", 1), per_page=2)
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
     queryset = Commandes.objects.select_related().all()
     f = CommandesFilter(request.GET, queryset=queryset)
 
@@ -335,24 +352,16 @@ def commande_view(request,commande_id):
     return render(request, "commandes/commande_view.html", context)
 
 
-@login_required
-def commande_view_driver(request,commande_ref):
-    commande = get_object_or_404(Commandes, numero_commande=commande_ref)
-    context = {
-        'commande': commande
-        }    
-    return render(request, "commandes/detail.html", context)
 
 
 @login_required
 def list_reclamation(request):
-    reclamations = Reclamations.objects.all()
-   
+    table = ReclamationTable(Reclamations.objects.all())
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
     context = {
-            "reclamations": reclamations
+            "table": table
     }
     return render (request, "commandes/liste_reclamations.html", context)
-
 
 
 
@@ -360,9 +369,9 @@ def list_reclamation(request):
 @login_required
 def package_create(request):
     packages = Package.objects.filter().order_by('created_at')
-    # paginator = Paginator(agences, 25)  # Show 25  per page
-    # page = request.GET.get('page')
-    # agences = paginator.get_page(page)
+    paginator = Paginator(packages, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    packages = paginator.get_page(page)
     if request.method == "POST":
         form = PackageForm()
 
@@ -489,14 +498,15 @@ class GeneratePdf(View):
 
 def generate(request, commande_ref):
     commande = get_object_or_404(Commandes, numero_commande=commande_ref)
-    facture = Facture.objects.get(commande = commande)
-    if facture == None:
+    try:
+        facture = Facture.objects.get(commande = commande)
+    except Facture.DoesNotExist:
         facture = Facture.objects.create(commande=commande, status="Payé")
 
     societe = get_object_or_404(Societe, id=1)
 
     filename = 'facture_'+commande_ref+'.pdf'
-    html_string = render_to_string('commandes/facture.html', {'facture': facture})
+    html_string = render_to_string('commandes/facture.html', {'facture': facture, 'societe':societe})
     
     html = HTML(string=html_string)
     html.write_pdf(target='/tmp/'+filename);

@@ -20,7 +20,7 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from .models import Person
-from .tables import UserTable
+from .tables import UserTable, ClientTable
 from .filters import UserFilter
 # Create your views here.
 

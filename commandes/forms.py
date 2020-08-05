@@ -46,7 +46,7 @@ class CommandesForm(forms.ModelForm):
             'date_depot': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date','placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'date_reception': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date', 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'package': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
-            'weight': forms.NumberInput(attrs={'required': False, 'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+            'weight': forms.NumberInput(attrs={'required': True, 'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'observation': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'price': forms.NumberInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'status': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
@@ -112,6 +112,10 @@ class ReclamationHandlerForm(forms.ModelForm):
             'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'commentaire': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
         }
+
+    def __init__(self, numero_commande, *args, **kwargs):
+        super(ReclamationForm, self).__init__(*args, **kwargs)
+        self.fields['reclamation'].queryset = ReclamationsHandler.objects.get(commande_numero_commande=numero_commande)
 
 
 class PackageForm(forms.ModelForm):

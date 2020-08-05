@@ -23,7 +23,7 @@
                 <div class="card-header">
                   <div class="row align-items-center">
                     <div class="col-8">
-                      <h3 class="mb-0">Ajouter </h3>
+                      <h3 class="mb-0">Formulaire </h3>
                     </div>
                   </div>
                 </div>
@@ -49,7 +49,7 @@
                         </div>
                      </div>
 
-                    <button type="submit" class="btn btn-primary mt-4">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary mt-4">{% if "/update" in request.path %}  Modifier {% else %} Enregistrer {% endif %}</button>
                  </form>
               </div>
           </div>

@@ -57,7 +57,7 @@
                         </div>
                      </div>
 
-                    <button type="submit" class="btn btn-primary mt-4">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary mt-4">{% if "/update" in request.path %}  Modifier {% else %} Enregistrer {% endif %}</button>
                  </form>
               </div>
           </div>

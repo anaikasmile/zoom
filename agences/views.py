@@ -74,6 +74,9 @@ def agence_delete(request, agence_id):
 #Vehicules
 def vehicule_create(request):
     vehicules = Vehicules.objects.filter().order_by('-created_at')
+    paginator = Paginator(vehicules, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    vehicules = paginator.get_page(page)
     if request.method == "POST":
         form = VehiculesForm(request.POST)
         if form.is_valid():
@@ -96,9 +99,9 @@ def vehicule_create(request):
 def vehicule_update(request, vehicule_id):
     vehicule = Vehicules.objects.get(id=vehicule_id)
     vehicules = Vehicules.objects.filter().order_by('-created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(vehicules, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    vehicules = paginator.get_page(page)
     if request.method == "POST":
         form = VehiculesForm(request.POST, request.FILES, instance=vehicule)
         if form.is_valid():
@@ -138,6 +141,10 @@ def vehicule_delete(request, vehicule_id):
 
 def type_vehicule_create(request):
     type_vehicules = TypeVehicules.objects.filter().order_by('-created_at')
+    type_vehicules = TypeVehicules.objects.filter().order_by('-created_at')
+    paginator = Paginator(type_vehicules, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    type_vehicules = paginator.get_page(page)
     if request.method == "POST":
         form = TypeVehiculeForm(request.POST)
         if form.is_valid():
@@ -158,9 +165,9 @@ def type_vehicule_create(request):
 def type_vehicule_update(request, type_vehicule_id):
     type_vehicule = TypeVehicules.objects.get(id=type_vehicule_id)
     type_vehicules = TypeVehicules.objects.filter().order_by('-created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(type_vehicules, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    type_vehicules = paginator.get_page(page)
     if request.method == "POST":
         form = TypeVehiculeForm(request.POST, request.FILES, instance=type_vehicule)
         if form.is_valid():

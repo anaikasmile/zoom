@@ -307,3 +307,66 @@
                                   </div>
                                 </td>
                               </tr>
+
+
+
+
+
+<table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="">#</th>
+                    <th scope="col" class="sort" data-sort="">N° Commande</th>
+                    <th scope="col" class="sort" data-sort="">Type</th>
+                    <th scope="col" class="sort" data-sort="">Observation</th>
+
+                    <th scope="col" class="sort" data-sort="">Image</th>
+                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
+
+                    <th scope="col" class="sort" data-sort="">Etat</th>
+
+
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                {% for r in reclamations %}
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>
+                        {{r.commande.numero_commande}}
+                    </td>
+                    <td class="budget">
+                        {{ r.type}}
+                    </td>
+                    <td>
+                      {{r.observation}}
+                       
+                    </td>
+                    <td class="budget">
+                        <img src="" />
+                    </td>
+                    <td class="budget">
+                       {{ r.created_at|date:'F j, Y'}}
+                    </td>
+
+                   
+                    <td>
+                        {% if r.reclamationHandler.all %}
+                         {% for hr in  r.reclamationHandler.all %} 
+                            {{ hr.type}} | {{hr.updated_at|date:'j/m/Y à h:i'}}<br>
+                            {{ hr.commentaire}}  Traité par : <b>{{hr.agent}}</b>
+                          {% endfor %}
+                      {% endif %}
+                    </td>
+                     
+                    
+                    <td class="">
+                        <a href="" class="btn btn-info"><i class="fa fa-eye" title="Détail traitement"></i></a>
+                        <a href="" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
+
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>

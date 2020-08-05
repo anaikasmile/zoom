@@ -4,16 +4,16 @@
   <head>
     <meta charset="utf-8">
     <link href="{% static 'assets/css/invoice.css' %}" media="print" rel="stylesheet">
+    <link href="{% static 'assets/css/font-family.css' %}" rel="stylesheet" />
+
     <title>Facture</title>
-    <meta name="description" content="Invoice">
-    <meta name="author" content="Kozea">
+    <meta name="description" content="Facture">
     <style type="text/css">@charset "UTF-8";
-        @import url("https://fonts.googleapis.com/css?family=Pacifico|Source+Sans+Pro:400,700");
         @page {
           margin: 3cm;
           @bottom-left {
             color: #1ee494;
-            font-family: Pacifico;
+            font-family: Open Sans, sans-serif;
             content: ' '; }
           @bottom-right {
             color: #a9a;
@@ -23,15 +23,15 @@
 
         html {
           color: #14213d;
-          font-family: Source Sans Pro;
+          font-family: Open Sans, sans-serif;
           font-size: 11pt;
           line-height: 1.6; }
           html body {
             margin: 0; }
           html h1 {
             color: #1ee494;
-            font-family: Pacifico;
-            font-size: 40pt;
+            font-family: Open Sans, sans-serif;
+            font-size: 18pt;
             margin: 0; }
           html aside {
             display: flex;
@@ -45,7 +45,6 @@
               html aside address#to {
                 text-align: right; }
           html dl {
-            text-align: right;
             position: absolute;
             right: 0;
             top: 0; }
@@ -58,14 +57,14 @@
                 content: '';
                 display: block; }
               html dl dt::after {
-                content: ':'; }
+                content: ''; }
           html table {
             border-collapse: collapse;
             width: 100%; }
             html table th {
               border-bottom: .2mm solid #a9a;
               color: #a9a;
-              font-size: 10pt;
+              font-size: 12pt;
               font-weight: 400;
               padding-bottom: .25cm;
               text-transform: uppercase; }
@@ -96,7 +95,7 @@
   </head>
 
   <body>
-    <h1>La Générale des transports</h1>
+    <h1>LOGO</h1>
 
     <aside>
       <address id="from">
@@ -109,15 +108,15 @@
 
       <address id="to">
         <h3>CLIENT</h3>
-         {{commande.colis.client}}
-        {{commande.colis.client.person.tel}}
-        {{ commande.colis.client.email}}
+            {{ facture.commande.colis.client}}
+            Tél: {{ facture.commande.colis.client.person.tel}}
+            {{ facture.commande.colis.client.email}}
       </address>
     </aside>
 
     <dl id="informations">
-      <dt>Réf. Facture: {{ facture.reference }} </dt>
-      <dt>Date: {{facture.created_at|date:'j/m/Y' }}</dt>
+      <dt>Réf. Facture: <b>{{ facture.reference }}</b> </dt>
+      <dt>Date: <b>{{facture.created_at|date:'j/m/Y' }}</b></dt>
     </dl>
 
     <table>
@@ -128,19 +127,51 @@
       </thead>
       <tbody>
         <tr>
-          <td>N° Commande: {{commande.numero_commande|upper}}<br>
-              Poids: {{commande.colis.weight}}kg Taille: {{commande.colis.size}} <br>
-              Package: {{commande.package}}<br>
-              Destination: {{commande.city_depart}} - {{commande.city_arrive}}
+          <td>N° Commande: <b>{{facture.commande.numero_commande|upper}}</b><br>
+              Poids: <b>{{facture.commande.colis.weight}} kg</b> <br>Taille: <b>{{facture.commande.colis.size}}</b> <br>
+              Package: <b>{{facture.commande.package}}</b><br>
+              Destination: <b>{{facture.commande.city_depart}} - {{facture.commande.city_arrive}}</b>
           </td>
-          <td> {% if commande.price %}{{ commande.price }} {% endif %} CFA</td>
-          <td> {% if commande.price %}{{ commande.price }} {% endif %} CFA</td>
+          <td> {% if facture.commande.price %} <b>{{ facture.commande.price }} {% endif %} CFA</b></td>
+          <td> {% if facture.commande.price %} <b>{{ facture.commande.price }} {% endif %} CFA</b></td>
         </tr>
         
       </tbody>
     </table>
 
-
+    <table>
+          <thead>
+            <th></th>
+            <th></th>
+            <th></th>
+          </thead>
+           <thead>
+            <th></th>
+            <th></th>
+            <th>Total</th>
+          </thead>
+          <tbody>
+             <tr>
+              <td>
+              </td>
+              <td>Total Hors Taxe</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+              <td>TVA % </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+              </td>
+              <td>TTC % </td>
+              <td></td>
+            </tr>
+            
+          </tbody>
+    </table>
    
   </body>
 </html>

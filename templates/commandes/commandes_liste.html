@@ -48,6 +48,8 @@
 {
    $(document).on('click','.openModal', function () {
       var cmdId = $(this).data('id');
+       $('.number').text($(this).data('cmd'));
+
       $(".modal-body #cmdId").val( cmdId );
       $('#btn-step1').attr('data-cmd',$(this).data('id'));
       $('#btn-step2').attr('data-cmd',$(this).data('id'));
