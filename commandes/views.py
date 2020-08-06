@@ -12,7 +12,7 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations, Tranche, Package, Facture
 from agences.models import Agences, Societe
-from .forms import CommandesForm, InsuranceForm, ColisForm, CommandesFormset, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm,TrancheForm, PackageForm
+from .forms import CommandesForm, CommandesSetForm, InsuranceForm, ColisForm, CommandesFormSet, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm,TrancheForm, PackageForm
 from .tables import CommandeTable, CommandeClientTable, CommandeDriverTable, ReclamationTable
 
 from .filters import CommandesFilter
@@ -47,43 +47,83 @@ def home(request):
     #     return Question.objects.order_by('-pub_date')[:5]
 
 
-class ColisCreateView(CreateView):
-    form_class = ColisForm
-    template_name = 'commandes/create.html'
-    def get_context_data(self, **kwargs):
-        # we need to overwrite get_context_data
-        # to make sure that our formset is rendered
-        data = super().get_context_data(**kwargs)
-        if self.request.POST:
-            data["commande"] = CommandesFormset(self.request.POST)
-        else:
-            data["commande"] = CommandesFormset()
-        return data
-    def form_valid(self, form):
-        context = self.get_context_data()
-        commande = context["commande"]
-        self.object = form.save(commit=False)
+def commande_create(request):
+    
+    form_class = ColisForm()
+    commande_formset = CommandesSetForm()
+
+    #commande_formset = CommandesFormSet()
+    if request.method == 'POST':
+        form_class = ColisForm(request.POST, request.FILES)
+        if form_class.is_valid():
+            colis = form_class.save(commit=False)
+            colis.client = request.user
+            commande_formset = CommandesSetForm(request.POST, request.FILES)
+            if commande_formset.is_valid():
+                colis.save()
+
+                 
+
+                messages.success(request, "Votre commande a été enregistré")
+
+                new_colis = get_object_or_404(Colis, id=colis.id)
+                data = getTrancheData(new_colis)
+
+                commande = commande_formset.save(commit=False)
+                commande.colis = new_colis
+                commande.price = data["amount"]
+                commande.amount = data["commission"]
+                commande.save()
+
+                return redirect('commandes:create_commande')
+
+    else:
+        form_class = ColisForm()
+
+        commande_formset = CommandesSetForm()
+
+    context = {
+        'form_class': form_class,
+        'commande_formset': commande_formset
+    }
+
+    return render(request, 'commandes/create.html', context=context)
+    #template_name = 'commandes/create.html'
+    # def get_context_data(self, **kwargs):
+    #     # we need to overwrite get_context_data
+    #     # to make sure that our formset is rendered
+    #     data = super().get_context_data(**kwargs)
+    #     if self.request.POST:
+    #         data["commande"] = CommandesFormset(self.request.POST)
+    #     else:
+    #         data["commande"] = CommandesFormset()
+    #     return data
+    # def form_valid(self, form):
+    #     context = self.get_context_data()
+    #     commande = context["commande"]
+    #     self.object = form.save(commit=False)
         
-        self.object.client = self.request.user
-        if  commande.is_valid():
-            self.object.save()
+    #     self.object.client = self.request.user
+    #     self.object.save()
 
-            commande.instance = self.object
-            commande.save()
+    #     if  commande.is_valid():
 
-            messages.success(self.request, 'Commande enregistrée')
+    #         commande.instance = self.object
+    #         commande.save()
 
-        else:
-            messages.success(self.request, 'Certaines données sont invalides')
+    #         messages.success(self.request, 'Commande enregistrée')
 
-            #reference = random_string_generator()
-            # qs_exists = Commandes.objects.filter(numero_commande=reference).exists()
-            # if qs_exists:
-            #     reference = random_string_generator()
-        return super().form_valid(form)
-    def get_success_url(self):
+    #     else:
+    #         messages.error(self.request, 'Certaines données sont invalides')
 
-        return reverse("commandes:create_commande")
+    #         #reference = random_string_generator()
+    #         # qs_exists = Commandes.objects.filter(numero_commande=reference).exists()
+    #         # if qs_exists:
+    #         #     reference = random_string_generator()
+    #     return super().form_valid(form)
+    # def get_success_url(self):
+
+    #     return reverse("commandes:create_commande")
 
 
 #Commande du client
@@ -317,7 +357,7 @@ class FilteredCommandesListView(SingleTableMixin, FilterView):
 
     template_name = 'commandes/commandes_liste.html'
     paginate_by = 2
-    ordering = ['date_depot']
+    ordering = ['created_at']
 
     filterset_class = CommandesFilter
 
@@ -529,6 +569,7 @@ def getTrancheData(colis):
     for t in tranches:
         minimum = colis.weight
         if colis.weight >= t.min_weight and colis.weight  <= t.max_weight:
+            t.commission = (t.commission * t.price) 
             data = {
                 "amount": t.price,
                 "commission":  t.commission

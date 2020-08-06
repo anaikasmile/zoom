@@ -7,9 +7,9 @@
 
 
     <form method="post" autocomplete="off">
-    {% csrf_token %}
+        {% csrf_token %}
         {{ form.errors }}
-        {{ commande.management_form }}
+        {{ colis.management_form }}
         <div class="row">
             <div class="col-xl-4 order-xl-2">
                 <div class="card card-profile">
@@ -18,14 +18,14 @@
                           <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Ville départ *</label>
-                                    {{ commande.0.city_depart }}
+                                    {{ commande_formset.city_depart }}
 
                                 </div>
                           </div>
                           <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="bmd-label-floating">Ville d'arrivée  *</label>
-                                    {{ commande.0.city_arrive }}
+                                    {{ commande_formset.city_arrive }}
                                 </div>
                           </div>
                      </div>
@@ -34,13 +34,13 @@
                           <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Date de dépôt *</label>
-                                    {{ commande.0.date_depot }}
+                                    {{ commande_formset.date_depot }}
                                 </div>
                           </div>
                           <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="bmd-label-floating">Date de réception *</label>
-                                    {{ commande.0.date_reception }}
+                                    {{ commande_formset.date_reception }}
                                 </div>
                           </div>
                      </div>
@@ -60,13 +60,13 @@
                               <div class="col-md-6">
                                     <div class="form-group">
                                       <label class="bmd-label-floating">Nature *</label>
-                                        {{ form.nature }}
+                                        {{ form_class.nature }}
                                     </div>
                               </div>
                               <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="bmd-label-floating">Poids (en kg) *</label>
-                                        {{ form.weight }}
+                                        {{ form_class.weight }}
                                     </div>
                               </div>
                         </div>
@@ -75,7 +75,7 @@
                                     <div class="form-group">
                                       <label class="bmd-label-floating">Photo </label>
                                         <div class="custom-file">
-                                            {{ form.image }}
+                                            {{ form_class.image }}
                                             <label class="custom-file-label" for="customFileLang">Sélectionner un fichier</label>
                                         </div>
                                          
@@ -84,7 +84,7 @@
                               <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="bmd-label-floating">Taille</label>
-                                        {{ form.size }}
+                                        {{ form_class.size }}
                                     </div>
                               </div>
                         </div>
@@ -92,14 +92,14 @@
                               <div class="col-md-6">
                                     <div class="form-group">
                                       <label class="bmd-label-floating">Assurance</label>
-                                        {{ commande.0.insurance }}
+                                        {{ commande_formset.insurance }}
                                     </div>
                               </div>
                               <div class="col-md-6">
                                     <div class="form-group">
 
                                         <label class="bmd-label-floating">Modèle d'envoi *</label>
-                                        {{ commande.0.package }}
+                                        {{ commande_formset.package }}
                                     </div>
                               </div>
                         </div>
@@ -108,7 +108,7 @@
                               <div class="col-md-12">
                                     <div class="form-group">
                                       <label class="bmd-label-floating">Plus de détails</label>
-                                        {{ form.description }}
+                                        {{ form_class.description }}
                                     </div>
                               </div>
 

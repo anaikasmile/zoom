@@ -53,13 +53,27 @@ class CommandesForm(forms.ModelForm):
 
         }
 
-CommandesFormset = inlineformset_factory(
-    Colis, Commandes,
-    fields=('city_depart', 'city_arrive', 'date_depot', 'date_reception', 'package', 
-                   'insurance'),
+class CommandesSetForm(forms.ModelForm):
+    class Meta:
+        model = Commandes
+        fields = ('city_depart', 'city_arrive', 'date_depot', 'date_reception', 'price', 'package',
+                   'insurance', 'observation')
+        widgets = {
+            'insurance': forms.Select(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'city_arrive': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'city_depart': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'date_depot': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date','placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'date_reception': forms.DateInput(format='%d/%m/%Y', attrs={'type': 'date', 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'package': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'weight': forms.NumberInput(attrs={'required': True, 'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+            'observation': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+
+        }
+
+CommandesFormSet = inlineformset_factory(
+    Colis, Commandes, fk_name='colis',
+    fields=('city_depart', 'city_arrive', 'date_depot', 'date_reception', 'package', 'insurance'),
     widgets = {
-            'numero_commande': forms.TextInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
-           # 'colis': forms.Select(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'insurance': forms.Select(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'city_arrive': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'city_depart': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
@@ -71,8 +85,10 @@ CommandesFormset = inlineformset_factory(
             #'price': forms.NumberInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             #'status': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
 
-        }
+        },can_delete = False, extra=1
     )
+
+
 
 class Step1Form(forms.Form):
     ETAT_CMD = (

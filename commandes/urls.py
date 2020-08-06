@@ -21,7 +21,7 @@ urlpatterns = [
     #frontend
     path('', views.home, name='home'),
 
-    path('commandes/creer', views.ColisCreateView.as_view(), name='create_commande'),
+    path('commandes/creer', views.commande_create, name='create_commande'),
     path('commandes/', views.mes_commandes, name='mes_commandes'),
     path('commandes/<commande_ref>/', views.mes_commandes_detail, name='mes_commandes_detail'),
     path('commandes/detail/<commande_ref>/', views.commande_view_driver, name='commande_detail_driver'),

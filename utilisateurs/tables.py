@@ -6,12 +6,14 @@ from .models import User, Person
 class UserTable(tables.Table):
     sexe  = tables.Column(accessor="user.person_sexe")
     tel  = tables.Column(accessor="user.person_tel")
+    email  = tables.Column(accessor="user.email")
 
 
     actions  = TemplateColumn(template_name="utilisateurs/includes/users_actions.html", attrs={"td": {"class": "text-right"}})
     class Meta:
         model = User
-        exclude = {'password', 'last_login', 'is_staff', 'is_superuser', 'is_active'}
+        sequence = ('id', 'last_name','first_name', 'sexe', 'email','tel','username')
+        exclude = {'password', 'last_login', 'is_staff', 'is_superuser', 'is_active','user_type'}
         template_name = "django_tables2/bootstrap.html"
        	attrs = {
 	        "th" : {

@@ -72,7 +72,7 @@ class Commandes(models.Model):
     date_reception = models.DateField(null=True, blank=True, verbose_name="Date de réception")
     observation = models.TextField(null=True, blank=True, verbose_name="Remarques")
     price = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True, verbose_name="Prix")
-    commission = models.FloatField(null=True, blank=True, verbose_name="Commission")
+    commission = models.DecimalField(null=True, blank=True, verbose_name="Commission")
     status = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_PAYE, verbose_name="Etat")
     accepted = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_ACCEPTE, verbose_name="Accepté")
 
@@ -87,10 +87,9 @@ class Commandes(models.Model):
         return ''.join(random.choice(string.ascii_lowercase + string.digits, k=20))
 
     def save(self, *args, **kwargs):
-        amount = getTrancheData(self.colis)
-        self.price = amount
         self.numero_commande = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
         super().save(*args, **kwargs)
+
     def __str__(self):
         return self.numero_commande
 

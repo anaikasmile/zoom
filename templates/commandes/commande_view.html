@@ -52,14 +52,14 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                          Date départ : <label class="form-control-label" for="input-first-name"> {{ commande.date_depot|date:'j/M/Y' }}</label> 
+                          Date départ : <label class="form-control-label" for="input-first-name"> {{ commande.date_depot|date:'j/m/Y' }}</label> 
                           
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group">
                           Date arrivée :
-                          <label class="form-control-label" for="input-last-name">{{ commande.date_reception|date:'j/M/Y' }}</label>
+                          <label class="form-control-label" for="input-last-name">{{ commande.date_reception|date:'j/m/Y' }}</label>
                           
                         </div>
                       </div>
@@ -187,19 +187,19 @@
                       <div class="row">
                         <div class="col-lg-6">
                           <div class="form-group">
-                            Nature : <label class="form-control-label" for="input-first-name">{{commande.colis.nature}} </label>
-                            
-                          </div>
-                         </div>
-                        <div class="col-lg-6">
-                          <div class="form-group">
-                            Image :
                             {% if commande.colis.image %}
-                            <img src="{{commande.colis.image.url}}" />
+                            <img src="{{commande.colis.image.url}}" class="img-thumbnail" />
                             {% endif %}
                             
                           </div>
                         </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            Nature : <label class="form-control-label" for="input-first-name">{{commande.colis.nature}} </label>
+                            
+                          </div>
+                         </div>
+                        
                       </div>
 
 
