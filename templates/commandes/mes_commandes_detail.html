@@ -19,72 +19,102 @@
                 <div class="col-8">
                   <div class="row">
                     <div class="col-4">
-                        {% if commande.colis.image %}
-                        <img src="{{commande.colis.image.url}}"  class="img-responsive" width="50%" />
-                        {% endif %}
+                      <br>
+                         {% if commande.colis.image %}
+                            <img src="{{commande.colis.image.url}}" class="" style="width: 228px; height: 250px;" />
+                            {% else %}
+                            <img src="{% static 'assets/img/brand/default.png' %}">
+                            {% endif %}
                     </div>
-                    <div class="col-8">
+                    <div class="col-lg-8">
                       <h6 class="heading-small text-muted mb-4">Commande Infos</h6>
                                           <hr class="my-4" />
+                        <div class="row">
+                          <div class="col-md-6">
+                              N° Commande: <b>{{commande.numero_commande|upper}}</b>
+                          </div>
+                          <div class="col-md-6">
+                              Prix: {% if commande.price %}<b> {{ commande.price }} F.CFA </b>{% endif %}
+                          </div>
+                        </div>
+<br>
+                         <div class="row">
+                          <div class="col-md-6">
+                             Package d'envoi: <b>{{ commande.package }}</b>
 
-                      <table class="table align-items-center table-flush">
-
-                          <tr>
-                            <td>N° Commande: <b>{{commande.numero_commande|upper}}</b></td>
-                            <td>Prix: {% if commande.price %}<b> {{ commande.price }} F.CFA </b>{% endif %}</td>
-                          </tr>
-
-                          <tr>
-                            <td>
-                              Modèle d'envoi: <b>{{ commande.package }}</b>
-                            </td>
-                            <td>
+                          </div>
+                          <div class="col-md-6">
                               Assurance: <b>{{ commande.insurance }}</b>
-                            </td>
-                          </tr>
+                          </div>
+                        </div>
+<br>
 
-                          <tr>
-                            <td>Ville départ: <b>{{commande.city_depart}} </b></td>
-                            <td>Ville d'arrivée: <b>{{commande.city_arrive}}</b></td>
-                          </tr>
-                          <tr>
-                            <td>Date dépot:  <b>{{ commande.date_depot|date:'j/m/Y' }}</b></td>
-                            <td>Date de livraison (souhaité):  <b>{{ commande.date_reception|date:'j/m/Y' }}</b></td>
-                          </tr>
+                        <div class="row">
+                          <div class="col-md-6">
+                             Ville départ: <b>{{commande.city_depart}} </b>
 
-                          
+                          </div>
+                          <div class="col-md-6">
+                              Ville d'arrivée: <b>{{commande.city_arrive}}</b>
+                          </div>
+                        </div>
+<br>
 
-                          <tr>
-                            <td>Etat: <b>{{ commande.getEtatLibelle }}</b></td>
-                            <td></td>
-                          </tr>
+                         <div class="row">
+                          <div class="col-md-6">
+                             Date de dépot:  <b>{{ commande.date_depot|date:'j/m/Y' }}</b>
 
-                        </table>
-                        <br>
+                          </div>
+                          <div class="col-md-6">
+                              Date de livraison (prévu):  <b>{{ commande.date_reception|date:'j/m/Y' }}</b>
+                          </div>
+                        </div>
+<br>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            Etat: <b>{{ commande.getEtatLibelle }}</b>
+                          </div>
+                         
+                        </div>
+
+                     
+                        <br><br>
+
                         <h6 class="heading-small text-muted mb-4">Colis détails</h6>
                           <hr class="my-4" />
 
-                        <table class="table align-items-center table-flush">
-                            <tr>
-                              <td>Nature du colis: <b>{{commande.colis.nature}}</b></td>
-                              <td>Poids: <b>{{commande.colis.weight}} kg</b></td>
-                            </tr>
-                            <tr>
-                              
-                              <td>Taille: <b> {{commande.colis.size}}</b></td>
-                              <td>{{commande.colis.description}} </td>
+                        <div class="row">
+                          <div class="col-md-6">
+                             Nature du colis: <b>{{commande.colis.nature}}</b>
 
-                            </tr>
+                          </div>
+                          <div class="col-md-6">
+                              Poids: <b>{{commande.colis.weight}} kg</b>
+                          </div>
+                        </div>
+<br>
 
-                            
-                        </table>
+                         <div class="row">
+                          <div class="col-md-6">
+                             Taille: <b> {{commande.colis.size}}</b>
+
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                              {{commande.colis.description}}</b>
+                          </div>
+                        </div>
+
+                        
                       </div>
                     </div>
                  
 
                 </div>
 
-                <div class="col-4" style="border-left: 1px solid #ddd;">
+                <div class="col-lg-4" style="border-left: 1px solid #ddd;">
    <!-- Suivi du colis -->
                    <h6 class="heading-small text-muted mb-4">Historique</h6>
                     <hr class="my-4" />

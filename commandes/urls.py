@@ -26,7 +26,7 @@ urlpatterns = [
     path('commandes/<commande_ref>/', views.mes_commandes_detail, name='mes_commandes_detail'),
     path('commandes/detail/<commande_ref>/', views.commande_view_driver, name='commande_detail_driver'),
 
-    path('commandes/disponibles', views.avalaible_orders, name='avalaible_orders'),
+    path('commandes/drivers', views.drivers_orders, name='drivers_orders'),
     path('commandes/delivres', views.delivery_orders_by_driver, name='unavalaible_orders'),
     path('commandes/historiques/<commande_ref>/', views.historique_commande, name='historique_commande'),
 

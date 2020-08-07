@@ -46,7 +46,7 @@ def home(request):
     #     """Return the last five published questions."""
     #     return Question.objects.order_by('-pub_date')[:5]
 
-
+@login_required
 def commande_create(request):
     
     form_class = ColisForm()
@@ -62,9 +62,6 @@ def commande_create(request):
             if commande_formset.is_valid():
                 colis.save()
 
-                 
-
-                messages.success(request, "Votre commande a été enregistré")
 
                 new_colis = get_object_or_404(Colis, id=colis.id)
                 data = getTrancheData(new_colis)
@@ -72,9 +69,9 @@ def commande_create(request):
                 commande = commande_formset.save(commit=False)
                 commande.colis = new_colis
                 commande.price = data["amount"]
-                commande.amount = data["commission"]
+                commande.commission = data["commission"]
                 commande.save()
-
+                messages.success(request, "Votre commande a été enregistrée")
                 return redirect('commandes:create_commande')
 
     else:
@@ -130,14 +127,14 @@ def commande_create(request):
 @login_required
 def mes_commandes(request):
     #Mes commandes en attente
-    table = CommandeClientTable(Commandes.objects.filter(colis__client=request.user,status=Commandes.ETAT_PAYE))
+    table = CommandeClientTable(Commandes.objects.filter(colis__client=request.user).filter(Q(status=Commandes.ETAT_NON_PAYE) | Q(status=Commandes.ETAT_PAYE)))
     table.paginate(page=request.GET.get("page", 1), per_page=25)
     #Commande livrés
-    table2 = CommandeDriverTable(Commandes.objects.filter(colis__client=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE)))
+    table2 = CommandeClientTable(Commandes.objects.filter(colis__client=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE)))
     table2.paginate(page=request.GET.get("page", 1), per_page=25)
 
     #Commande En cours
-    table3 = CommandeDriverTable(Commandes.objects.filter(colis__client=request.user).filter(Q(status=Commandes.ETAT_EN_TRANSIT) | Q(status=Commandes.ETAT_EN_AGENCE)))
+    table3 = CommandeClientTable(Commandes.objects.filter(colis__client=request.user).filter(Q(status=Commandes.ETAT_EN_TRANSIT) | Q(status=Commandes.ETAT_EN_AGENCE)))
     table3.paginate(page=request.GET.get("page", 1), per_page=25)
  
     queryset = Commandes.objects.select_related().all()
@@ -150,7 +147,7 @@ def mes_commandes(request):
     }
     return render(request, "commandes/mes_commandes.html", context)
 
-
+@login_required
 def mes_commandes_detail(request,commande_ref):
     commande = get_object_or_404(Commandes, numero_commande=commande_ref)
 
@@ -169,7 +166,8 @@ def detail_commande(request):
     return
 
 #Vue commande du chauffeur
-def avalaible_orders(request):
+@login_required
+def drivers_orders(request):
 
     #Commande disponible
     table = CommandeDriverTable(Commandes.objects.filter(driver__isnull=True, status=Commandes.ETAT_PAYE))
@@ -183,13 +181,18 @@ def avalaible_orders(request):
     table3 = CommandeDriverTable(Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_EN_TRANSIT) | Q(status=Commandes.ETAT_EN_AGENCE)))
     table3.paginate(page=request.GET.get("page", 1), per_page=25)
 
+ #Commande accepté
+    table4 = CommandeDriverTable(Commandes.objects.filter(driver=request.user, accepted=Commandes.ETAT_ACCEPTE))
+    table4.paginate(page=request.GET.get("page", 1), per_page=25)
 
     queryset = Commandes.objects.select_related().all()
     f = CommandesFilter(request.GET, queryset=queryset)
     context = {
         'table': table,
         'table2': table2,
-        'table3': table3
+        'table3': table3,
+        'table4': table4
+
     }
     return render(request, "commandes/commandes_drivers.html", context)
 
@@ -299,7 +302,7 @@ def add_reclamation(request):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Votre demande a été enregistrée')
+            messages.success(request, 'Votre demande a été enregistrée et sera traitée dans les plus brefs délais')
             return redirect('commandes:add_reclamation')
 
         else:
@@ -569,7 +572,7 @@ def getTrancheData(colis):
     for t in tranches:
         minimum = colis.weight
         if colis.weight >= t.min_weight and colis.weight  <= t.max_weight:
-            t.commission = (t.commission * t.price) 
+            t.commission = (t.commission * t.price) /100
             data = {
                 "amount": t.price,
                 "commission":  t.commission

@@ -33,8 +33,7 @@
                   <div class="tab-content" id="myTabContent">
                       <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
                            <div class="table-responsive">
-                              {% render_table table %}
-
+                              {% render_table table3 %}
 
                           </div>
                         </div>
@@ -45,7 +44,8 @@
 
                         </div>
                         <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
-                                                          {% render_table table3 %}
+                                                          {% render_table table %}
+
 
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                 <div class="modal-content">
                       <div class="modal-header">
 
-                           <h5 class="modal-title" id="exampleModalLabel"> Commande N°</h5>
+                           <h5 class="modal-title" id="exampleModalLabel"> Commande N° <span class="cmd_num"> </span></h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -74,7 +74,7 @@
                               <input type="text" name="cmdId" id="cmdId" value="" hidden/>
 
                           </form>
-                            <p>Etes-vous sûrs de vouloir terminer la commande?</p>
+                            <p>Confirmez - vous la réception du colis?</p>
 
                       </div>
                       <div class="modal-footer">
@@ -94,6 +94,9 @@
   <script>
   $(document).on('click','.openModal', function () {
       var cmdId = $(this).data('id');
+      var numero = $(this).data('cmd_num');
+            $(".cmd_num").text( numero );
+
       $(".modal-body #cmdId").val( cmdId );
       $('#updateEtat').modal('show');
 

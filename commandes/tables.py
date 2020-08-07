@@ -32,13 +32,14 @@ class CommandeClientTable(tables.Table):
     etat = tables.Column(accessor="getEtatLibelle")
     ID  = tables.Column(empty_values=())
     date_depot = tables.DateTimeColumn(format ='d/m/Y')
+    date_reception = tables.DateTimeColumn(format ='d/m/Y')
 
     actions  = TemplateColumn(template_name="commandes/includes/commande_client_actions.html", attrs={"td": {"class": "text-right"}})
 
     class Meta:
         model = Commandes
         sequence = ('ID', 'numero_commande','colis','date_depot','price','etat','actions')
-        exclude = {'status', 'id','commission','observation','insurance','updated_at', 'date_reception', 'city_depart', 'city_arrive', 'created_at', 'package','agent','driver'}
+        exclude = {'status', 'accepted','id','commission','observation','insurance','updated_at', 'date_reception', 'city_depart', 'city_arrive', 'created_at', 'package','agent','driver'}
         template_name = "django_tables2/bootstrap.html"
         attrs = {
 	        "th" : {
@@ -62,6 +63,8 @@ class CommandeDriverTable(tables.Table):
     etat = tables.Column(accessor="getEtatLibelle")
     ID  = tables.Column(empty_values=())
     date_depot = tables.DateTimeColumn(format ='d/m/Y')
+    date_reception = tables.DateTimeColumn(format ='d/m/Y')
+
 
     actions  = TemplateColumn(template_name="commandes/includes/commande_driver_actions.html", attrs={"td": {"class": "text-right"}})
 
@@ -89,7 +92,7 @@ class CommandeDriverTable(tables.Table):
 
 
 class ReclamationTable(tables.Table):
-    actions  = TemplateColumn(template_name="commandes/includes/commande_actions.html", attrs={"td": {"class": "text-right"}})
+    actions  = TemplateColumn(template_name="commandes/includes/reclamation_actions.html", attrs={"td": {"class": "text-right"}})
     created_at = tables.DateTimeColumn(format ='d/m/Y')
     updated_at = tables.DateTimeColumn(format ='d/m/Y')
 

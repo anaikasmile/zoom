@@ -72,7 +72,7 @@ class Commandes(models.Model):
     date_reception = models.DateField(null=True, blank=True, verbose_name="Date de réception")
     observation = models.TextField(null=True, blank=True, verbose_name="Remarques")
     price = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True, verbose_name="Prix")
-    commission = models.DecimalField(null=True, blank=True, verbose_name="Commission")
+    commission = models.DecimalField(max_digits=5, decimal_places=2,null=True, blank=True, verbose_name="Commission")
     status = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_PAYE, verbose_name="Etat")
     accepted = models.PositiveSmallIntegerField(null=True, blank=True, default=ETAT_NON_ACCEPTE, verbose_name="Accepté")
 
@@ -239,7 +239,7 @@ class Tranche(models.Model):
     max_weight = models.IntegerField(verbose_name="Maximum")
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name="Prix")
     package = models.ForeignKey(Package,related_name='packageTranche', verbose_name="Package d'envoi", on_delete=models.CASCADE)
-    commission = models.FloatField(verbose_name="Commission")
+    commission = models.DecimalField(max_digits=5, decimal_places=2,verbose_name="Commission")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     class Meta:
