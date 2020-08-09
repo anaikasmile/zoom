@@ -1,118 +1,59 @@
 {% extends 'base_frontend.html' %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
 {% load widget_tweaks %}
+
+
 {% block header %}
+
 {% endblock %}
+
 {% block content %}
-<div class="container-fluid mt--6">
 <!-- Dark table -->
       <div class="row">
-        <div class="col">
-          <div class="card bg-default shadow">
-            <div class="card-header bg-transparent border-0">
-              <h3 class="text-white mb-0">Mes commandes</h3>
+        <div class="col-12">
+            <br>
+            <h3 class="mb-0">Mes commandes</h3>
+            <div class="nav-wrapper">
+              <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-cloud-upload-96 mr-2"></i>En cours</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-bell-55 mr-2"></i>Livrés</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-calendar-grid-58 mr-2"></i>En attente</a>
+                  </li>
+              </ul>
             </div>
-            <div class="table-responsive">
-              <table class="table align-items-center table-dark table-flush">
-                <thead class="thead-dark">
-                  <tr>
-                    <th scope="col" class="sort" data-sort="name">N° commande</th>
-                    <th scope="col" class="sort" data-sort="budget">Modèle d'envoi</th>
-                    <th scope="col" class="sort" data-sort="status">Assurance</th>
-                    <th scope="col" class="sort" data-sort="status">Nature du colis</th>
-                    <th scope="col" class="sort" data-sort="budget">Prix</th>
-                    <th scope="col" class="sort" data-sort="status">Image</th>
-                    <th scope="col" class="sort" data-sort="status">Etat</th>
+            <div class="card shadow">
 
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody class="list">
-                {% for cmd in commandes %}
-                  <tr id="accordion2" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ cmd.id }}">
-                    <td scope="row">
-                      {{ cmd.numero_commande|upper }}
+              <div class="card-body">
+                  <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                           <div class="table-responsive">
+                              {% render_table table3 %}
 
-                    </td>
-                    <td class="">
-                        {{cmd.modele}}
-                    </td>
-                    <td class="">
-                        {{cmd.insurance.nom}}
-                    </td>
-                    <td class="">
-                        {{cmd.colis.nature}}
-                    </td>
-                    <td class="budget">
-                        {% if cmd.price %}
-                            {{cmd.price}}
-                        {% endif %}
-                    </td>
-                    <td class="">
-                        {% if cmd.colis.image %}
-                         <img src="{{ cmd.colis.image.url }}">
-                        {% endif %}
-                    </td>
-
-                    <td>
-                      <span class="badge badge-dot mr-4">
-                        <i class="bg-warning"></i>
-                        <span class="status">{{ cmd.getEtatLibelle }}</span>
-                      </span>
-                    </td>
-
-
-                    <td class="text-right">
-                      <div class="dropdown">
-                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                            {% if cmd.status == 5 %}
-
-                          <a class="dropdown-item openModal" title="Commande terminée"  data-toggle="modal" href="updateEtat"  data-id="{{ cmd.id }}">Réceptionné</a>
-                            {% endif %}
-                          <a class="dropdown-item" href="{% url 'commandes:historique_commande' cmd.id %}">Historique</a>
-                          <a class="dropdown-item" href="#">Détails</a>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
-                    <td></td>
-                    <td colspan="12">
-                    <div id="collapse{{ cmd.id }}" class="collapse in p-3" >
-                      <div class="row">
-                        <div class="col-6">Date de dépot : {{ cmd.date_depot|date:'j F, Y' }}</div>
-                        <div class="col-6">Date de réception: {{ cmd.date_depot|date:'j F, Y' }}</div>
-                      </div>
-                        <br>
-                      <div class="row">
-                        <div class="col-6">Ville de départ: {{ cmd.city_depart }}</div>
-                        <div class="col-6">Ville d'arrivée: {{ cmd.city_arrive }}</div>
-                      </div>
-                        <br>
-                      <div class="row">
-                        <div class="col-6">Poids: {{ cmd.colis.weight }} kg</div>
-                        <div class="col-6">Taille: {{ cmd.colis.size }}</div>
-                      </div>
-                        <br>
-                      <div class="row">
-                        <div class="col-6">Chauffeur : {{ cmd.driver.get_full_name }}</div>
-                        <div class="col-6"></div>
-                      </div>
+
+
+                        <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                                        {% render_table table2 %}
+
+                        </div>
+                        <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+                                                          {% render_table table %}
+
+
+                        </div>
                     </div>
-                    </td>
-                   </tr>
-                {% endfor %}
-
-                </tbody>
-              </table>
-
+              </div>
             </div>
+            
           </div>
-        </div>
-      </div>
-        <!-- Card footer -->
+           
 
 
 
@@ -122,7 +63,7 @@
                 <div class="modal-content">
                       <div class="modal-header">
 
-                           <h5 class="modal-title" id="exampleModalLabel"> Commande N°</h5>
+                           <h5 class="modal-title" id="exampleModalLabel"> Commande N° <span class="cmd_num"> </span></h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -133,7 +74,7 @@
                               <input type="text" name="cmdId" id="cmdId" value="" hidden/>
 
                           </form>
-                            <p>Etes-vous sûrs de vouloir terminer la commande?</p>
+                            <p>Confirmez - vous la réception du colis?</p>
 
                       </div>
                       <div class="modal-footer">
@@ -146,11 +87,16 @@
           </div>
     </div>
 <!-- End modal -->
+
+ 
 {% endblock %}
 {% block javascript %}
   <script>
   $(document).on('click','.openModal', function () {
       var cmdId = $(this).data('id');
+      var numero = $(this).data('cmd_num');
+            $(".cmd_num").text( numero );
+
       $(".modal-body #cmdId").val( cmdId );
       $('#updateEtat').modal('show');
 
@@ -167,7 +113,7 @@
                 if(data.statut == "success"){
                     toastr.success(data.message);
                     $('#updateEtat').modal('hide');
-                    //location.reload();
+                    location.reload();
                 }
             }
         });

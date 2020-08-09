@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header %}
+
+<div class="row align-items-center py-4">
+    <div class="col-lg-6 col-7">
+      <h6 class="h2 text-white d-inline-block mb-0">
+        {% if user.user_type == 2 %} Agents {% elif user.user_type == 3 %} Chauffeurs {% else %}Clients{% endif %}
+      </h6>
+      <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+          <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+          <li class="breadcrumb-item">{% if user.user_type == 2 %} Agents {% elif user.user_type == 3 %} Chauffeurs {% else %}Clients{% endif %}</li>
+
+          <li class="breadcrumb-item active" aria-current="page">Profile</li>
+        </ol>
+      </nav>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+
+ <div class="container-fluid mt--6">
+
+     
+      <div class="row">
+        <div class="col-xl-4 order-xl-2">
+          <div class="card card-profile">
+            <img src="{% static 'assets/img/theme/img-1-1000x600.jpg' %}" alt="Image placeholder" class="card-img-top">
+            <div class="row justify-content-center">
+              <div class="col-lg-3 order-lg-2">
+                <div class="card-profile-image">
+                  <a href="#">
+                    {% if  user.person.photo %}
+                        <img src="{{ user.person.photo.url }}" class="rounded-circle">
+                    {% else %}
+                        <img src="{% static 'assets/img/theme/user_icon.png' %}" class="rounded-circle">
+
+                    {% endif %}
+                  </a>
+
+                </div>
+              </div>
+            </div>
+             <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+              <div class="d-flex justify-content-between">
+
+              </div>
+            </div>
+            <div class="card-body pt-0">
+              <div class="row">
+                <div class="col">
+                  <div class="card-profile-stats d-flex justify-content-center">
+                    <div>
+                      <span class="heading">{{nb_commandes}}</span>
+                      <span class="description">Commandes</span>
+                    </div>
+                    <div>
+                      <span class="heading">{{nb_reclamations}}</span>
+                      <span class="description">Réclamations</span>
+                    </div>
+                    <div>
+                      <span class="heading">0</span>
+                      <span class="description">Comments</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+           {% if user.vehicules.all %}
+          <div class="card card-profile">
+
+            <div class="card-body">
+               
+              
+                <h6 class="heading-small text-muted mb-4">Véhicule</h6>
+                    <div class="pl-lg-4">
+                       {% for v in  user.vehicules.all %} 
+                      <div class="row">
+                        <div class="col-lg-6">
+                          <p>  N° : <label class="form-control-label" for="input-first-name">{{v.immatriculation}} </label> </p>
+                            
+                        </div>
+                        <div class="col-lg-6">
+                           <p>  Marque :
+                            <label class="form-control-label" for="input-last-name">{{v.marque}}</label></p>
+                            
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-6">
+                          <p>  Modèle : <label class="form-control-label" for="input-first-name">{{v.modele}} </label> </p>
+                            
+                        </div>
+                        <div class="col-lg-6">
+                           <p>  Places :
+                            <label class="form-control-label" for="input-last-name">{{v.nb_place}}</label></p>
+                            
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-6">
+                          <p>  Type : <label class="form-control-label" for="input-first-name">{{v.type}} </label> </p>
+                            
+                        </div>
+                        <div class="col-lg-6">
+                           <p>  Etat :
+                            <label class="form-control-label" for="input-last-name">{{v.etat}}</label></p>
+                            
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        <div class="col-xl-8 order-xl-1">
+          <div class="card">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">Profile </h3>
+
+
+                </div>
+
+              </div>
+            </div>
+            <div class="card-body">
+               
+              
+                <h6 class="heading-small text-muted mb-4">Informations Personnelles</h6>
+                <div class="pl-lg-4">
+
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <p>  Nom : <label class="form-control-label" for="input-first-name">{{user.last_name}} </label> </p>
+                        
+                    </div>
+                    <div class="col-lg-6">
+                       <p>  Prénoms :
+                        <label class="form-control-label" for="input-last-name">{{user.first_name}}</label></p>
+                        
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                       <p> Sexe:
+                        <label class="form-control-label" for="input-first-name">{{user.person.sexe}}</label>
+                      </p>
+
+                    </div>
+                    <div class="col-lg-6">
+                      <p>
+                        Date de naissance :
+                        <label class="form-control-label" for="input-last-name">{{user.person.birth_date|date:' j/m/Y'}}</label>
+                       </p>  
+                      </div>
+                  </div>
+
+
+
+                  <div class="row">
+                    <div class="col-lg-6">
+                       <p> Tél:
+                        <label class="form-control-label" for="input-first-name">{{user.person.tel.as_e164}}</label>
+                       </p>
+                    </div>
+                    <div class="col-lg-6">
+                      <p>
+                        Profession :
+                        <label class="form-control-label" for="input-last-name"> {% if user.person.job %}{{user.person.job}} {% endif %}</label>
+                       </p>   
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-6">
+                       <p> Email :
+                        <label class="form-control-label" for="input-first-name">{{ user.email }}</label>
+                        </p>
+                    </div>
+                    <div class="col-lg-6">
+                       <p> Login :
+                          <label class="form-control-label" for="input-last-name">{{user.username}}</label>
+                        </p> 
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                       <p> Date inscription :
+                        <label class="form-control-label" for="input-first-name">{{ user.person.created_at|date:' j/m/Y' }}</label>
+                        </p>
+                    </div>
+                    <div class="col-lg-6">
+                       <p> Mot de passe :
+                          <label class="form-control-label" for="input-last-name"></label>
+
+                       </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                          {{user.person.adresse}}
+                        </p>
+                    </div>
+                </div>
+
+                </div>
+
+                
+
+                {% if user.identites.all %}
+                 <hr class="my-4" />
+                
+ <!-- Identité -->
+
+                <h6 class="heading-small text-muted mb-4">Pièce Identité</h6>
+                <div class="pl-lg-4">
+              {% for identity in  user.identites.all %} 
+                  <div class="row">
+                      <div class="col-lg-6">
+                         <p> N° {{identity.type}} :
+                          <label class="form-control-label" for="input-first-name">{{identity.reference}} </label>
+                          </p>
+                      </div>
+                      <div class="col-lg-6">
+                         <p>  
+                           {% if  identity.photo %}
+                            <img src="{{ identity.photo.url }}" class="rounded-circle">
+
+                            {% endif %}
+                          </p> 
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-lg-6">
+                         <p> Emis le :
+                          <label class="form-control-label" for="input-first-name">{{identity.initiated_at|date:' j/m/Y' }} </label>
+                          </p>
+                      </div>
+                      <div class="col-lg-6">
+                         <p>  Expire le:
+                            <label class="form-control-label" for="input-last-name"> {{identity.expired_at|date:' j/m/Y' }} </label>
+                          </p> 
+                      </div>
+                  </div>
+
+                </div>
+                <!-- Personne a prevenir -->
+
+                <hr class="my-4" />
+                <h6 class="heading-small text-muted mb-4">Personne à prévenir</h6>
+                <div class="pl-lg-4">
+
+                  <div class="row">
+                      <div class="col-lg-6">
+                         <p> Nom :
+                          <label class="form-control-label" for="input-first-name"> {{identity.contact_name}} </label>
+                          </p>
+                      </div>
+                      <div class="col-lg-6">
+                         <p>  Tél:
+                            <label class="form-control-label" for="input-last-name"> {{identity.contact_tel}} </label>
+                          </p> 
+                      </div>
+                  </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+ 
+                
+              </div>
+
+            </div>
+          </div>
+        </div>
+   
+{% endblock %}

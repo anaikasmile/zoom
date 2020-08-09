@@ -23,7 +23,7 @@
                 <div class="card-header">
                   <div class="row align-items-center">
                     <div class="col-8">
-                      <h3 class="mb-0">Ajouter </h3>
+                      <h3 class="mb-0">Formulaire </h3>
                     </div>
                   </div>
                 </div>
@@ -49,7 +49,7 @@
                         </div>
                      </div>
 
-                    <button type="submit" class="btn btn-primary mt-4">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary mt-4">{% if "/update" in request.path %}  Modifier {% else %} Enregistrer {% endif %}</button>
                  </form>
               </div>
           </div>
@@ -86,7 +86,7 @@
                       {{ district.city }}
                     </td>
                     <td>
-                        {{district.created_at|date:'F j, Y'}}
+                        {{district.created_at|date:'j F Y'}}
                     </td>
                     <td class="">
                         <a href="{% url 'geolocalisation:district_update' district.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
@@ -99,49 +99,50 @@
               </table>
             </div>
             <!-- Card footer -->
-        {% comment %}  <div class="pagination">
-                <span class="step-links">
-                    {% if contacts.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ contacts.previous_page_number }}">previous</a>
-                    {% endif %}
+         {% if object_list.page and object_list.paginator.num_pages > 1 %}
 
-                    <span class="current">
-                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
-                    </span>
-
-                    {% if contacts.has_next %}
-                        <a href="?page={{ contacts.next_page_number }}">next</a>
-                        <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                </span>
-            </div>{% endcomment %}
             <div class="card-footer py-4">
               <nav aria-label="...">
                 <ul class="pagination justify-content-end mb-0">
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">
-                      <i class="fas fa-angle-left"></i>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">
+                  {% if object_list.has_previous %}
+                        <li class="page-item ">
+                            <a class="page-link " href="{?page={{ object_list.previous_page_number }}">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                  {% else %}
+                    <li class="page-item  disabled"><a class="page-link"><i class="fas fa-angle-left"></i></a></li>
+                  {% endif %}
+
+                  {% for i in object_list.paginator.page_range %}
+                  {% if object_list.number == i %}
+                    <li class="page-item active"><a class="page-link"><span>{{ i }} <span class="sr-only">(current)</span></span></a></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                  
+                
+            {% if object_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ object_list.next_page_number }}">
                       <i class="fas fa-angle-right"></i>
-                      <span class="sr-only">Next</span>
+
                     </a>
+                </li>
+                {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link"><i class="fas fa-angle-right"></i></a>
                   </li>
+                {% endif %}
                 </ul>
               </nav>
             </div>
+
+                          {% endif %}
+
           </div>
+
         </div>
 
     </div>

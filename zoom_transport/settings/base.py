@@ -45,6 +45,13 @@ INSTALLED_APPS = [
     'utilisateurs',
     'agences',
     'commandes',
+    'wkhtmltopdf',
+    'django_tables2',
+    'django_filters',
+    'django_extensions',
+    'phonenumber_field'
+
+
 ]
 
 MIDDLEWARE = [
@@ -116,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-FR'
 
 TIME_ZONE = 'UTC'
 
@@ -126,6 +133,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+WKHTMLTOPDF_CMD_OPTIONS = {
+    'quiet': True,
+}
+
+PHONENUMBER_DEFAULT_REGION = 'TG'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

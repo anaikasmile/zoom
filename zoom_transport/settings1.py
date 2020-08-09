@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import tempfile
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,16 +24,25 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'dspkmp!^q39(o&aw7&xo1vu)ime%pwfd%j3cj$w7ea1=p_pke&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 SITE_ID = 1
 
-ALLOWED_HOSTS = []
+DEBUG = True
 
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'zoom_db',
+        'USER': 'root',
+        'PASSWORD': 'zoom@2020',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
 # Application definition
 
 INSTALLED_APPS = [
+    #'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,10 +56,14 @@ INSTALLED_APPS = [
     'utilisateurs',
     'agences',
     'commandes',
+    'wkhtmltopdf',
+    'phonenumber_field',
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,7 +77,7 @@ ROOT_URLCONF = 'zoom_transport.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, '../templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,19 +93,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'zoom_transport.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'zoom_db',
-        'USER': 'root',
-        'PASSWORD': 'zoom@2020',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
+#
 # User Model
 AUTH_USER_MODEL = 'utilisateurs.User'
 
@@ -128,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-FR'
 
 TIME_ZONE = 'UTC'
 
@@ -139,13 +141,17 @@ USE_L10N = True
 USE_TZ = True
 
 
+WKHTMLTOPDF_CMD_OPTIONS = {
+    'quiet': True,
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

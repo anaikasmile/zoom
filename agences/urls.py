@@ -6,6 +6,7 @@ urlpatterns = [
     path('create', agence_views.agence_create, name='agence-create'),
     path('update/<int:agence_id>/', agence_views.agence_update, name='agence-update'),
     path('delete/<int:agence_id>/', agence_views.agence_delete, name='agence-delete'),
+    path('view/<int:agence_id>/', agence_views.agence_view, name='agence-view'),
 
     path('vehicule/create', agence_views.vehicule_create, name='vehicule-create'),
     path('vehicule/update/<int:vehicule_id>/', agence_views.vehicule_update, name='vehicule-update'),

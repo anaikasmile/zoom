@@ -6,15 +6,17 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonRespons
 from django.views.generic import ListView, CreateView
 from .forms import AgenceForm, TypeVehiculeForm, VehiculesForm
 from .models import Agences, TypeVehicules, Vehicules
+from django.db.models import ProtectedError
+from .tables import AgenceTable
 # Create your views here.
 def agence_create(request):
-    agences = Agences.objects.filter().order_by('-created_at')
+    table = AgenceTable(Agences.objects.filter().order_by('-created_at'))
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
     if request.method == "POST":
         form = AgenceForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Agence bien enregistrée')
-            # return HttpResponseRedirect("/recipe/new/category")
             return redirect('agences:agence-create')
         else:
             pass
@@ -22,18 +24,15 @@ def agence_create(request):
         form = AgenceForm()
     context = {
         'form': form,
-        'object_list': agences
+        'table': table
 
     }
     return render(request, 'agences/agences_list.html', context)
 
 def agence_update(request, agence_id):
-
     agence = Agences.objects.get(id=agence_id)
-    agences = Agences.objects.filter().order_by('-created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    table = AgenceTable(Agences.objects.filter().order_by('-created_at'))
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
     if request.method == "POST":
         form = AgenceForm(request.POST, request.FILES, instance=agence)
         if form.is_valid():
@@ -45,21 +44,39 @@ def agence_update(request, agence_id):
 
     context = {
         'form': form,
-        'object_list': agences
+        'table': table
     }
     return render(request, "agences/agences_list.html", context)
 
 
+def agence_view(request, agence_id):
+
+    agence = Agences.objects.get(id=agence_id)
+
+    context = {
+        'agence': agence
+    }
+    return render(request, "agences/agences_view.html", context)
+
+
 def agence_delete(request, agence_id):
     agence = get_object_or_404(Agences, id=agence_id)
-    agence.delete()
-    messages.success(request, 'Agence supprimée')
+    try:
+        agence.delete()
+        messages.success(request, 'Agence supprimée')
+
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible')
+
     return redirect('agences:agence-create')
 
 
 #Vehicules
 def vehicule_create(request):
     vehicules = Vehicules.objects.filter().order_by('-created_at')
+    paginator = Paginator(vehicules, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    vehicules = paginator.get_page(page)
     if request.method == "POST":
         form = VehiculesForm(request.POST)
         if form.is_valid():
@@ -82,9 +99,9 @@ def vehicule_create(request):
 def vehicule_update(request, vehicule_id):
     vehicule = Vehicules.objects.get(id=vehicule_id)
     vehicules = Vehicules.objects.filter().order_by('-created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(vehicules, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    vehicules = paginator.get_page(page)
     if request.method == "POST":
         form = VehiculesForm(request.POST, request.FILES, instance=vehicule)
         if form.is_valid():
@@ -115,12 +132,19 @@ def vehicule_detail(request, vehicule_id):
 
 def vehicule_delete(request, vehicule_id):
     vehicule = get_object_or_404(Vehicules, id=vehicule_id)
-    vehicule.delete()
-    messages.success(request, 'Véhicule supprimée')
+    try:
+        vehicule.delete()
+        messages.success(request, 'Véhicule supprimée')
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible')
     return redirect('agences:vehicule-create')
 
 def type_vehicule_create(request):
     type_vehicules = TypeVehicules.objects.filter().order_by('-created_at')
+    type_vehicules = TypeVehicules.objects.filter().order_by('-created_at')
+    paginator = Paginator(type_vehicules, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    type_vehicules = paginator.get_page(page)
     if request.method == "POST":
         form = TypeVehiculeForm(request.POST)
         if form.is_valid():
@@ -141,9 +165,9 @@ def type_vehicule_create(request):
 def type_vehicule_update(request, type_vehicule_id):
     type_vehicule = TypeVehicules.objects.get(id=type_vehicule_id)
     type_vehicules = TypeVehicules.objects.filter().order_by('-created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(type_vehicules, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    type_vehicules = paginator.get_page(page)
     if request.method == "POST":
         form = TypeVehiculeForm(request.POST, request.FILES, instance=type_vehicule)
         if form.is_valid():
@@ -161,6 +185,9 @@ def type_vehicule_update(request, type_vehicule_id):
 
 def type_vehicule_delete(request, type_vehicule_id):
     type_vehicule = get_object_or_404(TypeVehicules, id=type_vehicule_id)
-    type_vehicule.delete()
-    messages.success(request, 'Type supprimé')
+    try:
+        type_vehicule.delete()
+        messages.success(request, 'Type supprimé')
+    except ProtectedError:
+        messages.error(request, 'Suppression impossible')
     return redirect('agences:type-vehicule-create')
