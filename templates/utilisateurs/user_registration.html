@@ -2,13 +2,19 @@
 {% load widget_tweaks %}
 {% block header %}
 
+
+
+
 <div class="row align-items-center py-4">
     <div class="col-lg-6 col-7">
-      <h6 class="h2 text-white d-inline-block mb-0">Dashboard</h6>
+      <h6 class="h2 text-white d-inline-block mb-0"> {{name}}</h6>
       <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
         <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
           <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-          <li class="breadcrumb-item">Utilisateurs</li>
+          <li class="breadcrumb-item">
+          {{name}}
+
+          </li>
 
           <li class="breadcrumb-item active" aria-current="page">Enregistrer</li>
         </ol>
@@ -25,8 +31,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header card-header-primary">
-                      <h4 class="card-title">Utilisateurs</h4>
-                      <p class="card-category">Enregistrer un utilisateur</p>
+                      <h4 class="card-title"> Enregistrer</h4>
                     </div>
                     <div class="card-body">
                         {{ form.errors }}
@@ -171,34 +176,37 @@
 
                     <div class="card-body">
                         <h6 class="heading-small text-muted mb-4">Identifiants</h6>
-                        <div class="row">
-                              <div class="col-md-12">
-                                    <div class="form-group">
-                                      <label class="bmd-label-floating">Login *</label>
-                                       {{ form.username|add_class:'form-control' }}
-                                    </div>
-                              </div>
+                        <form autocomplete="off">
+                          <div class="row">
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <label class="bmd-label-floating">Login *</label>
+                                         {{ form.username|add_class:'form-control' }}
+                                      </div>
+                                </div>
 
-                        </div>
-                         <div class="row">
-                              <div class="col-md-12">
-                                    <div class="form-group">
-                                      <label class="bmd-label-floating">Mot de passe *</label>
-                                       {{ form.password1|add_class:'form-control' }}
-                                       <button type="button" class="float-right password-field btn btn-secondary" data-action="{% url 'utilisateurs:generate_password' %}" title="Générer mot de passe"><i class="fa fa-fw fa-lock field-icon"></i></button>
-                                    </div>
-                              </div>
+                          </div>
+                           <div class="row">
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <label class="bmd-label-floating">Mot de passe *</label>
+                                         {{ form.password1|add_class:'form-control' }}
+                                         <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                         <button type="button" class="float-right password-field btn btn-secondary" data-action="{% url 'utilisateurs:generate_password' %}" title="Générer mot de passe"><i class="fa fa-fw fa-lock"></i></button>
+                                      </div>
+                                </div>
 
-                        </div>
-                        <div class="row">
-                              <div class="col-md-12">
-                                    <div class="form-group">
-                                      <label class="bmd-label-floating">Confirmer le mot de passe *</label>
-                                       {{ form.password2|add_class:'form-control' }}
-                                    </div>
-                              </div>
+                          </div>
+                          <div class="row">
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <label class="bmd-label-floating">Confirmer le mot de passe *</label>
+                                         {{ form.password2|add_class:'form-control' }}
+                                      </div>
+                                </div>
 
-                        </div>
+                          </div>
+                      </form>
                         <button type="submit" class="btn btn-primary pull-right">Enregistrer</button>
 
                     </div>
@@ -217,12 +225,25 @@
           url: $(this).attr('data-action'),
           dataType: 'json',
           success: function (data) {
-              console.log(data.pwd);
               $("#id_password1").val(data.pwd) ;
               $("#id_password2").val(data.pwd);
               console.log($("#id_password1").val());
           }
       });
+
+
+     $(".toggle-password").click(function() {
+          $(this).toggleClass("fa-eye fa-eye-slash");
+          var input = $("#id_password1");
+          if (input.attr("type") == "password") {
+            input.attr("type", "text");
+            $("#id_password2").attr("type", "text");
+          } else {
+            input.attr("type", "password");
+            $("#id_password2").attr("type", "password");
+
+          }
+        });
 
         /*  $(this).toggleClass("fa-eye fa-eye-slash");
           var input = $("#id_password");

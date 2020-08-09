@@ -21,7 +21,7 @@
 
           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
           <!-- CSS Files -->
-          <link href="{% static 'assets/css/font-family.css' %}" rel="stylesheet" />
+          <link href="{% static 'assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet" />
           <!-- CSS Just for demo purpose, don't include it in your project -->
           <link href="{% static 'assets/css/argon.css' %}" rel="stylesheet" />
           <link href="{% static 'assets/vendor/nucleo/css/nucleo.css' %}" rel="stylesheet" />
@@ -104,7 +104,7 @@
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
+                                <a class="nav-link {% if "/places" in request.path %} active {% endif %}" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
                                     <i class="ni ni-pin-3 text-primary"></i>
                                     <span class="nav-link-text">Emplacements</span>
                                     <div class="dropdown-menu">
@@ -117,7 +117,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                  <a class="nav-link" href="" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
+                                  <a class="nav-link {% if "/agents" in request.path %} active {% endif %}" href="" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
                                     <i class="ni ni-single-02 text-success"></i>
 
                                     <span class="nav-link-text">Agents</span>
@@ -134,13 +134,13 @@
                             </li>
 
                             <li class="nav-item dropdown">
-                                 <a class="nav-link {% if "/vehicules" in request.path %} active {% endif %}" href="" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
+                                 <a class="nav-link {% if "/vehicule" in request.path %} active {% endif %}" href="" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
                                     <i class="ni ni-bus-front-12 text-black-50"></i>
                                     <span class="nav-link-text">Véhicules</span>
                                  </a>
 
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'agences:type-vehicule-create' %}">
+                                    <a class="dropdown-item {% if "/typevehicule" in request.path %} active {% endif %}" href="{% url 'agences:type-vehicule-create' %}">
                                         Types
                                     </a>
                                     <div class="dropdown-divider"></div>
@@ -148,7 +148,7 @@
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
+                                <a class="nav-link {% if "/drivers" in request.path %} active {% endif %}" href="" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown">
                                       <i class="ni ni-single-02 text-yellow"></i>
                                     <span class="nav-link-text">Chauffeurs</span>
                                  </a>
@@ -164,14 +164,14 @@
                             </li>
 
                               <li class="nav-item">
-                                <a class="nav-link" href="{% url 'commandes:package_create' %}">
+                                <a class="nav-link {% if "/package" in request.path %} active {% endif %}" href="{% url 'commandes:package_create' %}">
                                     <i class="ni ni-chart-pie-35 text-danger"></i>
                                     <span class="nav-link-text">Packages d'envoi</span>
                                 </a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'commandes:tranche_create' %}">
+                                <a class="nav-link {% if "/tranches" in request.path %} active {% endif %}" href="{% url 'commandes:tranche_create' %}">
                                     <i class="ni ni-ui-04"></i>
                                     <span class="nav-link-text">Fixer les prix</span>
                                 </a>
@@ -239,118 +239,7 @@
                 <i class="ni ni-zoom-split-in"></i>
               </a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="ni ni-bell-55"></i>
-              </a>
-              <div class="dropdown-menu dropdown-menu-xl  dropdown-menu-right  py-0 overflow-hidden">
-                <!-- Dropdown header -->
-                <div class="px-3 py-3">
-                  <h6 class="text-sm text-muted m-0">You have <strong class="text-primary">13</strong> notifications.</h6>
-                </div>
-                <!-- List group -->
-                <div class="list-group list-group-flush">
-                  <a href="#!" class="list-group-item list-group-item-action">
-                    <div class="row align-items-center">
-                      <div class="col-auto">
-                        <!-- Avatar -->
-                        <img alt="Image placeholder" src="" class="avatar rounded-circle">
-                      </div>
-                      <div class="col ml--2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="mb-0 text-sm"> {% if user.is_authenticated %} {{ user.username }} {% endif %}</h4>
-                          </div>
-                          <div class="text-right text-muted">
-                            <small>2 hrs ago</small>
-                          </div>
-                        </div>
-                        <p class="text-sm mb-0">Let's meet at Starbucks at 11:30. Wdyt?</p>
-                      </div>
-                    </div>
-                  </a>
-                  <a href="#!" class="list-group-item list-group-item-action">
-                    <div class="row align-items-center">
-                      <div class="col-auto">
-                        <!-- Avatar -->
-                        <img alt="Image placeholder" src="" class="avatar rounded-circle">
-                      </div>
-                      <div class="col ml--2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="mb-0 text-sm">{% if user.is_authenticated %} {{ user.username }} {% endif %}<</h4>
-                          </div>
-                          <div class="text-right text-muted">
-                            <small>3 hrs ago</small>
-                          </div>
-                        </div>
-                        <p class="text-sm mb-0">A new issue has been reported for Argon.</p>
-                      </div>
-                    </div>
-                  </a>
-                  <a href="#!" class="list-group-item list-group-item-action">
-                    <div class="row align-items-center">
-                      <div class="col-auto">
-                        <!-- Avatar -->
-                        <img alt="Image placeholder" src="" class="avatar rounded-circle">
-                      </div>
-                      <div class="col ml--2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="mb-0 text-sm">{% if user.is_authenticated %} {{ user.username }} {% endif %}<</h4>
-                          </div>
-                          <div class="text-right text-muted">
-                            <small>5 hrs ago</small>
-                          </div>
-                        </div>
-                        <p class="text-sm mb-0">Your posts have been liked a lot.</p>
-                      </div>
-                    </div>
-                  </a>
-                 {% if user.is_authenticated %}
-                  <a href="#!" class="list-group-item list-group-item-action">
-                    <div class="row align-items-center">
-                      <div class="col-auto">
-                        <!-- Avatar -->
-                        <img alt="Image placeholder" src="" class="avatar rounded-circle">
-                      </div>
-                      <div class="col ml--2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="mb-0 text-sm">{% if user.is_authenticated %} {{ user.username }} {% endif %}<</h4>
-                          </div>
-                          <div class="text-right text-muted">
-                            <small>2 hrs ago</small>
-                          </div>
-                        </div>
-                        <p class="text-sm mb-0">Let's meet at Starbucks at 11:30. Wdyt?</p>
-                      </div>
-                    </div>
-                  </a>
-                {% endif %}
-                  <a href="#!" class="list-group-item list-group-item-action">
-                    <div class="row align-items-center">
-                    {% if user.is_authenticated %}
-                      <div class="col-auto">
-                        <!-- Avatar -->
-                        <img alt="Image placeholder" src="" class="avatar rounded-circle">
-                      </div>
-                      <div class="col ml--2">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h4 class="mb-0 text-sm">{{ user.username}}</h4>
-                          </div>
-
-                        </div>
-                      </div>
-                        {% endif %}
-                    </div>
-                  </a>
-                </div>
-                <!-- View all -->
-                <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
-              </div>
-            </li>
+            
             <li class="nav-item dropdown">
               <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="ni ni-ungroup"></i>

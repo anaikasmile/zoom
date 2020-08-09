@@ -118,14 +118,14 @@
                     <th scope="col" class="sort" data-sort="nom">Immatriculation</th>
                     <th scope="col" class="sort" data-sort="nom">Type</th>
 
-                    <th scope="col" class="sort" data-sort="nom">Nb places</th>
                     <th scope="col" class="sort" data-sort="nom">Chauffeur</th>
+
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody class="list">
                 {% for vehicule in object_list %}
-                  <tr>
+                  <tr id="accordion2" >
                     <td>{{forloop.counter}}</td>
                     <td>
                         {{ vehicule.immatriculation }}
@@ -134,23 +134,40 @@
                         {{ vehicule.type }}
                     </td>
 
-                     <td class="budget">
-                         {% if vehicule.nb_place %}
-                            {{ vehicule.nb_place }}
-                         {% endif %}
-                    </td>
+                     
                      <td class="budget">
                         {{ vehicule.user.get_full_name }}
                     </td>
+                   
 
 
                     <td class="">
 
-                        <a href="" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
+                        <a class="btn btn-info" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ vehicule.id }}"><i class="fa fa-eye" title="Détail"></i></a>
                         <a href="{% url 'agences:vehicule-update' vehicule.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
                         <a href="{% url 'agences:vehicule-delete' vehicule.id %}" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
 
                     </td>
+                    <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
+                    <td colspan="12">
+                      <div id="collapse{{ vehicule.id }}" class="collapse in p-3" >
+                        <div class="row">
+                          <div class="col-12"><b>Marque : </b> {{vehicule.marque}}</div>
+                          <div class="col-12"><b>Modèle : </b> {{vehicule.modele}}</div>
+                          <div class="col-12"><b>Nombre de places : </b> {% if vehicule.nb_place %}
+                            {{ vehicule.nb_place }}
+                         {% endif %}</div>
+
+                          <div class="col-12"><b>Etat :</b>{{vehicule.etat}}</div>
+
+                          <div class="col-12">{{vehicule.description}}</div>
+
+                        </div>
+                                              
+                       
+                      </div>
+                    </td>
+
                   </tr>
                 {% endfor %}
                 </tbody>

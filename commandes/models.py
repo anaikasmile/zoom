@@ -37,7 +37,7 @@ class Insurance(models.Model):
 
 class Package(models.Model):
     libelle = models.CharField(max_length=50, null=True, blank=True, verbose_name='Libelle')
-    description = models.TextField(null=True, blank=True, verbose_name='Description')
+    description = models.TextField(blank=True, verbose_name='Description')
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Créé le")
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name="Modifié le")
     def __str__(self):

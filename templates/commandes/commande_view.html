@@ -108,7 +108,7 @@
                       <div class="col-lg-6">
                         <div class="form-group">
                           Commission :
-                          <label class="form-control-label" for="input-last-name">{{commande.commission}}</label>
+                          <label class="form-control-label" for="input-last-name">{% if commande.commission %}{{commande.commission}}{% endif %}</label>
                            
                         </div>
                       </div>

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_filters',
     'django_extensions',
+    'phonenumber_field'
 
 
 ]
@@ -136,6 +137,8 @@ USE_TZ = True
 WKHTMLTOPDF_CMD_OPTIONS = {
     'quiet': True,
 }
+
+PHONENUMBER_DEFAULT_REGION = 'TG'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

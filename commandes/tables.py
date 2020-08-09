@@ -94,12 +94,11 @@ class CommandeDriverTable(tables.Table):
 class ReclamationTable(tables.Table):
     actions  = TemplateColumn(template_name="commandes/includes/reclamation_actions.html", attrs={"td": {"class": "text-right"}})
     created_at = tables.DateTimeColumn(format ='d/m/Y')
-    updated_at = tables.DateTimeColumn(format ='d/m/Y')
 
     class Meta:
         model = Reclamations
-        sequence = ('id', 'created_at', 'commande','type', 'observation','image','updated_at','actions')
-
+        sequence = ('id', 'created_at', 'commande','type', 'observation','image','actions')
+        exclude = ['updated_at']
         template_name = "django_tables2/bootstrap.html"
        	attrs = {
 	        "th" : {

@@ -8,6 +8,8 @@ urlpatterns = [
     path('dashboard/commandes/liste', views.commandes_liste, name='liste_commandes'),
     path('ajax/update/etat/', views.etat_update, name='update_etat'),
     path('dashboard/reclamations/liste', views.list_reclamation, name='liste_reclamations'),
+    path('dashboard/reclamations/handler', views.add_handler_reclamation_cmd, name='handler_reclamation_cmd'),
+
     path('dashbord/commandes/historiques/<int:commande_id>/', views.historique_commande_admin, name='historique_commande_admin'),
     path('dashboard/commandes/<int:commande_id>', views.commande_view, name='commande_view'),
 
@@ -33,7 +35,6 @@ urlpatterns = [
     path('ajax/commandes/assigner/', views.assign_order_to_me, name='assign_order_to_me'),
 
     path('reclamations/', views.add_reclamation, name='add_reclamation'),
-    path('ajax/reclamations/handler/<int:cmd_id>', views.handler_reclamation_cmd, name='handler_reclamation_cmd'),
 
     path('facture/<commande_ref>', views.generate, name='generate_facture'),
 

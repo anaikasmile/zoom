@@ -4,16 +4,16 @@ from .models import User, Person
 
 
 class UserTable(tables.Table):
-    sexe  = tables.Column(accessor="user.person_sexe")
-    tel  = tables.Column(accessor="user.person_tel")
-    email  = tables.Column(accessor="user.email")
+    sexe  = tables.Column(accessor="person__sexe")
+    tel  = tables.Column(accessor="person__tel__as_e164")
+    date_joined = tables.DateTimeColumn(format ='d/m/Y')
 
 
     actions  = TemplateColumn(template_name="utilisateurs/includes/users_actions.html", attrs={"td": {"class": "text-right"}})
     class Meta:
         model = User
-        sequence = ('id', 'last_name','first_name', 'sexe', 'email','tel','username')
-        exclude = {'password', 'last_login', 'is_staff', 'is_superuser', 'is_active','user_type'}
+        sequence = ('id', 'last_name','first_name', 'sexe', 'email','tel')
+        exclude = {'username','password', 'last_login', 'is_staff', 'is_superuser', 'is_active','user_type'}
         template_name = "django_tables2/bootstrap.html"
        	attrs = {
 	        "th" : {
@@ -27,16 +27,14 @@ class UserTable(tables.Table):
 
 
 class ClientTable(tables.Table):
-    nom  = tables.Column(accessor="person.user.last_name")
-    prenom  = tables.Column(accessor="person.user.first_name")
-    birth_date = tables.DateTimeColumn(format ='d/m/Y')
-
-
+    sexe  = tables.Column(accessor="person__sexe")
+    tel  = tables.Column(accessor="person__tel")
+    date_joined = tables.DateTimeColumn(format ='d/m/Y')
     actions  = TemplateColumn(template_name="utilisateurs/includes/users_actions.html", attrs={"td": {"class": "text-right"}})
     class Meta:
-        model = Person
-        sequence = ('id', 'nom', 'prenom','sexe', 'tel','birth_date','job','actions')
-
+        model = User
+        sequence = ('id', 'last_name','first_name', 'sexe', 'email','tel')
+        exclude = {'username','password', 'last_login', 'is_staff', 'is_superuser', 'is_active','user_type'}
         template_name = "django_tables2/bootstrap.html"
         attrs = {
             "th" : {

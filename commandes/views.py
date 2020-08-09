@@ -316,35 +316,17 @@ def add_reclamation(request):
         'reclamations': reclamations
     })
 
-#Traitement d'une reclamation
-@login_required
-def add_handler_reclamation(request, commande_id):
-    if request.method == "POST":
-        form = ReclamationHandlerForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Votre demande a été enregistrée')
-        else:
-            pass
-    else:
-        form = ReclamationHandlerForm()
-
-    return render(request, "commandes/ajout_reclamation_handler.html",  {
-        'form': form,
-    })
-
-
-@login_required
-def handler_reclamation_cmd(request, cmd_id):
-    handler = ReclamationsHandler.objects.filter(reclamation__commande_id=cmd_id)
-    data = serializers.serialize('json', handler)
-    # if handler:
-    #     data = {
-    #         'statut': 'success',
-    #         'data': data
-    #     }
-    print(cmd_id)
-    return JsonResponse(data, safe=False)
+#@login_required
+# def handler_reclamation_cmd(request, cmd_id):
+#     handler = ReclamationsHandler.objects.filter(reclamation__commande_id=cmd_id)
+#     data = serializers.serialize('json', handler)
+#     # if handler:
+#     #     data = {
+#     #         'statut': 'success',
+#     #         'data': data
+#     #     }
+#     print(cmd_id)
+#     return JsonResponse(data, safe=False)
 
 
 
@@ -397,16 +379,56 @@ def commande_view(request,commande_id):
 
 
 
+#liste reclamations
 @login_required
 def list_reclamation(request):
     table = ReclamationTable(Reclamations.objects.all())
     table.paginate(page=request.GET.get("page", 1), per_page=25)
+    form = ReclamationHandlerForm()
+    if request.method == "POST":
+        form = ReclamationHandlerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Traitement enregistrée')
+        else:
+            pass
+        
+
     context = {
-            "table": table
+            "table": table,
+            "form": form
     }
+
     return render (request, "commandes/liste_reclamations.html", context)
 
 
+#Traitement d'une reclamation
+@login_required
+def add_handler_reclamation_cmd(request):
+    
+    response_data = {}
+
+    if request.POST.get('action') == 'post':
+        reclamation = get_object_or_404(Reclamations, id=request.POST.get('rid'))
+
+        typeTeclamation = request.POST.get('type')
+        commentaire = request.POST.get('commentaire')
+
+        ReclamationHandler.objects.create(
+            reclamation = reclamation,
+            type = typeTeclamation,
+            commentaire = commentaire,
+            agent = request.user
+
+            )
+        response_data['status'] = 'success'
+        response_data['message'] = 'Action enregistrée!'
+    else:
+
+        response_data['status'] = 'error'
+        response_data['message'] = request.POST.get('type')
+
+    return JsonResponse(response_data)
 
 #PaKAGE Envoi
 @login_required
@@ -416,7 +438,7 @@ def package_create(request):
     page = request.GET.get('page')
     packages = paginator.get_page(page)
     if request.method == "POST":
-        form = PackageForm()
+        form = PackageForm(request.POST)
 
         if form.is_valid():
             form.save()
@@ -438,9 +460,9 @@ def package_create(request):
 def package_update(request, package_id):
     package = Package.objects.get(id=package_id)
     packages = Package.objects.filter().order_by('created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(packages, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    packages = paginator.get_page(page)
     if request.method == "POST":
         form = PackageForm(request.POST, instance=package)
         if form.is_valid():
@@ -473,12 +495,14 @@ def package_delete(request, package_id):
 @login_required
 def tranche_create(request):
     tranches = Tranche.objects.filter().order_by('created_at')
+    paginator = Paginator(tranches, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    tranches = paginator.get_page(page)
     if request.method == "POST":
         form = TrancheForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Frais bien enregistrée')
-            # return HttpResponseRedirect("/recipe/new/category")
             return redirect('commandes:tranche_create')
         else:
             pass
@@ -496,9 +520,9 @@ def tranche_create(request):
 def tranche_update(request, tranche_id):
     tranche = Tranche.objects.get(id=tranche_id)
     tranches = Tranche.objects.filter().order_by('created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
+    paginator = Paginator(tranches, 25)  # Show 25  per page
+    page = request.GET.get('page')
+    tranches = paginator.get_page(page)
     if request.method == "POST":
         form = TrancheForm(request.POST, instance=tranche)
         if form.is_valid():

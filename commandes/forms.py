@@ -122,16 +122,16 @@ class ReclamationForm(forms.ModelForm):
 class ReclamationHandlerForm(forms.ModelForm):
     class Meta:
         model = ReclamationsHandler
-        fields = ('reclamation', 'type', 'commentaire')
+        fields = ( 'type', 'commentaire')
         widgets = {
-            'reclamation': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
-            'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
-            'commentaire': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
+            #'reclamation': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': 'type', 'class': 'form-control'}),
+            'commentaire': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'commentaire','class':'form-control'}),
         }
 
-    def __init__(self, numero_commande, *args, **kwargs):
-        super(ReclamationForm, self).__init__(*args, **kwargs)
-        self.fields['reclamation'].queryset = ReclamationsHandler.objects.get(commande_numero_commande=numero_commande)
+    # def __init__(self, numero_commande, *args, **kwargs):
+    #      super(ReclamationHandlerForm, self).__init__(*args, **kwargs)
+    #      self.fields['reclamation'].queryset = Reclamation.objects.get(commande_numero_commande=numero_commande)
 
 
 class PackageForm(forms.ModelForm):

@@ -21,7 +21,7 @@ class TypeVehicules(models.Model):
 
 
 class Vehicules(models.Model):
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, verbose_name='Chauffeur')
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='vehicules', verbose_name='Chauffeur')
     type = models.ForeignKey(TypeVehicules, on_delete=models.PROTECT, verbose_name='Type de véhicules *')
     marque = models.CharField(max_length=200, verbose_name='Marque',  blank=True, null=True)
     modele = models.CharField(max_length=200, verbose_name='Modèle',  blank=True, null=True)

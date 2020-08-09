@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     'utilisateurs',
     'agences',
     'commandes',
-    'wkhtmltopdf'
+    'wkhtmltopdf',
+    'phonenumber_field',
+
 ]
 
 MIDDLEWARE = [

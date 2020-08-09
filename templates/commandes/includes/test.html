@@ -370,3 +370,84 @@
                 {% endfor %}
                 </tbody>
               </table>
+
+
+<table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="">#</th>
+
+                    <th scope="col" class="sort" data-sort="nom">Nom</th>
+                    <th scope="col" class="sort" data-sort="nom">Prénoms</th>
+                    <th scope="col" class="sort" data-sort="nom">Sexe</th>
+                    <th scope="col" class="sort" data-sort="nom">Tél</th>
+                    <th scope="col" class="sort" data-sort="nom">Profession</th>
+
+                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
+
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                {% for user in object_list %}
+                  <tr id="accordion2" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ user.id }}">
+                    <td>{{forloop.counter}}</td>
+                    <td>
+                        {{ user.last_name }}
+                    </td>
+                    <td class="budget">
+                        {{ user.first_name }}
+                    </td>
+                    <td class="budget">
+                        {{ user.person.sexe }}
+                    </td>
+                     <td class="budget">
+                        {{ user.person.tel }}
+                    </td>
+                    <td class="budget">
+                       {% if user.person.job %} {{ user.person.job }} {% endif %}
+                    </td>
+                    <td>
+                        {{user.person.created_at|date:' j F Y'}}
+                    </td>
+                    <td class="">
+                        <a href="{% url 'utilisateurs:user_profile' user.id %}" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
+                        <a href="{% url 'utilisateurs:user_update' user.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
+                        <a href="" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
+
+                    </td>
+                    <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
+                    <td></td>
+                    <td colspan="12">
+                    <div id="collapse{{ user.id }}" class="collapse in p-3" >
+                      <div class="row">
+                        <div class="col-4"><b>Login</b> : {{user.username}}</div>
+                        <div class="col-4"><b>Email</b> : {{user.email}}</div>
+                        <div class="col-4"><b>Date de naissance</b>:{% if user.person.birth_date %} {{user.person.birth_date}} {% endif %}</div>
+                      </div>
+                        <br>
+                      <div class="row">
+                        {% for identity in  user.identites.all %} 
+
+                        <div class="col-4"><b>Pièce identité</b>: 
+                          {{identity.type}},  N° <b>{{identity.reference}}</b>
+                       </div>
+                        <div class="col-4"><b>Date expiration</b>: 
+                          {{identity.expired_at}} 
+                       </div>
+                       <div class="col-4">
+                         <b>Personne à prévenir</b>: 
+                         {% if identity.contact_name %} {{identity.contact_name}} {% endif %} {% if identity.contact_tel %}| {{identity.contact_tel}}{% endif %}
+                       </div>
+                         {% endfor %} 
+
+                      </div>
+                    
+                     
+                    </div>
+                    </td>
+                   </tr>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>

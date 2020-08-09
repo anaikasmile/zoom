@@ -289,3 +289,12 @@
         page-break-before: always
     }
 }
+
+
+.field-icon {
+    float: right;
+    margin-left: -35px;
+    margin-top: -35px;
+    position: relative;
+    z-index: 2;
+}

@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
+from phonenumber_field.modelfields import PhoneNumberField
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = (
@@ -42,7 +43,7 @@ class Person(models.Model):
     job = models.CharField(max_length=100, blank=True, null=True, verbose_name="Profession")
     adresse = models.TextField(max_length=500, blank=True, verbose_name="Adresse")
     birth_date = models.DateField(null=True, blank=True, verbose_name="Date de naissance")
-    tel = models.CharField(max_length=50, unique=True, verbose_name=_(u'Téléphone'), blank=True, help_text=_(u'90 00 00 00'))
+    tel = PhoneNumberField(max_length=50, unique=True, verbose_name=_(u'Téléphone'), blank=True, help_text=_(u'+228________'))
     photo = models.ImageField(upload_to="utilisateurs", blank=True, null=True)
     #agence  = models.ForeignKey(Agences, null=True, related_name='agencePerson', on_delete=models.CASCADE)
 
