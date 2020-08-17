@@ -39,7 +39,7 @@
               </form>
                 <div class="row mt-3">
             <div class="col-6">
-              <a href="#" class="text-light"><small>Mot de passe oublié?</small></a>
+              <a href="{% url 'account_reset_password' %}" class="text-light"><small>Mot de passe oublié?</small></a>
             </div>
             <div class="col-6 text-right">
               <a href="{% url 'utilisateurs:user_signup' %}" class="text-light"><small>Nouveau compte</small></a>
@@ -49,8 +49,6 @@
 
           </div>
 
-        </div>
       </div>
-    </div>
 
 {% endblock %}

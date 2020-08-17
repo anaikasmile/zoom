@@ -121,13 +121,13 @@
                             <div class="row">
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ form_identity.type.label }}</label>
+                                  <label class="bmd-label-floating">{{ form_identity.type.label }} *</label>
                                    {{ form_identity.type }}
                                 </div>
                               </div>
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ form_identity.reference.label }}</label>
+                                  <label class="bmd-label-floating">{{ form_identity.reference.label }} *</label>
                                    {{ form_identity.reference }}
                                 </div>
                               </div>
@@ -136,15 +136,29 @@
                             <div class="row">
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ form_identity.initiated_at.label }}</label>
+                                  <label class="bmd-label-floating">{{ form_identity.initiated_at.label }} * </label>
                                    {{ form_identity.initiated_at }}
                                 </div>
                               </div>
 
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ form_identity.expired_at.label }}</label>
+                                  <label class="bmd-label-floating">{{ form_identity.expired_at.label }} *</label>
                                    {{ form_identity.expired_at }}
+                                </div>
+                              </div>
+                            </div>
+                             <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Image</label>
+                                   {{ form_identity.photo }}
+                                </div>
+                              </div>
+
+                              <div class="col-md-6">
+                                <div class="form-group">
+                              
                                 </div>
                               </div>
                             </div>

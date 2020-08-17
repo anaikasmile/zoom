@@ -90,14 +90,12 @@
               'rid': rid,
               'commentaire': $('#commentaire').val(),
               'action': 'post',
-              'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
 
             };
         console.log(data);
         $.ajax({
             url: $(this).attr('data_url'),
             data: data,
-            type: 'POST',
             dataType: 'json',
             success: function (data) {
                 if(data.status == "success"){

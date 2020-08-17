@@ -68,24 +68,28 @@
                   <tr>
                     <th scope="col" class="sort" data-sort="nom">#</th>
 
-                    <th scope="col" class="sort" data-sort="nom"></th>
-                    <th scope="col" class="sort" data-sort="nom"></th>
+                    <th scope="col" class="sort" data-sort="nom">Nom & Prenoms</th>
+                    <th scope="col" class="sort" data-sort="nom">Email</th>
 
                   </tr>
                 </thead>
                 <tbody class="list">
-                
+                  {% for a in agents %}
+
                   <tr>
                     <td>{{forloop.counter}}</td>
                     <td>
+                      {{ a.agent}}
                     </td>
                     <td class="budget">
+                      {{ a.agent.email }}
                     </td>
 
                     <td class="">
 
                     </td>
                   </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>

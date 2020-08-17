@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from .models import Agences,  TypeVehicules, Vehicules
-
+from utilisateurs.models import User
 from django.utils.translation import ugettext_lazy as _
 
 class AgenceForm(forms.ModelForm):
@@ -37,3 +37,6 @@ class VehiculesForm(forms.ModelForm):
             'nb_place': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
         }
+    def __init__(self, *args, **kwargs):
+        super(VehiculesForm, self).__init__(*args, **kwargs)
+        self.fields['user'].queryset = User.objects.filter(user_type=3)

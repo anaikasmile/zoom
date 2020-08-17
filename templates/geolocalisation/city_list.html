@@ -23,7 +23,7 @@
                 <div class="card-header">
                   <div class="row align-items-center">
                     <div class="col-8">
-                      <h3 class="mb-0">Formulaire </h3>
+                      <h3 class="mb-0">Ville </h3>
                     </div>
                   </div>
                 </div>
@@ -71,7 +71,6 @@
 
                     <th scope="col" class="sort" data-sort="nom">Nom</th>
                     <th scope="col" class="sort" data-sort="quartier">Pays</th>
-                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
 
                     <th scope="col">Actions</th>
                   </tr>
@@ -88,9 +87,7 @@
 
 
                     </td>
-                    <td>
-                        {{city.created_at|date:'F j, Y'}}
-                    </td>
+                   
                     <td class="">
                         <a href="{% url 'geolocalisation:city_update' city.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
                         <a href="{% url 'geolocalisation:city_delete' city.id %}" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>

@@ -6,11 +6,16 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404, JsonRespons
 from django.views.generic import ListView, CreateView
 from .forms import AgenceForm, TypeVehiculeForm, VehiculesForm
 from .models import Agences, TypeVehicules, Vehicules
+from affection.models import AgenceUser
 from django.db.models import ProtectedError
-from .tables import AgenceTable
+from .tables import AgenceTable, VehiculeTable
+from datatableview.views import DatatableView, Datatable
+from django.template.defaultfilters import timesince
+
+
 # Create your views here.
 def agence_create(request):
-    table = AgenceTable(Agences.objects.filter().order_by('-created_at'))
+    table = AgenceTable(Agences.objects.filter().order_by('name'))
     table.paginate(page=request.GET.get("page", 1), per_page=25)
     if request.method == "POST":
         form = AgenceForm(request.POST)
@@ -31,7 +36,7 @@ def agence_create(request):
 
 def agence_update(request, agence_id):
     agence = Agences.objects.get(id=agence_id)
-    table = AgenceTable(Agences.objects.filter().order_by('-created_at'))
+    table = AgenceTable(Agences.objects.filter().order_by('name'))
     table.paginate(page=request.GET.get("page", 1), per_page=25)
     if request.method == "POST":
         form = AgenceForm(request.POST, request.FILES, instance=agence)
@@ -52,9 +57,12 @@ def agence_update(request, agence_id):
 def agence_view(request, agence_id):
 
     agence = Agences.objects.get(id=agence_id)
+    #liste des agents par agences.
+    agents = AgenceUser.objects.filter(agence=agence).order_by('agent__last_name')
 
     context = {
-        'agence': agence
+        'agence': agence,
+        'agents': agents
     }
     return render(request, "agences/agences_view.html", context)
 
@@ -94,7 +102,39 @@ def vehicule_create(request):
         'object_list': vehicules
 
     }
+    return render(request, 'agences/vehicules_create.html', context)
+
+
+# class VehiculeTable(Datatable):
+#     class Meta:
+
+#         columns = [
+#                 'id',
+#                 'immatriculation',
+#                 'type',
+#                 'marque',
+#                 'modele',
+#                 'nb_place',
+#                 'etat',
+#                 'user',
+#                 ]
+#         ordering = ['-created_at']
+
+#         hidden_columns = [ "id"]
+#         search_fields = ["immatriculation", "type", "marque", "user"]
+
+        
+
+            
+def vehicule_list(request):           
+    table = VehiculeTable(Vehicules.objects.filter().order_by('-created_at'))
+    table.paginate(page=request.GET.get("page", 1), per_page=25)
+    context = {
+        'table': table
+    }
     return render(request, 'agences/vehicules_list.html', context)
+
+   
 
 def vehicule_update(request, vehicule_id):
     vehicule = Vehicules.objects.get(id=vehicule_id)
@@ -115,7 +155,7 @@ def vehicule_update(request, vehicule_id):
         'form': form,
         'object_list': vehicules
     }
-    return render(request, "agences/vehicules_list.html", context)
+    return render(request, "agences/vehicules_create.html", context)
 
 def vehicule_detail(request, vehicule_id):
     vehicule = Vehicules.objects.get(id=vehicule_id)
