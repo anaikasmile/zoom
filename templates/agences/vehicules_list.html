@@ -49,19 +49,7 @@
 {% block javascript %}
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-<link rel="stylesheet" href="{% static 'assets/css/dataTable/dataTable.css' %}">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-<!-- Load js for initializing tables via their server-side options -->
-<script type="text/javascript" charset="utf8" src="{% static 'js/datatableview.js' %}"></script>
-<script type="text/javascript">
-    $(function(){
-          var common_options = {
 
-          };
-
-        datatableview.initialize($('.datatable'), common_options);
-    });
-</script>
 {% endblock %}
 
