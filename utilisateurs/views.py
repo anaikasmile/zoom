@@ -12,7 +12,7 @@ from django.contrib.auth.models import User, Group
 from .models import Person, User, Identity
 from .forms import UserForm, UserRegistrationForm, IdentityForm, PersonForm, ProfileInlineFormset
 from django.views.generic import ListView, CreateView
-from django.db.models import Q, Count, F
+from django.db.models import Q, Count, F, Sum
 from django.contrib import messages
 from django.contrib.auth.base_user import BaseUserManager
 from django_filters.views import FilterView
@@ -63,6 +63,7 @@ def registration(request,role):
             identity = form_identity.save(commit=False)
             identity.user = user
             identity.save()
+            messages.success(request, 'Enregistement réussi')
 
             # raw_password = form.cleaned_data.get('password1')
             # user = authenticate(username=user.username, password=raw_password)
@@ -153,7 +154,7 @@ class ClientListView(SingleTableMixin, FilterView):
     filterset_class = UserFilter
     template_name = 'utilisateurs/clients.html'
     paginate_by = 25
-    ordering = ['-created_at']
+    ordering = ['last_name']
     def get_queryset(self):
         return User.objects.exclude(Q(user_type=1) | Q(user_type=2)|Q(user_type=3))
 
@@ -182,16 +183,19 @@ def user_profile(request,user_id):
     user = get_object_or_404(User, id=user_id)
     if user.user_type == 3:
         commandes = Commandes.objects.filter(driver=user)
+        commission = Commandes.objects.filter(driver=user).filter(Q(status=Commandes.ETAT_RECEPTIONNE) | Q(status=Commandes.ETAT_LIVRE)).aggregate(Sum('commission'))
+
     else:
         commandes = Commandes.objects.filter(colis__client=user)
-
+        commission = 0
     reclamations = Reclamations.objects.filter(commande__colis__client=user)
 
     nb_commandes = commandes.count()
     context = {
             'user': user,
             'nb_commandes': nb_commandes,
-            'nb_reclamations': reclamations.count()
+            'nb_reclamations': reclamations.count(),
+            'total_commission': commission
     }
 
     return render(request, 'utilisateurs/user_profile.html', context)

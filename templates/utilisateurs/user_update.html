@@ -105,18 +105,13 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Tél *</label>
-                                    {{ formset.0.tel}}
+                                    {{ formset.0.tel }}
 
                                 </div>
                               </div>
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">Photo</label>
-                                    <div class="custom-file">
-                                        {{ formset.0.photo }}
-                                        <label class="custom-file-label" for="customFileLang">Select file</label>
 
-                                    </div>
                                 </div>
                               </div>
                             </div>
@@ -164,6 +159,18 @@
                                 </div>
                               </div>
                             </div>
+
+                             <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating"> Image *</label>
+                                   {{ form_identity.photo }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                               
+                              </div>
+                            </div>
                             <hr class="my-4" />
                             <!-- Personne à prévenir -->
                             <h6 class="heading-small text-muted mb-4">Personne à prévenir</h6>
@@ -183,6 +190,7 @@
                                 </div>
                               </div>
                             </div>
+                           
 
                               <button type="submit" class="btn btn-primary pull-right">Modifier</button>
 

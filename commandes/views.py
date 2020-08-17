@@ -7,10 +7,10 @@ from django.core import serializers
 from django.core.paginator import Paginator
 from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
-from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations, Tranche, Package, Facture
+from .models import Colis, Insurance, Commandes, HistoriqueCommandes, Reclamations,ReclamationsHandler, Tranche, Package, Facture
 from agences.models import Agences, Societe
 from .forms import CommandesForm, CommandesSetForm, InsuranceForm, ColisForm, CommandesFormSet, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm,TrancheForm, PackageForm
 from .tables import CommandeTable, CommandeClientTable, CommandeDriverTable, ReclamationTable
@@ -347,7 +347,7 @@ class FilteredCommandesListView(SingleTableMixin, FilterView):
     filterset_class = CommandesFilter
 
 
-
+@login_required
 def commandes_liste(request):
     table = CommandeTable(Commandes.objects.filter().order_by('date_depot'))
     table.paginate(page=request.GET.get("page", 1), per_page=25)
@@ -377,7 +377,13 @@ def commande_view(request,commande_id):
     return render(request, "commandes/commande_view.html", context)
 
 
-
+@login_required
+def commissions(request):
+    commission = Commandes.objects.filter(Q(status=Commandes.ETAT_RECEPTIONNE) | Q(status=Commandes.ETAT_LIVRE)).values('driver','driver__last_name', 'driver__first_name').order_by('driver').annotate(total_commission=Sum('commission'))
+    context = {
+        'commission': commission
+    }
+    return render(request, "commandes/liste_commissions.html", context)
 
 #liste reclamations
 @login_required
@@ -408,25 +414,34 @@ def add_handler_reclamation_cmd(request):
     
     response_data = {}
 
-    if request.POST.get('action') == 'post':
-        reclamation = get_object_or_404(Reclamations, id=request.POST.get('rid'))
+    if request.GET.get('action') == 'post':
+        reclamation = get_object_or_404(Reclamations, id=request.GET.get('rid'))
 
-        typeTeclamation = request.POST.get('type')
-        commentaire = request.POST.get('commentaire')
+        typeTeclamation = request.GET.get('type')
+        commentaire = request.GET.get('commentaire')
 
-        ReclamationHandler.objects.create(
-            reclamation = reclamation,
-            type = typeTeclamation,
-            commentaire = commentaire,
-            agent = request.user
+        try:
+            reclamationsHandler = ReclamationsHandler.objects.get(reclamation=reclamation)
+            reclamationsHandler.type = typeTeclamation
+            reclamationsHandler.commentaire = commentaire
+            reclamationsHandler.save()
+        except ReclamationsHandler.DoesNotExist:
 
-            )
+            ReclamationsHandler.objects.create(
+                reclamation = reclamation,
+                type = typeTeclamation,
+                commentaire = commentaire,
+                agent = request.user
+
+                )
+
+
         response_data['status'] = 'success'
         response_data['message'] = 'Action enregistrée!'
     else:
 
         response_data['status'] = 'error'
-        response_data['message'] = request.POST.get('type')
+        response_data['message'] = request.GET.get('type')
 
     return JsonResponse(response_data)
 

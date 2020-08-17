@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
 {% block header %}
 
 <div class="row align-items-center py-4">
@@ -9,7 +12,7 @@
           <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
           <li class="breadcrumb-item">Véhicules</li>
 
-          <li class="breadcrumb-item active" aria-current="page">Liste de véhicules</li>
+          <li class="breadcrumb-item active" aria-current="page">Liste</li>
         </ol>
       </nav>
     </div>
@@ -18,91 +21,9 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-        <div class="col-xl-4">
-          <div class="card">
-                <div class="card-header">
-                  <div class="row align-items-center">
-                    <div class="col-8">
-                      <h3 class="mb-0">Vehicules </h3>
-                    </div>
-                  </div>
-                </div>
-              <div class="card-body">
-                <form method="post" name="add-form" class="">
-                     {% csrf_token %}
-                     {{ form.errors }}
-                    <div class="row">
-                        <div class="col-lg-12">
-                          <div class="form-group">
-                            <label class="form-control-label" > {{ form.user.label }}</label>
-                                 {{ form.user }}
-                          </div>
-                        </div>
-                     </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                          <div class="form-group">
-                            <label class="form-control-label" > {{ form.type.label }}</label>
-                                 {{ form.type }}
-                          </div>
-                        </div>
-                     </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                          <div class="form-group">
-                            <label class="form-control-label" > {{ form.immatriculation.label }}</label>
-                               {{ form.immatriculation }}
-                          </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-lg-12">
-                          <div class="form-group">
-                            <label class="form-control-label" > {{ form.modele.label }}</label>
-                               {{ form.modele }}
-                          </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-lg-12">
-                          <div class="form-group">
-                            <label class="form-control-label" > {{ form.marque.label }}</label>
-                               {{ form.marque }}
-                          </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-lg-12">
-                          <div class="form-group">
-                            <label class="form-control-label" > {{ form.nb_place.label }}</label>
-                               {{ form.nb_place }}
-                          </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-lg-12">
-                          <div class="form-group">
-                            <label class="form-control-label" > {{ form.etat.label }}</label>
-                               {{ form.etat }}
-                          </div>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-lg-12">
-                          <div class="form-group">
-                            <label class="form-control-label" > {{ form.description.label }}</label>
-                               {{ form.description }}
-                          </div>
-                        </div>
-                     </div>
+        
 
-                    <button type="submit" class="btn btn-primary mt-4">{% if "/update" in request.path %}  Modifier {% else %} Enregistrer {% endif %}</button>
-                 </form>
-              </div>
-          </div>
-        </div>
-
-        <div class="col-xl-8">
+        <div class="col-xl-12">
           <div class="card">
           <!-- Card header -->
             <div class="card-header border-0">
@@ -110,112 +31,37 @@
             </div>
             <!-- Light table -->
             <div class="table-responsive">
-              <table class="table align-items-center table-flush">
-                <thead class="thead-light">
-                  <tr>
-                    <th scope="col" class="sort" data-sort="nom">#</th>
 
-                    <th scope="col" class="sort" data-sort="nom">Immatriculation</th>
-                    <th scope="col" class="sort" data-sort="nom">Type</th>
+              {% render_table table %}
 
-                    <th scope="col" class="sort" data-sort="nom">Chauffeur</th>
-
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody class="list">
-                {% for vehicule in object_list %}
-                  <tr id="accordion2" >
-                    <td>{{forloop.counter}}</td>
-                    <td>
-                        {{ vehicule.immatriculation }}
-                    </td>
-                    <td class="budget">
-                        {{ vehicule.type }}
-                    </td>
-
-                     
-                     <td class="budget">
-                        {{ vehicule.user.get_full_name }}
-                    </td>
-                   
-
-
-                    <td class="">
-
-                        <a class="btn btn-info" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ vehicule.id }}"><i class="fa fa-eye" title="Détail"></i></a>
-                        <a href="{% url 'agences:vehicule-update' vehicule.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
-                        <a href="{% url 'agences:vehicule-delete' vehicule.id %}" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
-
-                    </td>
-                    <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
-                    <td colspan="12">
-                      <div id="collapse{{ vehicule.id }}" class="collapse in p-3" >
-                        <div class="row">
-                          <div class="col-12"><b>Marque : </b> {{vehicule.marque}}</div>
-                          <div class="col-12"><b>Modèle : </b> {{vehicule.modele}}</div>
-                          <div class="col-12"><b>Nombre de places : </b> {% if vehicule.nb_place %}
-                            {{ vehicule.nb_place }}
-                         {% endif %}</div>
-
-                          <div class="col-12"><b>Etat :</b>{{vehicule.etat}}</div>
-
-                          <div class="col-12">{{vehicule.description}}</div>
-
-                        </div>
-                                              
-                       
-                      </div>
-                    </td>
-
-                  </tr>
-                {% endfor %}
-                </tbody>
-              </table>
+            
             </div>
             <!-- Card footer -->
-          {% if object_list.page and object_list.paginator.num_pages > 1 %}
-
-            <div class="card-footer py-4">
-              <nav aria-label="...">
-                <ul class="pagination justify-content-end mb-0">
-                  {% if object_list.has_previous %}
-                        <li class="page-item ">
-                            <a class="page-link " href="{?page={{ object_list.previous_page_number }}">
-                                <i class="fas fa-angle-left"></i>
-                            </a>
-                        </li>
-                  {% else %}
-                    <li class="page-item  disabled"><a class="page-link"><i class="fas fa-angle-left"></i></a></li>
-                  {% endif %}
-
-                  {% for i in object_list.paginator.page_range %}
-                  {% if object_list.number == i %}
-                    <li class="page-item active"><a class="page-link"><span>{{ i }} <span class="sr-only">(current)</span></span></a></li>
-                  {% else %}
-                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                  {% endif %}
-                {% endfor %}
-                  
-                
-            {% if object_list.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ object_list.next_page_number }}">
-                      <i class="fas fa-angle-right"></i>
-
-                    </a>
-                </li>
-                {% else %}
-                  <li class="page-item disabled">
-                    <a class="page-link"><i class="fas fa-angle-right"></i></a>
-                  </li>
-                {% endif %}
-                </ul>
-              </nav>
-            </div>
-  {% endif %}
+        
           </div>
         </div>
 
     </div>
+                 
+
 {% endblock %}
+
+{% block javascript %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<link rel="stylesheet" href="{% static 'assets/css/dataTable/dataTable.css' %}">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<!-- Load js for initializing tables via their server-side options -->
+<script type="text/javascript" charset="utf8" src="{% static 'js/datatableview.js' %}"></script>
+<script type="text/javascript">
+    $(function(){
+          var common_options = {
+
+          };
+
+        datatableview.initialize($('.datatable'), common_options);
+    });
+</script>
+{% endblock %}
+

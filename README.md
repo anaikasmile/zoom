@@ -44,3 +44,11 @@ pwd : n23zoom
 pg_ctlcluster 12 main start
 
 Admin django root n23zoom  
+
+source zoomEnv/bin/activate
+sudo supervisorctl reread
+
+sudo supervisorctl status 
+sudo supervisorctl status
+ nano zoom-gunicorn.conf
+

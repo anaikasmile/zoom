@@ -1,14 +1,17 @@
 import django_tables2 as tables
 import itertools
 
-from django_tables2 import TemplateColumn
+from django_tables2 import TemplateColumn, LinkColumn
 from .models import Commandes, Reclamations
+from django_tables2.utils import A  # alias for Accessor
 
 
 class CommandeTable(tables.Table):
-    client  = tables.Column(accessor="colis__client")
+    client  = tables.LinkColumn("utilisateurs:user_profile", text=lambda record: record.colis.client, args=[A("colis__client__id")]) 
+    driver  = tables.LinkColumn("utilisateurs:user_profile", text=lambda record: record.driver, args=[A("driver__id")]) 
     etat = tables.Column(accessor="getEtatLibelle")
     date_depot = tables.DateTimeColumn(format ='d/m/Y')
+    numero_commande = tables.LinkColumn("commandes:commande_view", args=[A("id")])
 
     actions  = TemplateColumn(template_name="commandes/includes/commande_actions.html", attrs={"td": {"class": "text-right"}})
     class Meta:
@@ -92,12 +95,15 @@ class CommandeDriverTable(tables.Table):
 
 
 class ReclamationTable(tables.Table):
-    actions  = TemplateColumn(template_name="commandes/includes/reclamation_actions.html", attrs={"td": {"class": "text-right"}})
+    etat = TemplateColumn(template_name="commandes/includes/reclamation_traitement.html", attrs={"td": {"class": ""}})
+    actions  = TemplateColumn(template_name="commandes/includes/reclamation_actions.html", attrs={"td": {"class": ""}})
     created_at = tables.DateTimeColumn(format ='d/m/Y')
+
+    commande  = tables.LinkColumn("commandes:commande_view", text=lambda record: record.commande, args=[A("commande__id")]) 
 
     class Meta:
         model = Reclamations
-        sequence = ('id', 'created_at', 'commande','type', 'observation','image','actions')
+        sequence = ('id', 'created_at', 'commande','type', 'observation','image','etat','actions')
         exclude = ['updated_at']
         template_name = "django_tables2/bootstrap.html"
        	attrs = {
@@ -109,3 +115,5 @@ class ReclamationTable(tables.Table):
 	            }
         	}
     	}
+        def render_etat(self, value, record):
+            return format_html("<b>{} {}</b>", value, record.reclamationHandler.all)

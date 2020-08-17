@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+
+<div class="row align-items-center py-4">
+    <div class="col-lg-6 col-7">
+      <h6 class="h2 text-white d-inline-block mb-0">Véhicules</h6>
+      <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+          <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+          <li class="breadcrumb-item">Véhicules</li>
+
+          <li class="breadcrumb-item active" aria-current="page">{% if "/update" in request.path %}  Modifier {% else %} Enregistrer {% endif %}</li>
+        </ol>
+      </nav>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-12">
+          <div class="card">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col-8">
+                      <h3 class="mb-0"> {% if "/update" in request.path %}  Modifier {% else %} Enregistrer {% endif %}</h3>
+                    </div>
+                  </div>
+                </div>
+              <div class="card-body">
+                <form method="post" name="add-form" class="">
+                     {% csrf_token %}
+                     {{ form.errors }}
+                    <div class="row">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" > {{ form.user.label }}</label>
+                                 {{ form.user }}
+                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" > {{ form.type.label }}</label>
+                                 {{ form.type }}
+                          </div>
+                        </div>
+                     </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" > {{ form.immatriculation.label }}</label>
+                               {{ form.immatriculation }}
+                          </div>
+                        </div>
+                     
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" > {{ form.modele.label }}</label>
+                               {{ form.modele }}
+                          </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" > {{ form.marque.label }}</label>
+                               {{ form.marque }}
+                          </div>
+                        </div>
+                     
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" > {{ form.nb_place.label }}</label>
+                               {{ form.nb_place }}
+                          </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" > {{ form.etat.label }}</label>
+                               {{ form.etat }}
+                          </div>
+                        </div>
+                    
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label class="form-control-label" > {{ form.description.label }}</label>
+                               {{ form.description }}
+                          </div>
+                        </div>
+                     </div>
+
+                    <button type="submit" class="btn btn-primary mt-4">{% if "/update" in request.path %}  Modifier {% else %} Enregistrer {% endif %}</button>
+                 </form>
+              </div>
+          </div>
+        </div>
+
+         
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<!-- Load js for initializing tables via their server-side options -->
+<script type="text/javascript" charset="utf8" src="{% static 'js/datatableview.js' %}"></script>
+<script type="text/javascript">
+    $(function(){
+          var common_options = {};
+
+        datatableview.initialize($('.datatable'), common_options);
+    });
+</script>
+{% endblock %}
+

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django_countries',
     'bootstrap4',
     'widget_tweaks',
@@ -49,7 +50,11 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_filters',
     'django_extensions',
-    'phonenumber_field'
+    'phonenumber_field',
+    'affection',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 
 
 ]
@@ -101,6 +106,9 @@ AUTHENTICATION_BACKENDS = (
     'utilisateurs.AuthBackends.LoginBackend'
 
 )
+
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

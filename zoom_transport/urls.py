@@ -21,10 +21,13 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('utilisateurs.urls')),
-    path('agences/', include('agences.urls')),
+    path('', include('agences.urls')),
+    path('affectation/', include('affection.urls')),
 
-    path('places/', include('geolocalisation.urls')),
-    path('', include('commandes.urls'))
+    path('', include('geolocalisation.urls')),
+    path('', include('commandes.urls')),
+    path('accounts/', include('allauth.urls')),
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -23,7 +23,7 @@
                 <div class="card-header">
                   <div class="row align-items-center">
                     <div class="col-8">
-                      <h3 class="mb-0">Formulaire </h3>
+                      <h3 class="mb-0">Quartier </h3>
                     </div>
                   </div>
                 </div>
@@ -70,7 +70,6 @@
 
                     <th scope="col" class="sort" data-sort="nom">Nom</th>
                     <th scope="col" class="sort" data-sort="quartier">Ville</th>
-                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
 
                     <th scope="col">Actions</th>
                   </tr>
@@ -85,9 +84,7 @@
                     <td class="budget">
                       {{ district.city }}
                     </td>
-                    <td>
-                        {{district.created_at|date:'j F Y'}}
-                    </td>
+                   
                     <td class="">
                         <a href="{% url 'geolocalisation:district_update' district.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
                         <a href="{% url 'geolocalisation:district_delete' district.id %}" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
