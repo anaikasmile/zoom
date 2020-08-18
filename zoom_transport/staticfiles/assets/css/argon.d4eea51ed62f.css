@@ -26453,70 +26453,7 @@ table.dataTable tbody > tr.selected
     }
 }
 
-<<<<<<< HEAD
-/*[data-calendar-month='0']
-{
-    background-image: "";
-}
 
-[data-calendar-month='1']
-{
-    background-image: "";
-}
-
-[data-calendar-month='2']
-{
-    background-image: "";
-}
-
-[data-calendar-month='3']
-{
-    background-image: "";
-}
-
-[data-calendar-month='4']
-{
-    background-image: "";
-}
-
-[data-calendar-month='5']
-{
-    background-image: "";
-}
-
-[data-calendar-month='6']
-{
-    background-image: "";
-}
-
-[data-calendar-month='7']
-{
-    background-image: "";
-}
-
-[data-calendar-month='8']
-{
-    background-image: "";
-}
-
-[data-calendar-month='9']
-{
-    background-image: "";
-}
-
-[data-calendar-month='10']
-{
-    background-image: "";
-}
-
-[data-calendar-month='11']
-{
-    background-image: "";
-}
-*/
-=======
-
->>>>>>> c90f8b445ff50f54e0cf60ad14871d89102d0ba5
 .card-calendar .card-header
 {
     border-bottom: 0;
@@ -29844,8 +29781,4 @@ input.datetimepicker[data-color='yellow'] + .bootstrap-datetimepicker-widget.dro
 }
 tr.hide-table-padding td {
   padding: 0;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> c90f8b445ff50f54e0cf60ad14871d89102d0ba5
