@@ -2,6 +2,8 @@ from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, FileResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, View
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.contrib import messages
 from django.core import serializers
 from django.core.paginator import Paginator
@@ -15,11 +17,11 @@ from agences.models import Agences, Societe
 from .forms import CommandesForm, CommandesSetForm, InsuranceForm, ColisForm, CommandesFormSet, Step1Form, Step2Form,ReclamationForm, ReclamationHandlerForm,TrancheForm, PackageForm
 from .tables import CommandeTable, CommandeClientTable, CommandeDriverTable, ReclamationTable
 
-from .filters import CommandesFilter
+from .filters import CommandesFilter, CommandesClientFilter, CommandesDriverFilter
 import random
 import string
 from weasyprint import HTML
-from var_dump import var_dump
+
 
 
 
@@ -54,25 +56,24 @@ def commande_create(request):
 
     #commande_formset = CommandesFormSet()
     if request.method == 'POST':
-        form_class = ColisForm(request.POST, request.FILES)
-        if form_class.is_valid():
+        form_class = ColisForm(request.POST, request.FILES) 
+        commande_formset = CommandesSetForm(request.POST, request.FILES)
+        if form_class.is_valid() and commande_formset.is_valid():
             colis = form_class.save(commit=False)
             colis.client = request.user
-            commande_formset = CommandesSetForm(request.POST, request.FILES)
-            if commande_formset.is_valid():
-                colis.save()
+            colis.save()
 
 
-                new_colis = get_object_or_404(Colis, id=colis.id)
-                data = getTrancheData(new_colis)
+            new_colis = get_object_or_404(Colis, id=colis.id)
+            data = getTrancheData(new_colis)
 
-                commande = commande_formset.save(commit=False)
-                commande.colis = new_colis
-                commande.price = data["amount"]
-                commande.commission = data["commission"]
-                commande.save()
-                messages.success(request, "Votre commande a été enregistrée")
-                return redirect('commandes:create_commande')
+            commande = commande_formset.save(commit=False)
+            commande.colis = new_colis
+            commande.price = data["amount"]
+            commande.commission = data["commission"]
+            commande.save()
+            messages.success(request, "Votre commande a été enregistrée")
+            return redirect('commandes:commande_recap',  commande_ref = commande.numero_commande)
 
     else:
         form_class = ColisForm()
@@ -85,6 +86,17 @@ def commande_create(request):
     }
 
     return render(request, 'commandes/create.html', context=context)
+
+@login_required
+def commande_recap(request, commande_ref):
+    commande = get_object_or_404(Commandes, numero_commande=commande_ref)
+
+    context = { 'numero_commande': commande_ref,
+                'commande': commande
+    }
+    return render(request, 'commandes/commande_recap.html', context=context)
+
+
     #template_name = 'commandes/create.html'
     # def get_context_data(self, **kwargs):
     #     # we need to overwrite get_context_data
@@ -147,6 +159,24 @@ def mes_commandes(request):
     }
     return render(request, "commandes/mes_commandes.html", context)
 
+
+class ClientCommandeListView(SingleTableMixin, FilterView):
+    table_class = CommandeClientTable
+    filterset_class = CommandesClientFilter
+    template_name = 'commandes/commandes_client.html'
+    paginate_by = 25
+    def get_queryset(self):
+        return Commandes.objects.filter(colis__client=self.request.user)
+
+
+class DriverCommandeListView(SingleTableMixin, FilterView):
+    table_class = CommandeDriverTable
+    filterset_class = CommandesDriverFilter
+    template_name = 'commandes/commandes_drivers.html'
+    paginate_by = 25
+    def get_queryset(self):
+        return Commandes.objects.filter(driver=self.request.user)
+
 @login_required
 def mes_commandes_detail(request,commande_ref):
     commande = get_object_or_404(Commandes, numero_commande=commande_ref)
@@ -166,35 +196,39 @@ def detail_commande(request):
     return
 
 #Vue commande du chauffeur
-@login_required
-def drivers_orders(request):
+# @login_required
+# def drivers_orders(request):
 
-    #Commande disponible
-    table = CommandeDriverTable(Commandes.objects.filter(driver__isnull=True, status=Commandes.ETAT_PAYE))
-    table.paginate(page=request.GET.get("page", 1), per_page=25)
+#     #Commande disponible
+#     table = CommandeDriverTable(Commandes.objects.filter(driver__isnull=True, status=Commandes.ETAT_PAYE))
+#     table.paginate(page=request.GET.get("page", 1), per_page=25)
 
-    #Commande livrés
-    table2 = CommandeDriverTable(Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE)))
-    table2.paginate(page=request.GET.get("page", 1), per_page=25)
+#     #Commande livrés
+#     table2 = CommandeDriverTable(Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE)))
+#     table2.paginate(page=request.GET.get("page", 1), per_page=25)
 
-    #Commande En cours
-    table3 = CommandeDriverTable(Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_EN_TRANSIT) | Q(status=Commandes.ETAT_EN_AGENCE)))
-    table3.paginate(page=request.GET.get("page", 1), per_page=25)
+#     #Commande En cours
+#     table3 = CommandeDriverTable(Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_EN_TRANSIT) | Q(status=Commandes.ETAT_EN_AGENCE)))
+#     table3.paginate(page=request.GET.get("page", 1), per_page=25)
 
- #Commande accepté
-    table4 = CommandeDriverTable(Commandes.objects.filter(driver=request.user, accepted=Commandes.ETAT_ACCEPTE))
-    table4.paginate(page=request.GET.get("page", 1), per_page=25)
+#  #Commande accepté
+#     table4 = CommandeDriverTable(Commandes.objects.filter(driver=request.user, accepted=Commandes.ETAT_ACCEPTE))
+#     table4.paginate(page=request.GET.get("page", 1), per_page=25)
 
-    queryset = Commandes.objects.select_related().all()
-    f = CommandesFilter(request.GET, queryset=queryset)
-    context = {
-        'table': table,
-        'table2': table2,
-        'table3': table3,
-        'table4': table4
+#     queryset = Commandes.objects.select_related().all()
+#     f = CommandesFilter(request.GET, queryset=queryset)
+#     context = {
+#         'table': table,
+#         'table2': table2,
+#         'table3': table3,
+#         'table4': table4
 
-    }
-    return render(request, "commandes/commandes_drivers.html", context)
+#     }
+#     return render(request, "commandes/commandes_drivers.html", context)
+
+
+
+
 
 def delivery_orders_by_driver(request):
     commandes = Commandes.objects.filter(driver=request.user).filter(Q(status=Commandes.ETAT_LIVRE) | Q(status=Commandes.ETAT_RECEPTIONNE))
@@ -228,18 +262,6 @@ def etat_update(request):
     }
     return JsonResponse(data)
 
-def historique_commande(request,commande_ref):
-    commande = get_object_or_404(Commandes, numero_commande = commande_ref)
-    historiques = HistoriqueCommandes.objects.filter(commande=commande).order_by('created_at')
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
-
-    context = {
-        'commande': commande,
-        'historiques': historiques
-    }
-    return render(request, "commandes/commande_historique.html", context)
 
 
 def historique_commande_admin(request,commande_id):
@@ -335,16 +357,22 @@ def add_reclamation(request):
 def stats(request):
     return render(request, "default/stats.html", {})
 
-@login_required
-class FilteredCommandesListView(SingleTableMixin, FilterView):
+class CommandesListView(LoginRequiredMixin, SingleTableMixin, FilterView):
     table_class = CommandeTable
-    model = Commandes
-
+    filterset_class = CommandesFilter
     template_name = 'commandes/commandes_liste.html'
     paginate_by = 2
     ordering = ['created_at']
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['form_step1'] = Step1Form
+        context['form_step2'] = form_step2
 
-    filterset_class = CommandesFilter
+        return context
+   
+
 
 
 @login_required
@@ -387,12 +415,18 @@ def commissions(request):
 
 #liste reclamations
 @login_required
-def list_reclamation(request):
+def list_reclamation(request, commande_id=None):
     table = ReclamationTable(Reclamations.objects.all())
     table.paginate(page=request.GET.get("page", 1), per_page=25)
-    form = ReclamationHandlerForm()
+    traitement = None
+    try:
+        traitement = ReclamationsHandler.objects.get(reclamation__commande_id = commande_id)
+        form = ReclamationHandlerForm(instance=traitement)
+    except ReclamationsHandler.DoesNotExist:
+        form = ReclamationHandlerForm()
+
     if request.method == "POST":
-        form = ReclamationHandlerForm(request.POST)
+        form = ReclamationHandlerForm(request.POST, instance=traitement)
         if form.is_valid():
             form.save()
             messages.success(request, 'Traitement enregistrée')

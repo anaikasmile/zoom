@@ -24,6 +24,20 @@
 {% block content %}
     <div class="row">
         <div class="col-xl-12">
+           <!-- Card header -->
+          <div class="card">
+            <div class="card-header">
+              Rechercher
+            </div>
+            <div class="card-body">
+                {% if filter %}
+                <form action="" method="get" class="form form-inline">
+                {% bootstrap_form filter.form layout='inline' %}
+                {% bootstrap_button '<i class="fa fa-search"></i>' %}
+                </form>
+                {% endif %}
+            </div>
+          </div>
           <!-- Card header -->
           <div class="card bg-default">
             <div class="card-header bg-transparent border-0">

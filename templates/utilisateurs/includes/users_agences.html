@@ -1,0 +1,5 @@
+{% if record.affectation_agent.all %}
+ {% for r in  record.affectation_agent.all %} 
+    <b>{{ r.agence }}</b>
+  {% endfor %}
+{% endif %}

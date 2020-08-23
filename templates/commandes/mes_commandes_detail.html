@@ -4,153 +4,137 @@
 
 
 {% block content %}
-<div class="container-fluid mt--6">
-      <div class="row">
-        <div class="col">
-          <div class="card">
-            <div class="card-header bg-transparent border-0">
-              <h3 class="text-center">COMMANDE  DETAIL - #{{commande.numero_commande|upper}}</h3>
-            </div>
-            <div class="card-header bg-transparent border-0">
-              
-            </div>
+
+  <div class="row">
+      <div class="col-md-5">
+
+          <div class="card card-default ">
             <div class="card-body">
-              <div class="row">
-                <div class="col-8">
-                  <div class="row">
-                    <div class="col-4">
-                      <br>
-                         {% if commande.colis.image %}
-                            <img src="{{commande.colis.image.url}}" class="" style="width: 228px; height: 250px;" />
-                            {% else %}
-                            <img src="{% static 'assets/img/brand/default.png' %}">
-                            {% endif %}
-                    </div>
-                    <div class="col-lg-8">
-                      <h6 class="heading-small text-muted mb-4">Commande Infos</h6>
-                                          <hr class="my-4" />
-                        <div class="row">
-                          <div class="col-md-6">
-                              N° Commande: <b>{{commande.numero_commande|upper}}</b>
-                          </div>
-                          <div class="col-md-6">
-                              Prix: {% if commande.price %}<b> {{ commande.price }} F.CFA </b>{% endif %}
-                          </div>
-                        </div>
-<br>
-                         <div class="row">
-                          <div class="col-md-6">
-                             Package d'envoi: <b>{{ commande.package }}</b>
-
-                          </div>
-                          <div class="col-md-6">
-                              Assurance: <b>{{ commande.insurance }}</b>
-                          </div>
-                        </div>
-<br>
-
-                        <div class="row">
-                          <div class="col-md-6">
-                             Ville départ: <b>{{commande.city_depart}} </b>
-
-                          </div>
-                          <div class="col-md-6">
-                              Ville d'arrivée: <b>{{commande.city_arrive}}</b>
-                          </div>
-                        </div>
-<br>
-
-                         <div class="row">
-                          <div class="col-md-6">
-                             Date de dépot:  <b>{{ commande.date_depot|date:'j/m/Y' }}</b>
-
-                          </div>
-                          <div class="col-md-6">
-                              Date de livraison (prévu):  <b>{{ commande.date_reception|date:'j/m/Y' }}</b>
-                          </div>
-                        </div>
-<br>
-
-                        <div class="row">
-                          <div class="col-md-12">
-                            Etat: <b>{{ commande.getEtatLibelle }}</b>
-                          </div>
-                         
-                        </div>
-
-                     
-                        <br><br>
-
-                        <h6 class="heading-small text-muted mb-4">Colis détails</h6>
-                          <hr class="my-4" />
-
-                        <div class="row">
-                          <div class="col-md-6">
-                             Nature du colis: <b>{{commande.colis.nature}}</b>
-
-                          </div>
-                          <div class="col-md-6">
-                              Poids: <b>{{commande.colis.weight}} kg</b>
-                          </div>
-                        </div>
-<br>
-
-                         <div class="row">
-                          <div class="col-md-6">
-                             Taille: <b> {{commande.colis.size}}</b>
-
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-md-12">
-                              {{commande.colis.description}}</b>
-                          </div>
-                        </div>
-
-                        
-                      </div>
-                    </div>
-                 
-
-                </div>
-
-                <div class="col-lg-4" style="border-left: 1px solid #ddd;">
-   <!-- Suivi du colis -->
-                   <h6 class="heading-small text-muted mb-4">Historique</h6>
-                    <hr class="my-4" />
-
-                   <ul class="" style="list-style: none;">
-                    {% for h in commande.commandeHistorique.all|dictsortreversed:"created_at"  %}
-                      <li>
-                        <p> 
-                        <div class="col-auto">
-                          <div class="icon icon-shape bg-orange text-white rounded-circle shadow" style="width: 4.5rem; height: 4.5rem;">
-                            {% if h.state == h.ETAT_RECEPTIONNE %} <i class="fa fa-check" title="{{ h.getEtatLibelle }}"></i>{% endif %}
-                            {% if h.state == h.ETAT_LIVRE %} <i class="fa fa-gift" title="{{ h.getEtatLibelle }}"></i>{% endif %}
-                            {% if h.state == h.ETAT_EN_TRANSIT %} <i class="fa fa-car" title="{{ h.getEtatLibelle }}"></i>{% endif %}
-                            {% if h.state == h.ETAT_EN_AGENCE %} <i class="fa fa-h-square" title="{{ h.getEtatLibelle }}"></i>{% endif %}
-                            {% if h.state == h.ETAT_PAYE %} <i class="fa fa-money" title="{{ h.getEtatLibelle }}"></i>{% endif %}
-                          </div>
-                          {{ h.created_at|date:'d/m/Y H:i' }}
-                          <p class="text-right">{% if h.agence %}{{ h.agence.name}} - {{ h.agence.district.city }}{% endif %}</p>
-                          <p class="text-right"> {{ h.commentaire }}</p> 
-                      </div>    
-                        
-                      </li>
-                      
-                     {% endfor %}
-
-                   </ul>
-
-                </div>
+              <div class="custom-heading">
+                <h2>Commande détail </h2>
               </div>
-              <!-- Row -->
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th>N° Commande</th>
+                    <td>{{commande.numero_commande|upper}}</td>
+                  </tr>
+                  <tr>
+                    <th>Etat:</th>
 
+                    <td>{{ commande.getEtatLibelle }}</td>
+                  </tr> 
+                  <tr>
+                      <th>Prix:</th>
+                      <td>{% if commande.price %} {{ commande.price }} F.CFA {% endif %} </td>
+                  </tr> 
+                  <tr>
+                   <th>Package d'envoi:</th>
 
+                    <td>{{ commande.package }}</td>
+                  </tr>     
+                     
+                  <tr>
+                    <th>Assurance?</th>
+                    <td>{{ commande.insurance }}</td>
+                    </tr> 
+                  <tr>
+
+                    <th>Nature du colis:</th>
+
+                    <td>{{ commande.colis }}</td>
+                  </tr>        
+                  <tr>
+                    <th>Taille :</th>
+                    <td>{{commande.colis.size}}</td>
+                  </tr>
+                        
+                  <tr>
+                    <th>Poids:</th>
+                    <td>{{commande.colis.weight}} Kg</td>
+                  </tr> 
+                  <tr>
+                    <th>Image:</th>
+                    <td>{% if commande.colis.image %}
+                      <img src="{{commande.colis.image.url}}" class="" style="width: 108px; height: 70px;" />
+                      {% else %}
+                      <img src="{% static 'assets/img/brand/default.png' %}">
+                      {% endif %}
+                    </td>
+                  </tr>  
+                  <tr>
+                    <th>Autres infos:</th>
+                    <td>{{commande.colis.description}}</td>
+                  </tr>      
+                  
+                  </tbody>
+                </table>
             </div>
           </div>
+
+          <div class="card card-default ">
+            <div class="card-body">
+              <div class="custom-heading">
+                <h2>Trajet détail</h2>
+              </div>
+              <table class="table">
+                  <tbody>
+                    
+                     <tr>
+                      <th>Ville de départ:</th>
+                      <td>{{commande.city_depart}}</td>
+                    </tr>
+                    <tr>
+                      <th>Ville d'arrivée:</th>
+                      <td>{{commande.city_arrive}}</td>
+                    </tr>
+                    <tr>
+                      <th>Date de départ:</th>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th>Date de réception:</th>
+                      <td></td>
+                    </tr>
+                  
+                  </tbody>
+                </table>
+            </div>
+          </div>
+         
         </div>
-      </div>
+        <div class="col-md-7">
+          <div class="card card-default ">
+              <div class="card-body">
+                <div class="custom-heading">
+                  <h2>Historique</h2>
+                </div>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                        <th>Etat:</th>
+                        <th>Date:  </th>
+                    </tr>
+                  
+                    <tr>
+                      <td colspan="2">
+                         
+                      </td>
+                    </tr>                    
+                    
+
+                   </tbody>
+                </table>
+              </div>
+          </div>
+
+
+                 
+          
+
+        </div>
+
+<!-- End row -->
 
 
 

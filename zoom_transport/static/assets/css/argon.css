@@ -3242,6 +3242,7 @@ textarea.form-control
         width: auto;
 
         vertical-align: middle;
+        margin-right: 15px;
     }
     .form-inline .form-control-plaintext
     {
@@ -3351,15 +3352,15 @@ fieldset:disabled a.btn
 .btn-primary
 {
     color: #fff;
-    border-color: #5e72e4;
-    background-color: #5e72e4;
+    border-color: #e7ab3c;
+    background-color: #e7ab3c;
     box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
 }
 .btn-primary:hover
 {
     color: #fff;
-    border-color: #5e72e4; 
-    background-color: #5e72e4;
+    border-color: #e7ab3c; 
+    background-color: #e7ab3c;
 }
 .btn-primary:focus,
 .btn-primary.focus
@@ -3370,15 +3371,15 @@ fieldset:disabled a.btn
 .btn-primary:disabled
 {
     color: #fff;
-    border-color: #5e72e4; 
-    background-color: #5e72e4;
+    border-color: #e7ab3c; 
+    background-color: #e7ab3c;
 }
 .btn-primary:not(:disabled):not(.disabled):active,
 .btn-primary:not(:disabled):not(.disabled).active,
 .show > .btn-primary.dropdown-toggle
 {
     color: #fff;
-    border-color: #5e72e4; 
+    border-color: #e7ab3c; 
     background-color: #324cdd;
 }
 .btn-primary:not(:disabled):not(.disabled):active:focus,
@@ -5733,7 +5734,7 @@ input[type='button'].btn-block
 .nav-pills .show > .nav-link
 {
     color: #fff;
-    background-color: #5e72e4;
+    background-color: #e7ab3c;
 }
 
 .nav-fill .nav-item
@@ -6098,6 +6099,14 @@ input[type='button'].btn-block
 {
     flex-flow: row nowrap;
     justify-content: flex-start;
+    height: 50px;
+/*    text-transform: uppercase;
+*/    font-family: "Muli", sans-serif;
+}
+
+.navbar-expand .nav-right >.nav-item >a
+{
+    border-right: 1px solid #3b3b3b;
 }
 .navbar-expand > .container,
 .navbar-expand > .container-fluid,
@@ -21596,7 +21605,7 @@ textarea[resize='horizontal']
     padding-left: 1rem;
 
     border-radius: .375rem; 
-    background: #f6f9fc;
+    background: #bdbdbd8a;
 }
 .navbar-vertical.navbar-expand-xs .lavalamp-object
 {
@@ -22878,20 +22887,21 @@ textarea[resize='horizontal']
 
     transition: all .15s ease; 
 
-    color: #5e72e4;
+    color: #607D8B;
     background-color: #fff;
     box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
 }
 .nav-pills .nav-link:hover
 {
-    color: #485fe0;
+    color: #fff;
+    background-color: #e7ab3c;
 }
 
 .nav-pills .nav-link.active,
-.nav-pills .show > .nav-link
+.nav-pills .show > .nav-link,
 {
     color: #fff;
-    background-color: #5e72e4;
+    background-color: #e7ab3c;
 }
 
 @media (max-width: 575.98px)

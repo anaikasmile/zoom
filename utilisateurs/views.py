@@ -10,7 +10,7 @@ from django.db import transaction
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User, Group
 from .models import Person, User, Identity
-from .forms import UserForm, UserRegistrationForm, IdentityForm, PersonForm, ProfileInlineFormset
+from .forms import UserForm, UserRegistrationForm, IdentityForm, PersonForm, ProfileInlineFormset, UserRegistrationForm1, UserRegistrationForm2
 from django.views.generic import ListView, CreateView
 from django.db.models import Q, Count, F, Sum
 from django.contrib import messages
@@ -21,10 +21,28 @@ from django_tables2.views import SingleTableMixin
 from .models import Person
 from commandes.models import Commandes, Reclamations
 from .tables import UserTable, ClientTable
+from commandes.tables import CommandeClientTable
 from .filters import UserFilter
 from django.contrib.auth.forms import PasswordChangeForm
+from allauth.account.forms import ChangePasswordForm
+
+from formtools.wizard.views import SessionWizardView
+from django.core.files.storage import FileSystemStorage
+import os
+from django.conf import settings
+
 
 # Create your views here.
+
+class FormWizardView(SessionWizardView):
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+
+    template_name = "utilisateurs/test.html"
+    form_list = [UserRegistrationForm1, UserRegistrationForm2]
+    def done(self, form_list, **kwargs):
+        return render(self.request, 'done.html', {
+            'form_data': [form.cleaned_data for form in form_list],
+        })
 
 def generate_password(request):
 
@@ -52,7 +70,6 @@ def registration(request,role):
 
         if form.is_valid():
             user = form.save()
-
             user.refresh_from_db()  # load the profile instance created by the signal
             user.person.birth_date = form.cleaned_data.get('birth_date')
             user.person.tel = form.cleaned_data.get('tel').as_e164
@@ -126,6 +143,7 @@ def my_profile(request):
         form = UserForm(request.POST, instance=request.user)
         form_person = PersonForm(request.POST, request.FILES, instance=request.user.person)
 
+
         if form.is_valid() and form_person.is_valid():
             form.save()
             form_person.save()
@@ -133,15 +151,20 @@ def my_profile(request):
         else:
             messages.error(request, ('Certaines données sont incorecttes'))
 
-        return HttpResponseRedirect("/users/myprofile")
+        return HttpResponseRedirect("/users/profile")
 
     else:
-
-        form = UserForm(instance=request.user)
-        form_person = PersonForm(instance=request.user.person)
+        table = CommandeClientTable(Commandes.objects.filter(colis__client=request.user).order_by('created_at')[:10])
+        context = {
+            'form' : UserForm(instance=request.user),
+            'form_person' : PersonForm(instance=request.user.person),
+            'form_password' : ChangePasswordForm(request.user),
+            'table' : table
+        }
+       
         #messages.error(request, ('Une erreur est survenue'))
 
-    return render(request, 'utilisateurs/my_profile.html', {'form': form, 'form_person': form_person})
+    return render(request, 'utilisateurs/my_profile.html', context)
 
 
 #####ADMIN

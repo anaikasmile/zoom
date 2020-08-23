@@ -204,9 +204,17 @@
                         </p>
                     </div>
                     <div class="col-lg-6">
-                       <p> Mot de passe :
-                          <label class="form-control-label" for="input-last-name"></label>
-
+                      {% if user.user_type == 2 %}
+                       <p> Agence :
+                          <label class="form-control-label" for="input-last-name">
+                            
+                            {% if user.affectation_agent.all %}
+                               {% for r in  user.affectation_agent.all %} 
+                                  <b>{{ r.agence }}</b>
+                                {% endfor %}
+                              {% endif %}
+                          </label>
+                          {% endif %}
                        </p>
                     </div>
                   </div>
@@ -268,12 +276,13 @@
                   <div class="row">
                       <div class="col-lg-6">
                          <p> Nom :
-                          <label class="form-control-label" for="input-first-name"> {{identity.contact_name}} </label>
+                          <label class="form-control-label" for="input-first-name"> 
+                          {{identity.contact_name}} {% if not identity.contact_name %} ____ {% endif %} </label>
                           </p>
                       </div>
                       <div class="col-lg-6">
                          <p>  Tél:
-                            <label class="form-control-label" for="input-last-name"> {{identity.contact_tel}} </label>
+                            <label class="form-control-label" for="input-last-name"> {{identity.contact_tel}} {% if not identity.contact_tel %} ____ {% endif %}</label>
                           </p> 
                       </div>
                   </div>

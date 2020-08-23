@@ -1,6 +1,10 @@
 {% extends 'base_frontend.html' %}
 {% load widget_tweaks %}
+{% load i18n %}
 {% load static %}
+
+{% load render_table from django_tables2 %}
+
 {% block header%}
      <!-- Mask -->
       <span class="mask bg-gradient-default opacity-8"></span>
@@ -13,151 +17,219 @@
       </div>
 {% endblock %}
 {% block content %}
+<div class="container">
+  
 
-    <!-- Page content -->
-    <div class="container-fluid mt--6">
-      <form method="post" autocomplete="off" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="row">
-        <div class="col-xl-4 order-xl-2">
-          <div class="card card-profile">
-            <img src="{% static 'assets/img/theme/img-1-1000x600.jpg' %}" alt="Image placeholder" class="card-img-top">
-            <div class="row justify-content-center">
-              <div class="col-lg-3 order-lg-2">
-                <div class="card-profile-image">
-                  <a href="#">
-                    {% if  user.person.photo %}
-                        <img src="{{ user.person.photo.url }}" class="rounded-circle">
-                    {% else %}
-                        <img src="{% static 'assets/img/theme/team-4.jpg' %}" class="rounded-circle">
-
-                    {% endif %}
-                  </a>
-
-                </div>
-              </div>
-            </div>
-             <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-              <div class="d-flex justify-content-between">
-
-              </div>
-            </div>
-            <div class="card-body pt-0">
-              <div class="row">
-                <div class="col">
-                  <div class="card-profile-stats d-flex justify-content-center">
-                        <br><br>
-                                              <div class="form-group">
-
-                        <div class="custom-file" style="">
-                            {{ form_person.photo }}
-
-                        </div>
-                        </div>
-                  </div>
-                </div>
-              </div>
-              
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-8 order-xl-1">
-          <div class="card">
-            <div class="card-header">
-              <div class="row align-items-center">
-                <div class="col-8">
-                  <h3 class="mb-0">Mon profile </h3>
-                             </div>
-
-              </div>
-            </div>
-            <div class="card-body">
-               
-                {{ form.errors }}
+    <div class="nav-wrapper">
+    <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="fa fa-user mr-2"></i>Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="fa fa-lock mr-2"></i>Mot de passe</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-calendar-grid-58 mr-2"></i>Commandes</a>
+        </li>
+    </ul>
+</div>
+<div class="card shadow">
+    <div class="card-body">
+        <div class="tab-content" id="myTabContent">
+          <!-- Affichage du profile -->
+            <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                
+                <form method="post" autocomplete="off" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{form.errors}}
                   {{ form_person.errors }}
-                <h6 class="heading-small text-muted mb-4">Informations Personnelles</h6>
-                <div class="pl-lg-4">
 
                   <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">Nom</label>
-                        {{ form.last_name }}
+                    <div class="col-xl-4 order-xl-2">
+                      <div class="card card-profile">
+                        <img src="{% static 'assets/img/theme/img-1-1000x600.jpg' %}" alt="Image placeholder" class="card-img-top">
+                        <div class="row justify-content-center">
+                          <div class="col-lg-3 order-lg-2">
+                            <div class="card-profile-image">
+                              <a href="#">
+                                {% if  user.person.photo %}
+                                    <img src="{{ user.person.photo.url }}" class="rounded-circle">
+                                {% else %}
+                                    <img src="{% static 'assets/img/theme/team-4.jpg' %}" class="rounded-circle">
+
+                                {% endif %}
+                              </a>
+
+                            </div>
+                          </div>
+                        </div>
+                         <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                          <div class="d-flex justify-content-between">
+
+                          </div>
+                        </div>
+                        <div class="card-body pt-0">
+                          <div class="row">
+                            <div class="col">
+                              <div class="card-profile-stats d-flex justify-content-center">
+                                    <br><br>
+                                    <div class="form-group">
+                                      <div class="custom-file" style="">
+                                          {{ form_person.photo }}
+                                      </div>
+                                    </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                        </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Prénoms</label>
-                          {{ form.first_name }}
+                    <div class="col-xl-8 order-xl-1">
+                    
+                        <div class="card-body">
+                           
+                            <h6 class="heading-small text-muted mb-4">Informations Personnelles</h6>
+                            <div class="pl-lg-4">
+
+                              <div class="row">
+                                <div class="col-lg-6">
+                                  <div class="form-group">
+                                    <label class="form-control-label" for="input-first-name">Nom</label>
+                                    {{ form.last_name }}
+                                  </div>
+                                </div>
+                                <div class="col-lg-6">
+                                  <div class="form-group">
+                                    <label class="form-control-label" for="input-last-name">Prénoms</label>
+                                      {{ form.first_name }}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-lg-6">
+                                  <div class="form-group">
+                                    <label class="form-control-label" for="input-first-name">Sexe</label>
+                                    {{ form_person.sexe }}
+
+                                  </div>
+                                </div>
+                                <div class="col-lg-6">
+                                  <div class="form-group">
+                                    <label class="form-control-label" for="input-last-name">Date de naissance</label>
+                                      {{ form_person.birth_date }}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <div class="col-lg-6">
+                                  <div class="form-group">
+                                    <label class="form-control-label" for="input-first-name">Tél</label>
+                                    {{ form_person.tel }}
+
+                                  </div>
+                                </div>
+                                <div class="col-lg-6">
+                                 <div class="form-group">
+                                    <label class="form-control-label" for="input-first-name">Email</label>
+                                    {{ form.email }}
+
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                               
+                                <div class="col-lg-6">
+                                  <div class="form-group">
+                                     <div class="form-group">
+                                    <label class="form-control-label" for="input-last-name">Profession</label>
+                                      {{ form_person.job }}
+                                  </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <hr class="my-4" />
+                <!-- Address -->
+                            <h6 class="heading-small text-muted mb-4">Adresse</h6>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="form-group">
+                                      {{ form_person.adresse }}
+                                  </div>
+                                </div>
+                              </div>
+                              <button type="submit" class="btn btn-primary pull-right">Modifier</button>
+
+                          </div>
+
                       </div>
                     </div>
+                </form>
+            </div>
+            <!-- Formulaire de modification d'un mot de passe -->
+            <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+              <h4 class="card-title"> Changer mon mot de passe</h4>
+                <form method="POST" action="{% url 'account_change_password' %}" class="password_change">
+                  {% csrf_token %}
+                  
+                {% for field in form_password %}
+                <p>
+                  {% if field.help_text %}
+                    <small style="color: grey">{{ field.help_text }}</small>
+                  {% endif %}
+                  {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                  {% endfor %}
+                </p>
+                {% endfor %}
+                <div class="row">
+                  <div class="col-md-12">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Mot de passe actuel*</label>
+                  {{ form_password.oldpassword|add_class:'form-control'}}
+                      </div>
                   </div>
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">Sexe</label>
-                        {{ form_person.sexe }}
 
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Date de naissance</label>
-                          {{ form_person.birth_date }}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">Tél</label>
-                        {{ form_person.tel }}
-
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Profession</label>
-                          {{ form_person.job }}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">Email</label>
-                        {{ form.email }}
-
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Nom utilisateur</label>
-                          {{ form.username }}
-                      </div>
-                    </div>
-                  </div>
                 </div>
-                <hr class="my-4" />
- <!-- Address -->
-                <h6 class="heading-small text-muted mb-4">Contact information</h6>
-                  <div class="row">
-                    <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-12">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-address">Adresse</label>
-                          {{ form_person.adresse }}
+                          <label class="bmd-label-floating">Nouveau mot de passe *</label>
+                  {{ form_password.password1|add_class:'form-control' }}
                       </div>
-                    </div>
                   </div>
-                  <button type="submit" class="btn btn-primary pull-right">Modifier</button>
 
-              </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                      <div class="form-group">
+                          <label class="bmd-label-floating">Nouveau mot de passe (Confirmation)*</label>
+                  {{ form_password.password2|add_class:'form-control' }}
+                      </div>
+                  </div>
+
+                </div>
+                <button type="submit" class="btn btn-primary" name="action">Modifier</button>
+                </form>
 
             </div>
-          </div>
+            <!-- Liste des 10 dernieres commandes -->
+            <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+              <div class="table-responsive">
+                <h3>Commandes récentes</h3>
+                {% render_table table %}
+
+                <a class="btn btn-primary btn-sm pull-right" href="{% url 'commandes:mes_commandes' %}"> Voir plus</a>
+              </div>
+            </div>
         </div>
-       </form>
+    </div>
+</div>
+
+
+     
 
 {% endblock %}

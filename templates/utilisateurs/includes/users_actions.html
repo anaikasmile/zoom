@@ -1,4 +1,6 @@
-
+{% if record.user_type == 2 %}
+<a href="{% url 'affectation:affectation-create' record.id %}" title="Affecter à une agence" class="btn btn-warning"><i class="fa fa-portrait" title="Détail"></i></a>
+{% endif %}
 <a href="{% url 'utilisateurs:user_profile' record.id %}" title="Détail" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
 {% if record.user_type == 2 or record.user_type == 3 %}
 <a href="{% url 'utilisateurs:user_update' record.id %}" title="Modifier"   class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>

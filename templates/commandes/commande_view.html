@@ -31,7 +31,8 @@
                   <h3 class="mb-0"># {{commande.numero_commande|upper}} </h3>
                 </div>
                 <div class="col-10 text-right">
-                  <a href="#historique" class="btn btn-primary">Historique</a><a href="{% url 'commandes:generate_facture' commande.numero_commande %}" class="btn btn-primary" title="Imprimer la facture"><i class="fa fa-print"></i></a>
+                  <a href="#historique" class="btn btn-primary">Historique</a>
+                  <a href="{% url 'commandes:generate_facture' commande.numero_commande %}" class="btn btn-primary" title="Imprimer la facture"><i class="fa fa-print"></i></a>
                 </div>
 
 
@@ -304,7 +305,7 @@
                 </thead>
                 <tbody class="list">
               
-                 {% for h in commande.commandeHistorique.all %}
+                 {% for h in commande.commandeHistorique.all.reverse %}
                   <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>

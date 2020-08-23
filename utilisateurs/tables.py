@@ -8,11 +8,12 @@ class UserTable(tables.Table):
     tel  = tables.Column(accessor="person__tel__as_e164")
     date_joined = tables.DateTimeColumn(format ='d/m/Y')
     #agence = tables.Column(accessor="")
+    agence  = TemplateColumn(template_name="utilisateurs/includes/users_agences.html", attrs={"td": {"class": ""}})
 
-    actions  = TemplateColumn(template_name="utilisateurs/includes/users_actions.html", attrs={"td": {"class": "text-right"}})
+    actions  = TemplateColumn(template_name="utilisateurs/includes/users_actions.html", attrs={"td": {"class": ""}})
     class Meta:
         model = User
-        sequence = ('id', 'last_name','first_name', 'sexe', 'email','tel')
+        sequence = ('id', 'last_name','first_name', 'sexe', 'email','tel','agence')
         exclude = {'username','password', 'last_login', 'is_staff', 'is_superuser', 'is_active','user_type', 'date_joined'}
         template_name = "django_tables2/bootstrap.html"
        	attrs = {

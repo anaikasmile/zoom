@@ -298,3 +298,12 @@
     position: relative;
     z-index: 2;
 }
+
+.custom-heading h2 {
+    border-bottom: 2px solid #e3e3e3;
+    margin: 0 0 40px;
+    padding: 13px 18px 13px 0;
+}
+.custom-heading h2::before {
+    background-color: #FFC107 !important;
+}

@@ -24,6 +24,10 @@ urlpatterns = [
     path('drivers/', user_views.DriverListView.as_view(), name='user_driver'),
     path('view/<int:user_id>/', user_views.user_profile, name='user_profile'),
 
+    path('test/', user_views.FormWizardView.as_view(), name='test'),
+
+    
+
 
     path('profile', user_views.my_profile, name='my_profile'),
 
