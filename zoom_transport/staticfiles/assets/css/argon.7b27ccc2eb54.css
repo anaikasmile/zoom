@@ -26453,6 +26453,66 @@ table.dataTable tbody > tr.selected
     }
 }
 
+/*[data-calendar-month='0']
+{
+    background-image: "";
+}
+
+[data-calendar-month='1']
+{
+    background-image: "";
+}
+
+[data-calendar-month='2']
+{
+    background-image: "";
+}
+
+[data-calendar-month='3']
+{
+    background-image: "";
+}
+
+[data-calendar-month='4']
+{
+    background-image: "";
+}
+
+[data-calendar-month='5']
+{
+    background-image: "";
+}
+
+[data-calendar-month='6']
+{
+    background-image: "";
+}
+
+[data-calendar-month='7']
+{
+    background-image: "";
+}
+
+[data-calendar-month='8']
+{
+    background-image: "";
+}
+
+[data-calendar-month='9']
+{
+    background-image: "";
+}
+
+[data-calendar-month='10']
+{
+    background-image: "";
+}
+
+[data-calendar-month='11']
+{
+    background-image: "";
+}
+*/
 .card-calendar .card-header
 {
     border-bottom: 0;
