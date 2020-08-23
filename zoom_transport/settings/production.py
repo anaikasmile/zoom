@@ -15,6 +15,6 @@ DATABASES = {
 
 ALLOWED_HOSTS = ['91.234.195.225', 'localhost', '127.0.0.1']
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEBUG = False
