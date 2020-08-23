@@ -221,8 +221,11 @@
               <div class="table-responsive">
                 <h3>Commandes récentes</h3>
                 {% render_table table %}
-
-                <a class="btn btn-primary btn-sm pull-right" href="{% url 'commandes:mes_commandes' %}"> Voir plus</a>
+                  {% if request.user.user_type == 3 %}
+                  <a class="btn btn-primary btn-sm pull-right" href="{% url 'commandes:drivers_orders' %}"> Voir plus</a>
+                  {% else %}
+                  <a class="btn btn-primary btn-sm pull-right" href="{% url 'commandes:mes_commandes' %}"> Voir plus</a>
+                {% endif %}
               </div>
             </div>
         </div>

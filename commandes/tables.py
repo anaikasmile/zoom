@@ -74,8 +74,8 @@ class CommandeDriverTable(tables.Table):
 
     class Meta:
         model = Commandes
-        sequence = ('numero_commande','colis','city_depart', 'city_arrive','date_depot','date_reception','commission','etat','actions')
-        exclude = {'status', 'id','observation','insurance','updated_at','created_at',  'price', 'package','agent','driver','accepted'}
+        sequence = ('numero_commande','colis','city_depart', 'city_arrive','commission','etat','actions')
+        exclude = {'status', 'id','observation','insurance','date_depot','date_reception','updated_at','created_at',  'price', 'package','agent','driver','accepted'}
         template_name = "django_tables2/bootstrap.html"
         attrs = {
 	        "th" : {

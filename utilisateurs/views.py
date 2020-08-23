@@ -21,7 +21,7 @@ from django_tables2.views import SingleTableMixin
 from .models import Person
 from commandes.models import Commandes, Reclamations
 from .tables import UserTable, ClientTable
-from commandes.tables import CommandeClientTable
+from commandes.tables import CommandeClientTable, CommandeDriverTable
 from .filters import UserFilter
 from django.contrib.auth.forms import PasswordChangeForm
 from allauth.account.forms import ChangePasswordForm
@@ -105,11 +105,12 @@ def signup(request):
             user.person.adresse = form.cleaned_data.get('adresse')
             user.save()
             messages.success(request, 'Votre compte a été bien créé')
+            login(request, user, backend='utilisateurs.AuthBackends.LoginBackend')
 
             # raw_password = form.cleaned_data.get('password1')
             # user = authenticate(username=user.username, password=raw_password)
             # login(request, user)
-            return redirect('utilisateurs:user_signup')
+            return redirect('commandes:home')
     else:
         form = UserRegistrationForm()
     return render(request, 'utilisateurs/user_signup.html', {'form': form})
@@ -139,6 +140,19 @@ def user_logout(request):
 
 
 def my_profile(request):
+
+    if request.user.user_type ==  3: #Si c'est un chauffeur
+        table = CommandeDriverTable(Commandes.objects.filter(driver=request.user).order_by('created_at')[:10])
+    else:
+        table = CommandeClientTable(Commandes.objects.filter(colis__client=request.user).order_by('created_at')[:10])
+
+
+    context = {
+            'form' : UserForm(instance=request.user),
+            'form_person' : PersonForm(instance=request.user.person),
+            'form_password' : ChangePasswordForm(request.user),
+            'table' : table
+        }
     if request.method == 'POST':
         form = UserForm(request.POST, instance=request.user)
         form_person = PersonForm(request.POST, request.FILES, instance=request.user.person)
@@ -151,17 +165,9 @@ def my_profile(request):
         else:
             messages.error(request, ('Certaines données sont incorecttes'))
 
-        return HttpResponseRedirect("/users/profile")
+        #return HttpResponseRedirect("/users/profile")
 
-    else:
-        table = CommandeClientTable(Commandes.objects.filter(colis__client=request.user).order_by('created_at')[:10])
-        context = {
-            'form' : UserForm(instance=request.user),
-            'form_person' : PersonForm(instance=request.user.person),
-            'form_password' : ChangePasswordForm(request.user),
-            'table' : table
-        }
-       
+    
         #messages.error(request, ('Une erreur est survenue'))
 
     return render(request, 'utilisateurs/my_profile.html', context)

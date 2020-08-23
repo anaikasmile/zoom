@@ -33,8 +33,14 @@ class CommandesClientFilter(FilterSet):
 
 
 class CommandesDriverFilter(FilterSet):
+    STATUS_CHOICES = (
+        (3, 'En transit'),
+        (4, 'En agence'),
+        (5, 'Livré'),
+        (6, 'Réceptionné'),
+    )
     status = ChoiceFilter(choices=STATUS_CHOICES)
 
     class Meta:
         model = Commandes
-        fields = { 'numero_commande', 'commission', 'status'}
+        fields = { 'numero_commande', 'city_depart', 'city_arrive', 'status'}

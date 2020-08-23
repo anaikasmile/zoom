@@ -307,3 +307,7 @@
 .custom-heading h2::before {
     background-color: #FFC107 !important;
 }
+
+.bg-dark-light{
+	background-color: rgb(23, 43, 77);
+}

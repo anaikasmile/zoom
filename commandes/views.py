@@ -164,7 +164,7 @@ class ClientCommandeListView(SingleTableMixin, FilterView):
     table_class = CommandeClientTable
     filterset_class = CommandesClientFilter
     template_name = 'commandes/commandes_client.html'
-    paginate_by = 25
+    paginate_by = 10
     def get_queryset(self):
         return Commandes.objects.filter(colis__client=self.request.user)
 
@@ -173,7 +173,7 @@ class DriverCommandeListView(SingleTableMixin, FilterView):
     table_class = CommandeDriverTable
     filterset_class = CommandesDriverFilter
     template_name = 'commandes/commandes_drivers.html'
-    paginate_by = 25
+    paginate_by = 10
     def get_queryset(self):
         return Commandes.objects.filter(driver=self.request.user)
 
