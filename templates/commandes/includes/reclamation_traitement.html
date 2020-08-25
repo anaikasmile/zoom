@@ -1,6 +1,0 @@
-{% if record.reclamationHandler.all %}
- {% for hr in  record.reclamationHandler.all %} 
-    <b>{{ hr.type}}</b><br>
-    {{ hr.commentaire}}
-  {% endfor %}
-{% endif %}
