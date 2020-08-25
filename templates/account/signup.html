@@ -1,21 +1,160 @@
-{% extends "account/base.html" %}
-
+{% extends 'base_frontend.html' %}
+{% load widget_tweaks %}
 {% load i18n %}
 
-{% block head_title %}{% trans "Signup" %}{% endblock %}
+{% block header  %}
 
+{% endblock %}
 {% block content %}
-<h1>{% trans "Sign Up" %}</h1>
+    <form method="post" autocomplete="off" action="{% url 'account_signup' %}">
+    {% csrf_token %}
 
-<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                      <h4 class="card-title text-center">Créer un compte</h4>
+                    </div>
+                    <div class="card-body">
+                        {{ form.errors }}
+                       {% comment %} {% for field in form %}
+                          <p>
+                            {{ field.birth_date }}<br>
+                            {{ field }}
+                            {% if field.help_text %}
+                              <small style="color: grey">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                              <p style="color: red">{{ error }}</p>
+                            {% endfor %}
+                          </p>
+                        {% endfor %}{% endcomment %}
 
-<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button type="submit">{% trans "Sign Up" %} &raquo;</button>
-</form>
+                            <!-- Infos personnel -->
+                            <h6 class="heading-small text-muted mb-4">Informations Personnelles</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">Nom *</label>
+                                        {{ form.last_name }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">Prénoms *</label>
+                                        {{ form.first_name }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                             <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Sexe *</label>
+                                   {{ form.sexe }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Date de naissance *</label>
+                                    {{ form.birth_date }}
+                                </div>
+                              </div>
+                            </div>
+
+                             <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Email* </label>
+                                   {{ form.email|add_class:'form-control'  }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Tél *</label>
+                                    {{ form.tel|add_class:'form-control' }}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Profession </label>
+                                   {{ form.job }}
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">Photo</label>
+                                    <div class="custom-file">
+                                        {{ form.photo }}
+                                        <label class="custom-file-label" for="customFileLang">Select file</label>
+
+                                    </div>
+
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="form-group">
+                                  <label class="bmd-label-floating">{{ form.adresse.label }}</label>
+                                   {{ form.adresse }}
+                                </div>
+                              </div>
+
+                            </div>
+
+
+                        </div>
+                  </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-profile">
+
+                    <div class="card-body">
+                        <h6 class="heading-small text-muted mb-4">Identifiants</h6>
+                        <div class="row">
+                              <div class="col-md-12">
+                                    <div class="form-group">
+                                      <label class="bmd-label-floating">Login *</label>
+                                       {{ form.username|add_class:'form-control' }}
+                                    </div>
+                              </div>
+
+                        </div>
+                         <div class="row">
+                              <div class="col-md-12">
+                                    <div class="form-group">
+                                      <label class="bmd-label-floating">Mot de passe *</label>
+                                       {{ form.password1|add_class:'form-control' }}
+                                    </div>
+                              </div>
+
+                        </div>
+                        <div class="row">
+                              <div class="col-md-12">
+                                    <div class="form-group">
+                                      <label class="bmd-label-floating">Confirmer le mot de passe *</label>
+                                       {{ form.password2|add_class:'form-control' }}
+                                    </div>
+                              </div>
+
+                        </div>
+                        {% if redirect_field_value %}
+						  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+						  {% endif %}
+                        <button type="submit" class="btn btn-primary pull-right">Enregistrer</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
 
 {% endblock %}

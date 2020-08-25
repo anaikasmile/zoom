@@ -109,7 +109,14 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_FORM_CLASS = 'utilisateurs.forms.SignUpForm'
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+EMAIL_CONFIRMATION_SIGNUP = True
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#ACCOUNT_ADAPTER = 'utilisateurs.adapter.AccountAdapter'
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

@@ -39,7 +39,7 @@ class Person(models.Model):
         (u'M', _(u'Masculin')),
     )
     sexe = models.CharField(max_length=10, choices=SEXE)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True, related_name ='person')
     job = models.CharField(max_length=100, blank=True, null=True, verbose_name="Profession")
     adresse = models.TextField(max_length=500, blank=True, verbose_name="Adresse")
     birth_date = models.DateField(null=True, blank=True, verbose_name="Date de naissance")

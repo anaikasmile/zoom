@@ -34,15 +34,7 @@ from django.conf import settings
 
 # Create your views here.
 
-class FormWizardView(SessionWizardView):
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
 
-    template_name = "utilisateurs/test.html"
-    form_list = [UserRegistrationForm1, UserRegistrationForm2]
-    def done(self, form_list, **kwargs):
-        return render(self.request, 'done.html', {
-            'form_data': [form.cleaned_data for form in form_list],
-        })
 
 def generate_password(request):
 

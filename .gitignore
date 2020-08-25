@@ -1,0 +1,11 @@
+migrations
+__pycache__
+media/*
+staticfiles
+zoom_transport/staticfiles/*
+*.pyc
+.env
+*.log
+*/production.py
+zoom_transport/settings/production.py
+settings/production.py

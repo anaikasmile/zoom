@@ -22,32 +22,60 @@ class UserForm(forms.ModelForm):
               }
 
 
-
-class UserRegistrationForm(UserCreationForm):
+class SignUpForm(forms.Form):
     SEXE = (
         (u'F', _(u'Feminin')),
         (u'M', _(u'Masculin')),
     )
+    password1 = forms.PasswordInput(attrs={'required': True,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
+    password2 = forms.PasswordInput(attrs={'required': True,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
+          
     sexe = forms.ChoiceField(required=True, widget=forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}), choices=SEXE)
     tel = PhoneNumberField(required=True, widget=PhoneNumberPrefixWidget(initial='+228',attrs={'class': 'form-control'}))
     photo = forms.FileField(required=False, widget=forms.FileInput(attrs={'class': 'custom-file-input', 'id': 'customFileLang', 'lang': 'fr'}))
     birth_date = forms.DateField(help_text='Requis. Format: YYYY-MM-DD', widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    adresse = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control'}))
     job = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    adresse = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control','placeholder': _(u'')}))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
+    email = forms.EmailField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
+    username = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
+
+    def signup(self, request, user):
+        user.username = self.cleaned_data['username']
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save()
+        user.person.birth_date = self.cleaned_data.get('birth_date')
+        user.person.tel = self.cleaned_data.get('tel').as_e164
+        user.person.sexe = self.cleaned_data.get('sexe')
+        user.person.adresse = self.cleaned_data.get('adresse')
+        user.person.save()
+
+
+class UserRegistrationForm(forms.ModelForm):
+    SEXE = (
+        (u'F', _(u'Feminin')),
+        (u'M', _(u'Masculin')),
+    )
+    password1 = forms.PasswordInput(attrs={'required': True,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
+    password2 = forms.PasswordInput(attrs={'required': True,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
+          
+    sexe = forms.ChoiceField(required=True, widget=forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}), choices=SEXE)
+    tel = PhoneNumberField(required=True, widget=PhoneNumberPrefixWidget(initial='+228',attrs={'class': 'form-control'}))
+    photo = forms.FileField(required=False, widget=forms.FileInput(attrs={'class': 'custom-file-input', 'id': 'customFileLang', 'lang': 'fr'}))
+    birth_date = forms.DateField(help_text='Requis. Format: YYYY-MM-DD', widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    job = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    adresse = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control','placeholder': _(u'')}))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
+    email = forms.EmailField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
+    username = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
 
     class Meta:
         model = User
-        fields = ('username', 'last_name', 'first_name', 'password1', 'password2', 'email')
-        widgets = {
-            #'user_type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
-            'first_name': forms.TextInput(attrs={'required': True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
-            'last_name': forms.TextInput(attrs={'required': True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control',}),
-            'email': forms.TextInput(attrs={'required': False,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
-            'password1': forms.PasswordInput(attrs={'required': False,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
-            'password2': forms.PasswordInput(attrs={'required': False,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
-            'username': forms.TextInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control','autocomplete':'off'}),
-
-        }
+        exclude = ['password','last_login', 'is_staff', 'is_superuser', 'is_active','user_type', 'date_joined']
 
 class UserRegistrationForm1(forms.ModelForm):
 
