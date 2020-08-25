@@ -1,0 +1,61 @@
+<!-- Modal  step 1-->
+    <div class="modal fade" id="updateEtat" tabindex="-1" role="dialog" aria-labelledby="">
+          <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                      <div class="modal-header">
+                           <h5 class="modal-title" id="changerEtat">Modifier l'état de la commande N° <span class="number">{{record.numero_commande}}</span></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                      </div>
+                      <form method="post" action="">
+                          <div class="modal-body">
+                              <div class="step1" id="step1">
+                                  <div class="row">
+                                      <div class="col-lg-8">
+                                           <div class="form-group">
+                                          {{ form_step1.etat }}
+                                           </div>
+                                          <input type="text" name="cmdId" id="cmdId" value="{{record.numero_commande}}" hidden/>
+
+                                      </div>
+                                      <div class="col-lg-4">
+                                          <button class="btn btn-primary" type="button" id="btn-step1"  data_url="{% url 'commandes:update_etat' %}">Valider</button>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="step2" id="step2" style="display: none;">
+                                 <div class="row">
+                                      <div class="col-lg-4">
+                                          <label class="bmd-label-floating">Agence</label>
+                                      </div>
+                                      <div class="col-lg-8">
+                                           <div class="form-group">
+                                            {{ form_step2.agence }}
+                                           </div>
+                                      </div>
+                                 </div>
+                                 <div class="row">
+                                      <div class="col-lg-4">
+                                          <label class="bmd-label-floating">Commentaire</label>
+                                      </div>
+                                      <div class="col-lg-8">
+                                           <div class="form-group">
+                                            {{ form_step2.commentaire }}
+                                           </div>
+                                      </div>
+                                 </div>
+                                 <div class="row"><button class="btn btn-primary" type="button" id="btn-step2" data_url="{% url 'commandes:update_etat' %}">Valider</button></div>
+
+                              </div>
+                          </div>
+
+                      </form>
+
+                </div>
+          </div>
+    </div>
+    <!-- Step 2 modal -->
+
+
+<!-- End modal -->

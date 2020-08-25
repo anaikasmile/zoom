@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
+
+{% block header %}
+
+<div class="row align-items-center py-4">
+    <div class="col-lg-6 col-7">
+      <h6 class="h2 text-white d-inline-block mb-0">Services après vente</h6>
+      <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+          <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+          <li class="breadcrumb-item active" aria-current="page">Réclamations</li>
+        </ol>
+      </nav>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-12">
+          <!-- Card header -->
+          <div class="card bg-default">
+            <div class="card-header bg-transparent border-0">
+              <h3 class="text-white mb-0">Liste des réclamations</h3>
+            </div>
+            <!-- Light table -->
+            <div class="table-responsive">
+              {% render_table table %}
+
+              
+            </div>
+            <!-- Card footer -->
+           
+   
+          </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- Modal  step 1-->
+    <div class="modal fade" id="reclamation" tabindex="-1" role="dialog" aria-labelledby="">
+          <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                      <div class="modal-header">
+                           <h5 class="modal-title" id="changerEtat">Traitement de la demande</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                      </div>
+                      <div class="modal-body">
+                        <form method="POST" action="">
+                          {% csrf_token %}
+
+                          {{ form.as_p }}
+                               
+                        <button class="btn btn-primary" type="button" id="btn-submit" data-rid="" data_url="{% url 'commandes:handler_reclamation_cmd' %}">Valider</button>
+                        </form>
+
+                </div>
+          </div>
+    </div>
+    <!-- Step 2 modal -->
+{% endblock %}
+{% block javascript %}
+<script>
+
+  $(document).ready(function()
+    
+  {
+
+     $(document).on('click','.openModal', function () {
+
+        $('#btn-submit').attr('data-rid',$(this).data('id'));
+
+        $('#reclamation').modal('show');
+
+    });
+
+
+  $(document).on('click','#btn-submit', function () {
+      
+        var rid = $(this).attr('data-rid');
+       
+        var data =  {
+              'type': $('#type').val(),
+              'rid': rid,
+              'commentaire': $('#commentaire').val(),
+              'action': 'post',
+
+            };
+        console.log(data);
+        $.ajax({
+            url: $(this).attr('data_url'),
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+                if(data.status == "success"){
+                    toastr.success(data.message);
+                    $('#reclamation').html('');
+                    $('#reclamation').modal('hide');
+                    setTimeout(function(){ location.reload();; }, 1000);
+                    //
+                }else{
+                    toastr.error(data.message);
+
+                }
+            },
+            error: function (data) {
+
+            },
+
+        });
+
+        
+
+  })
+
+ 
+
+});
+  </script>
+{% endblock %}

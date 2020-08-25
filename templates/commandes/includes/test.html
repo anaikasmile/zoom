@@ -1,0 +1,557 @@
+{% extends "base.html" %}
+{% block header %}
+
+<div class="row align-items-center py-4">
+    <div class="col-lg-6 col-7">
+      <h6 class="h2 text-white d-inline-block mb-0">Commandes</h6>
+      <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+          <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+          <li class="breadcrumb-item active" aria-current="page">Liste des commandes</li>
+        </ol>
+      </nav>
+    </div>
+
+</div>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-12">
+          <!-- Card header -->
+          <div class="card bg-default">
+            <div class="card-header bg-transparent border-0">
+              <h3 class="text-white mb-0">Liste des commandes</h3>
+            </div>
+            <!-- Light table -->
+
+            <div class="table-responsive">
+              <table class="table align-items-center table-dark table-flush">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="name">N° commande</th>
+                    <th scope="col" class="sort" data-sort="budget">Package d'envoi</th>
+                    <th scope="col" class="sort" data-sort="budget">Prix</th>
+
+                    <th scope="col" class="sort" data-sort="status">Etat</th>
+                    <th scope="col" class="sort" data-sort="budget">Client</th>
+
+
+                    <th scope="col"></th>
+                  </tr>
+
+                </thead>
+                <tbody class="list">
+                {% for cmd in commandes %}
+                  <tr class="" data-toggle="collapse" data-target=".row3">
+                    <th scope="row">
+                      {{ cmd.numero_commande }} {{ cmd.id }}
+                    </th>
+                    <td class="">
+                        {{cmd.package.libelle}}
+                    </td>
+                    <td class="budget">
+                        {% if cmd.price %}
+                            {{cmd.price}}
+                        {% endif %}
+                    </td>
+                    <td>
+                      <span class="badge badge-dot mr-4">
+                        <i class="bg-warning"></i>
+                        <span class="status">{{ cmd.getEtatLibelle }} </span>
+                      </span>
+                    </td>
+
+                    <td class="">
+                        {{ cmd.colis.client.get_full_name }}
+                    </td>
+                    <td class="text-right">
+                      <div class="dropdown">
+                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="fas fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                          <a class="dropdown-item" data-toggle="modal" data-target="#updateEtat{{ cmd.id }}" data-id={{ cmd.id }}>Changer l'état</a>
+                          <a class="dropdown-item" href="{% url 'commandes:commande_view' cmd.id %}">Détails</a>
+
+                        </div>
+                      </div>
+                    </td>
+                   </tr>
+                      {% include 'commandes/modal_update_etat.html' %}
+
+
+                {% endfor %}
+
+                </tbody>
+              </table>
+            </div>
+            <!-- Card footer -->
+        {% comment %}  <div class="pagination">
+                <span class="step-links">
+                    {% if contacts.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ contacts.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                    </span>
+
+                    {% if contacts.has_next %}
+                        <a href="?page={{ contacts.next_page_number }}">next</a>
+                        <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>{% endcomment %}
+            <div class="card-footer py-4">
+              <nav aria-label="...">
+                <ul class="pagination justify-content-end mb-0">
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">
+                      <i class="fas fa-angle-left"></i>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">
+                      <i class="fas fa-angle-right"></i>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block javascript %}
+  <script>
+  
+  let etat = "";
+  $('#id_etat').on('change', function() {
+      etat = this.value;
+  });
+
+  $(document).on('click','#btn-step1', function () {
+      
+        
+        var cmd_id = "";
+        //var etat = $('#id_etat').val();
+        var cmd_id = $('#cmdId').val();
+        console.log(etat,cmd_id);
+        // switch (etat) {
+        //     case '4':
+        //     case '5':
+        //         console.log('ok');
+        //          $('#step1').hide();
+        //          $('#step2').show();
+        //          break;
+        //     default:
+        //         var data =  {
+        //               'etat': etat,
+        //               'id': cmd_id
+        //             };
+        //         $.ajax({
+        //             url: $(this).attr('data_url'),
+        //             data: data,
+        //             dataType: 'json',
+        //             success: function (data) {
+        //                 if(data.statut == "success"){
+        //                     toastr.success(data.message);
+        //                     $('#updateEtat').modal('hide');
+        //                     setTimeout(function(){ location.reload();; }, 1000);
+        //                     //
+        //                 }
+        //             }
+        //         });
+
+        // }
+
+  })
+
+   $(document).on('click','#btn-step2', function () {
+
+      var data =  {
+                  'etat': $('#id_etat').val(),
+                  'id': $('#cmdId').val(),
+                  'agent': $('#id_agence').val(),
+                  'comment': $('#id_commentaire').val(),
+                };
+      console.log(data, $(this).attr('data_url'));
+      $.ajax({
+                url: $(this).attr('data_url'),
+                data: data,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    if(data.statut == "success"){
+                        toastr.success(data.message);
+                        $('#updateEtat').modal('hide');
+                        //
+                        setTimeout(function(){ location.reload();; }, 1000);
+
+                    }
+                }
+      });
+  });
+
+  </script>
+{% endblock %}
+
+
+
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="">#</th>
+
+                    <th scope="col" class="sort" data-sort="nom">Nom</th>
+                    <th scope="col" class="sort" data-sort="nom">Prénoms</th>
+                    <th scope="col" class="sort" data-sort="nom">Sexe</th>
+                    <th scope="col" class="sort" data-sort="nom">Tél</th>
+                    <th scope="col" class="sort" data-sort="nom">Role</th>
+
+                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
+
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                {% for user in object_list %}
+                  <tr id="accordion2" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ user.id }}">
+                    <td>{{forloop.counter}}</td>
+                    <td>
+                        {{ user.last_name }}
+                    </td>
+                    <td class="budget">
+                        {{ user.first_name }}
+                    </td>
+                    <td class="budget">
+                        {{ user.person.sexe }}
+                    </td>
+                     <td class="budget">
+                        {{ user.person.tel }}
+                    </td>
+                    <td class="budget">
+                        {{ user.user_type }}
+                    </td>
+                    <td>
+                        {{user.person.created_at|date:' j F, Y'}}
+                    </td>
+                    <td class="">
+                        <a href="" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
+                        <a href="{% url 'utilisateurs:user_update' user.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
+                        <a href="" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
+
+                    </td>
+                    <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
+                    <td></td>
+                    <td colspan="12">
+                    <div id="collapse{{ user.id }}" class="collapse in p-3" >
+                      <div class="row">
+                        <div class="col-4"><b>Login</b> : {{user.username}}</div>
+                        <div class="col-4"><b>Email</b> : {{user.email}}</div>
+                        <div class="col-4"><b>Date de naissance</b>: {{user.person.birth_date}}</div>
+                      </div>
+                        <br>
+                      <div class="row">
+                        {% for identity in  user.identites.all %} 
+
+                        <div class="col-4"><b>Pièce identité</b>: 
+                          {{identity.type}}  N°{{identity.reference}}
+                       </div>
+                        <div class="col-4"><b>Date expiration</b>: 
+                          {{identity.expired_at}} 
+                       </div>
+                       <div class="col-4">
+                         <b>Personne à prévenir</b>: 
+                          {{identity.contact_name}} | {{identity.contact_tel}}
+                       </div>
+                         {% endfor %} 
+
+                      </div>
+                    
+                     
+                    </div>
+                    </td>
+                   </tr>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+
+
+              #CMD CLIEN
+            <td class="text-right">
+                                  <div class="dropdown">
+                                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                        {% if cmd.status == 5 %}
+
+                                      <a class="dropdown-item openModal" title="Commande terminée"  data-toggle="modal" href="updateEtat"  data-id="{{ cmd.id }}">Réceptionné</a>
+                                        {% endif %}
+                                      <a class="dropdown-item" href="{% url 'commandes:historique_commande' cmd.numero_commande %}">Historique</a>
+                                      <a class="dropdown-item" href="{% url 'commandes:mes_commandes_detail' cmd.numero_commande %}">Détails</a>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+
+
+
+
+
+<table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="">#</th>
+                    <th scope="col" class="sort" data-sort="">N° Commande</th>
+                    <th scope="col" class="sort" data-sort="">Type</th>
+                    <th scope="col" class="sort" data-sort="">Observation</th>
+
+                    <th scope="col" class="sort" data-sort="">Image</th>
+                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
+
+                    <th scope="col" class="sort" data-sort="">Etat</th>
+
+
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                {% for r in reclamations %}
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>
+                        {{r.commande.numero_commande}}
+                    </td>
+                    <td class="budget">
+                        {{ r.type}}
+                    </td>
+                    <td>
+                      {{r.observation}}
+                       
+                    </td>
+                    <td class="budget">
+                        <img src="" />
+                    </td>
+                    <td class="budget">
+                       {{ r.created_at|date:'F j, Y'}}
+                    </td>
+
+                   
+                    <td>
+                        {% if r.reclamationHandler.all %}
+                         {% for hr in  r.reclamationHandler.all %} 
+                            {{ hr.type}} | {{hr.updated_at|date:'j/m/Y à h:i'}}<br>
+                            {{ hr.commentaire}}  Traité par : <b>{{hr.agent}}</b>
+                          {% endfor %}
+                      {% endif %}
+                    </td>
+                     
+                    
+                    <td class="">
+                        <a href="" class="btn btn-info"><i class="fa fa-eye" title="Détail traitement"></i></a>
+                        <a href="" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
+
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+
+
+<table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="">#</th>
+
+                    <th scope="col" class="sort" data-sort="nom">Nom</th>
+                    <th scope="col" class="sort" data-sort="nom">Prénoms</th>
+                    <th scope="col" class="sort" data-sort="nom">Sexe</th>
+                    <th scope="col" class="sort" data-sort="nom">Tél</th>
+                    <th scope="col" class="sort" data-sort="nom">Profession</th>
+
+                    <th scope="col" class="sort" data-sort="nom">Créé le</th>
+
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                {% for user in object_list %}
+                  <tr id="accordion2" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ user.id }}">
+                    <td>{{forloop.counter}}</td>
+                    <td>
+                        {{ user.last_name }}
+                    </td>
+                    <td class="budget">
+                        {{ user.first_name }}
+                    </td>
+                    <td class="budget">
+                        {{ user.person.sexe }}
+                    </td>
+                     <td class="budget">
+                        {{ user.person.tel }}
+                    </td>
+                    <td class="budget">
+                       {% if user.person.job %} {{ user.person.job }} {% endif %}
+                    </td>
+                    <td>
+                        {{user.person.created_at|date:' j F Y'}}
+                    </td>
+                    <td class="">
+                        <a href="{% url 'utilisateurs:user_profile' user.id %}" class="btn btn-info"><i class="fa fa-eye" title="Détail"></i></a>
+                        <a href="{% url 'utilisateurs:user_update' user.id %}" class="btn btn-light"><i class="fa fa-edit" title="Modifier"></i></a>
+                        <a href="" title="Supprimer" class="btn btn-danger"><i class="fa fa-remove"></i></a>
+
+                    </td>
+                    <tr class="hide-table-padding" style="background-color: #f0f5f7; color: #000000ba;">
+                    <td></td>
+                    <td colspan="12">
+                    <div id="collapse{{ user.id }}" class="collapse in p-3" >
+                      <div class="row">
+                        <div class="col-4"><b>Login</b> : {{user.username}}</div>
+                        <div class="col-4"><b>Email</b> : {{user.email}}</div>
+                        <div class="col-4"><b>Date de naissance</b>:{% if user.person.birth_date %} {{user.person.birth_date}} {% endif %}</div>
+                      </div>
+                        <br>
+                      <div class="row">
+                        {% for identity in  user.identites.all %} 
+
+                        <div class="col-4"><b>Pièce identité</b>: 
+                          {{identity.type}},  N° <b>{{identity.reference}}</b>
+                       </div>
+                        <div class="col-4"><b>Date expiration</b>: 
+                          {{identity.expired_at}} 
+                       </div>
+                       <div class="col-4">
+                         <b>Personne à prévenir</b>: 
+                         {% if identity.contact_name %} {{identity.contact_name}} {% endif %} {% if identity.contact_tel %}| {{identity.contact_tel}}{% endif %}
+                       </div>
+                         {% endfor %} 
+
+                      </div>
+                    
+                     
+                    </div>
+                    </td>
+                   </tr>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+
+
+               # try:
+    #     affectation = AgenceUser.objects.get(agent = user)
+    #     #form = AgenceUserForm(request.POST, instance=affectation)
+
+    # except AgenceUser.DoesNotExist:
+    #     form = AgenceUserForm(request.POST, agent=user, agence=None)
+
+
+
+
+    <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <!-- Search form -->
+          <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main">
+            <div class="form-group mb-0">
+              <div class="input-group input-group-alternative input-group-merge">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+                <input class="form-control" placeholder="Search" type="text">
+              </div>
+            </div>
+            <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </form>
+          <!-- Navbar links -->
+          <ul class="navbar-nav align-items-center  ml-md-auto ">
+            <li class="nav-item d-xl-none">
+              <!-- Sidenav toggler -->
+              <div class="pr-3 sidenav-toggler sidenav-toggler-dark" data-action="sidenav-pin" data-target="#sidenav-main">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item d-sm-none">
+              <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">
+                <i class="ni ni-zoom-split-in"></i>
+              </a>
+            </li>
+            <li class="nav-item"><a href="" class="nav-link" >Home</a></li>
+              {% if user.is_authenticated %}
+
+
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="ni ni-ungroup"></i>
+              </a>
+
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-dark bg-default  dropdown-menu-right ">
+                <div class="row shortcuts px-4">
+                  {% if user.user_type == 3 %}
+
+                  <a href="{% url 'commandes:drivers_orders' %}" class="col-4 shortcut-item">
+                    <span class="shortcut-media avatar rounded-circle bg-gradient-red">
+                      <i class="ni ni-cart"></i>
+                    </span>
+                    <small>Mes commandes</small>
+                   </a>
+
+                
+                   <a href="" class="col-4 shortcut-item">
+                    <span class="shortcut-media avatar rounded-circle bg-gradient-green">
+                      <i class="fa fa-money"></i>
+                    </span>
+                    <small>Mes commissions</small>
+                  </a>
+                  {% else %}
+
+                  
+                    <a href="{% url 'commandes:mes_commandes' %}" class="col-4 shortcut-item">
+                      <span class="shortcut-media avatar rounded-circle bg-gradient-red">
+                        <i class="ni ni-cart"></i>
+                      </span>
+                      <small>Mes commandes</small>
+                     </a>
+
+                    <a href="{% url 'commandes:add_reclamation' %}" class="col-4 shortcut-item">
+                      <span class="shortcut-media avatar rounded-circle bg-gradient-green">
+                        <i class="ni ni-books"></i>
+                      </span>
+                      <small>Mes réclamations</small>
+                    </a>
+
+
+                  {% endif %}
+
+
+
+                  {% endif %}
+                </div>
+              </div>
+            </li>
+          </ul>
+           
+        </div>
+      </div>
+    </nav>

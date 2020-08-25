@@ -1,0 +1,127 @@
+{% extends 'base_frontend.html' %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
+{% load widget_tweaks %}
+
+
+{% block header %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Dark table -->
+      <div class="row">
+        <div class="col-12">
+            <br>
+            <h3 class="mb-0">Mes commandes</h3>
+            <div class="nav-wrapper">
+              <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-cloud-upload-96 mr-2"></i>En cours</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-bell-55 mr-2"></i>Livrés</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-calendar-grid-58 mr-2"></i>En attente</a>
+                  </li>
+              </ul>
+            </div>
+            <div class="card shadow">
+
+              <div class="card-body">
+                  <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                           <div class="table-responsive">
+                              {% render_table table3 %}
+
+                          </div>
+                        </div>
+
+
+                        <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                                        {% render_table table2 %}
+
+                        </div>
+                        <div class="tab-pane fade" id="tabs-icons-text-3" role="tabpanel" aria-labelledby="tabs-icons-text-3-tab">
+                                                          {% render_table table %}
+
+
+                        </div>
+                    </div>
+              </div>
+            </div>
+            
+          </div>
+           
+
+
+
+           <!-- Modal  for Assign-->
+    <div class="modal fade" id="updateEtat" tabindex="-1" role="dialog" aria-labelledby="">
+          <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                      <div class="modal-header">
+
+                           <h5 class="modal-title" id="exampleModalLabel"> Commande N° <span class="cmd_num"> </span></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                      </div>
+
+                      <div class="modal-body">
+                          <form>
+                              <input type="text" name="cmdId" id="cmdId" value="" hidden/>
+
+                          </form>
+                            <p>Confirmez - vous la réception du colis?</p>
+
+                      </div>
+                      <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            <button class="btn btn-primary" id="btn-validate" type="button"
+                                    data-action="{% url 'commandes:update_etat' %}">Oui</button>
+                      </div>
+                      </form>
+                </div>
+          </div>
+    </div>
+<!-- End modal -->
+
+ 
+{% endblock %}
+{% block javascript %}
+  <script>
+  $(document).on('click','.openModal', function () {
+      var cmdId = $(this).data('id');
+      var numero = $(this).data('cmd_num');
+            $(".cmd_num").text( numero );
+
+      $(".modal-body #cmdId").val( cmdId );
+      $('#updateEtat').modal('show');
+
+  });
+  $(document).on('click','#btn-validate', function () {
+
+        var cmd_id = $('#cmdId').val();
+        console.log($(this).attr('data-action'));
+        $.ajax({
+            url: $(this).attr('data-action'),
+            data: {'id':cmd_id, 'etat': 6},
+            dataType: 'json',
+            success: function (data) {
+                if(data.statut == "success"){
+                    toastr.success(data.message);
+                    $('#updateEtat').modal('hide');
+                    location.reload();
+                }
+            }
+        });
+
+
+
+  });
+
+
+  </script>
+{% endblock %}

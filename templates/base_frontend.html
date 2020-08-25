@@ -1,0 +1,250 @@
+{% load static %}
+{% load i18n %}
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <title>
+            {% block head_title %}{% trans "" %}{% endblock %}
+        </title>
+         <meta charset="utf-8" />
+          <link rel="icon" type="image/png" href="" />
+          <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+          <title>
+              Zoom Transport
+          </title>
+          <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+          <!--     Fonts and icons     -->
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+          <!-- CSS Files -->
+          <link href="{% static 'assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet" />
+          <!-- CSS Just for demo purpose, don't include it in your project -->
+          <link href="{% static 'assets/css/argon.css' %}" rel="stylesheet" />
+          <link href="{% static 'assets/vendor/nucleo/css/nucleo.css' %}" rel="stylesheet" />
+          <link rel="stylesheet" href="{% static 'assets/css/toastr.css' %}">
+          <link rel="stylesheet" href="{% static 'assets/css/sweetalert2.css' %}">
+          <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+
+
+
+
+    </head>
+
+    <body>
+
+
+        <!-- Topnav -->
+    
+
+
+    
+    <nav class="navbar navbar-top navbar-expand navbar-dark bg-dark-light" style="">
+      <div class="container">
+        <a href="" class="">LOGO</a>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <!-- Navbar links -->
+          <ul class="navbar-nav nav-right align-items-center ">
+            <li class="nav-item d-xl-none">
+              <!-- Sidenav toggler -->
+              <div class="pr-3 sidenav-toggler sidenav-toggler-dark" data-action="sidenav-pin" data-target="#sidenav-main">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </div>
+            </li>
+            
+            <li class="nav-item"><a href="{% url 'commandes:home' %}" class="nav-link" >ACCUEIL</a></li>
+
+            <li class="nav-item"><a href="" class="nav-link" >A PROPOS</a></li>
+
+            <li class="nav-item"><a href="" class="nav-link" >SERVICES</a></li>
+
+            <li class="nav-item"><a href="" class="nav-link" >CONTACT</a></li>
+
+     
+                  
+          </ul>
+          <div class="d-none d-sm-block ml-auto">
+              <ul class="navbar-nav nav-right pull-right list-unstyled">
+           {% if user.is_authenticated %}
+               <li class="nav-item dropdown">
+              <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="media align-items-center">
+                  <span class="avatar avatar-sm rounded-circle">
+                    {% if user.person.photo %}
+
+                      <img alt="" src="{{user.person.photo.url}}">
+                    {% else %}
+                      <img alt="" src="">
+
+                    {% endif %}
+                  </span>
+                  <div class="media-body  ml-2  d-none d-lg-block">
+                    <span class="mb-0 text-sm  font-weight-bold">{{ user.username }}</span>
+                  </div>
+                </div>
+              </a>
+
+              <div class="dropdown-menu  dropdown-menu-right ">
+                <div class="dropdown-header noti-title">
+                  <h6 class="text-overflow m-0">Bienvenue!</h6>
+                </div>
+                <a href="{% url 'commandes:create_commande' %}" class="dropdown-item">
+                  <i class="fa fa-edit"></i>
+                  <span>Envoyer un colis</span>
+                </a>
+                <a href="{% url 'commandes:drivers_orders' %}" class="dropdown-item">
+                  <i class="ni ni-cart"></i>
+                  <span>Mes commandes</span>
+
+                </a>
+               
+                <a href="{% url 'utilisateurs:my_profile' %}" class="dropdown-item">
+                  <i class="ni ni-single-02"></i>
+                  <span>Mon profil</span>
+                </a>
+                
+              
+                <div class="dropdown-divider"></div>
+
+                {% if user.is_superuser %}
+                <a href="{% url 'commandes:dashboard'%}" class="dropdown-item">
+
+                  <i class="ni ni-settings-gear-65"></i>
+                  <span>Tableau de bord</span>
+                </a>
+                {% endif %}
+
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" data-toggle="modal" data-target="#logout">
+                  <i class="ni ni-user-run"></i>
+                  <span>Se déconnecter</span>
+                </a>
+              </div>
+            </li>
+           {% else %}
+         
+             <li class="nav-item">
+                   <a href="{% url 'utilisateurs:login' %}" class="dropdown-item" title="Se connecter">
+                        <i class="ni ni-circle-08"></i>
+                        <i class="fa fa-caret-down"></i>
+
+                    </a>
+              </li>
+            {% endif %}
+          </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+   
+         <!-- Navbar -->
+
+    <div class="header pb-6 d-flex align-items-center" style="min-height: 200px; background-image: url({%  static 'assets/img/theme/img-1-1000x600.jpg' %}); background-size: cover; background-position: center top;">
+      <!-- Mask -->
+        {% block header  %}
+
+        {% endblock %}
+
+    </div>
+    <!-- Main content -->
+    <div class="container" id="">
+
+      <br><br>
+
+
+        {% block content  %}
+
+        {% endblock %}
+    </div>
+
+
+
+
+        <!-- Main content -->
+       <!-- Footer -->
+        <footer class="footer pt-0">
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6">
+                    <div class="copyright text-center  text-lg-left  text-muted">
+                        &copy; 2020 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Zoom Transport</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                        <li class="nav-item">
+                            <a href="https://www.creative-tim.com" class="nav-link" target="_blank">Zoom Transoort</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md" class="nav-link" target="_blank">MIT License</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+         <!-- Modal  for logout-->
+    <div class="modal fade" id="logout" tabindex="-1" role="dialog" aria-labelledby="">
+          <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                      <div class="modal-header">
+
+                           <h5 class="modal-title" id="exampleModalLabel">{% trans 'Déconnexion' %}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                      </div>
+                      <form method="post" action="{% url 'utilisateurs:logout' %}">
+
+                      <div class="modal-body">
+                            <p>{% trans 'Etes-vous sûrs de vouloir vous déconnecter?' %}</p>
+                                  {% csrf_token %}
+                                  {% if redirect_field_value %}
+                                  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                                  {% endif %}
+                      </div>
+                      <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            <button class="btn btn-primary" type="submit">{% trans 'Oui' %}</button>
+                      </div>
+                      </form>
+
+                </div>
+          </div>
+    </div>
+
+<!-- End modal -->
+
+        <script src="{% static 'assets/vendor/jquery/dist/jquery.min.js' %}"></script>
+        <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'assets/vendor/js-cookie/js.cookie.js' %}"></script>
+        <script src="{% static 'assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js' %}"></script>
+        <script src="{% static 'assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js' %}"></script>
+        <script src="{% static 'assets/js/argon.js' %}"></script>
+         <script src="{% static 'assets/js/toastr.js' %}"></script>
+        <script src="{% static 'assets/js/sweetalert2.js' %}"></script>
+
+         {% if messages %}
+            {% for message in messages %}
+
+            <script type="text/javascript">
+                   toastr.{{message.tags }}("{{ message }}");
+              </script>
+            {% endfor %}
+        {% endif  %}
+        {% block javascript %}
+        {% endblock %}
+
+    </body>
+</html>
