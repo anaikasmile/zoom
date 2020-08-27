@@ -18,4 +18,9 @@ DATABASES = {
     }
 }
 
-
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'mail42.lwspanel.com'
+EMAIL_HOST_USER = 'direction@zoomtransport-togo.com'
+EMAIL_HOST_PASSWORD = 'Zoomtransp@2020'
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

@@ -6,7 +6,7 @@ class LoginBackend(ModelBackend):
           if '@' in username:
               kwargs = {'email': username}
           else:
-              kwargs = {'person__tel': username}
+              kwargs = {'tel': username}
           try:
               user = User.objects.get(**kwargs)
               if user.check_password(password):

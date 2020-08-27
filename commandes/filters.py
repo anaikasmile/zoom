@@ -15,13 +15,13 @@ STATUS_CHOICES = (
 
 
 class CommandesFilter(FilterSet):
-    colis__client = ModelChoiceFilter(queryset=User.objects.exclude(Q(user_type=1) | Q(user_type=2)| Q(user_type=3)))
-    driver = ModelChoiceFilter(queryset=User.objects.filter(user_type=3))
-    status = ChoiceFilter(choices=STATUS_CHOICES)
+    #colis__client = ModelChoiceFilter(queryset=User.objects.exclude(Q(user_type=1) | Q(user_type=2)| Q(user_type=3)))
+    #driver = ModelChoiceFilter(queryset=User.objects.filter(user_type=3))
+    #status = ChoiceFilter(choices=STATUS_CHOICES)
 
     class Meta:
         model = Commandes
-        fields = { 'numero_commande', 'colis__client', 'price', 'driver', 'status'}
+        fields = { 'numero_commande'}
 
 
 class CommandesClientFilter(FilterSet):

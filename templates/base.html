@@ -97,7 +97,7 @@
                         <!-- Navigation -->
                         <ul class="navbar-nav mb-md-3">
                             <li class="nav-item">
-                                <a class="nav-link {% if "/agences" in request.path %} active {% endif %}" href="{% url 'agences:agence-create' %}">
+                                <a class="nav-link {% if "/agence" in request.path %} active {% endif %}" href="{% url 'agences:agence-create' %}">
                                     <i class="ni ni-tv-2 text-primary"></i>
                                     <span class="nav-link-text">Agences</span>
 
@@ -124,7 +124,7 @@
                                  </a>
 
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'utilisateurs:user_registration' 2 %}">
+                                    <a class="dropdown-item" href="">
                                         Ajouter
                                     </a>
                                     <div class="dropdown-divider"></div>
@@ -140,13 +140,13 @@
                                  </a>
 
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{%  url 'agences:vehicule-create' %}">Ajouter</a>
+                                    <a class="dropdown-item" href="{%  url 'vehicules:vehicule-create' %}">Ajouter</a>
                                     <div class="dropdown-divider"></div>
 
-                                    <a class="dropdown-item" href="{%  url 'agences:vehicule-list' %}">Liste</a>
+                                    <a class="dropdown-item" href="{%  url 'vehicules:vehicule-list' %}">Liste</a>
                                     <div class="dropdown-divider"></div>
 
-                                    <a class="dropdown-item {% if "/typevehicule" in request.path %} active {% endif %}" href="{% url 'agences:type-vehicule-create' %}">
+                                    <a class="dropdown-item {% if "/typevehicule" in request.path %} active {% endif %}" href="{% url 'vehicules:type-vehicule-create' %}">
                                         Types
                                     </a>
                                     
@@ -159,11 +159,11 @@
                                  </a>
 
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'utilisateurs:user_registration' 3 %}">
+                                    <a class="dropdown-item" href="">
                                         Ajouter
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{% url 'utilisateurs:user_driver'  %}">Liste</a>
+                                    <a class="dropdown-item" href="{% url 'utilisateurs:user_driver' %}">Liste</a>
                                 </div>
 
                             </li>

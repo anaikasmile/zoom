@@ -33,8 +33,8 @@
               <div class="col-lg-3 order-lg-2">
                 <div class="card-profile-image">
                   <a href="#">
-                    {% if  user.person.photo %}
-                        <img src="{{ user.person.photo.url }}" class="rounded-circle">
+                    {% if  user.photo %}
+                        <img src="{{ user.photo.url }}" class="rounded-circle">
                     {% else %}
                         <img src="{% static 'assets/img/theme/user_icon.png' %}" class="rounded-circle">
 
@@ -157,14 +157,14 @@
                   <div class="row">
                     <div class="col-lg-6">
                        <p> Sexe:
-                        <label class="form-control-label" for="input-first-name">{{user.person.sexe}}</label>
+                        <label class="form-control-label" for="input-first-name">{{user.sexe}}</label>
                       </p>
 
                     </div>
                     <div class="col-lg-6">
                       <p>
                         Date de naissance :
-                        <label class="form-control-label" for="input-last-name">{{user.person.birth_date|date:' j/m/Y'}}</label>
+                        <label class="form-control-label" for="input-last-name">{{user.birth_date|date:' j/m/Y'}}</label>
                        </p>  
                       </div>
                   </div>
@@ -174,7 +174,7 @@
                   <div class="row">
                     <div class="col-lg-6">
                        <p> Tél:
-                        <label class="form-control-label" for="input-first-name">{{user.person.tel.as_e164}}</label>
+                        <label class="form-control-label" for="input-first-name">{{user.tel.as_e164}}</label>
                        </p>
                     </div>
                     <div class="col-lg-6">
@@ -200,19 +200,17 @@
                   <div class="row">
                     <div class="col-lg-6">
                        <p> Date inscription :
-                        <label class="form-control-label" for="input-first-name">{{ user.person.created_at|date:' j/m/Y' }}</label>
+                        <label class="form-control-label" for="input-first-name">{{ user.date_joined|date:' j/m/Y' }}</label>
                         </p>
                     </div>
                     <div class="col-lg-6">
-                      {% if user.user_type == 2 %}
+                      {% if user.agent %}
                        <p> Agence :
                           <label class="form-control-label" for="input-last-name">
                             
-                            {% if user.affectation_agent.all %}
-                               {% for r in  user.affectation_agent.all %} 
-                                  <b>{{ r.agence }}</b>
-                                {% endfor %}
-                              {% endif %}
+                            
+                                  <b>{{ user.agent.agence }}</b>
+                                
                           </label>
                           {% endif %}
                        </p>
@@ -221,7 +219,7 @@
                   <div class="row">
                     <div class="col-md-12">
                         <p>
-                          {{user.person.adresse}}
+                          {{user.adresse}}
                         </p>
                     </div>
                 </div>
@@ -230,24 +228,24 @@
 
                 
 
-                {% if user.identites.all %}
+                {% if user.agent %}
                  <hr class="my-4" />
                 
  <!-- Identité -->
 
                 <h6 class="heading-small text-muted mb-4">Pièce Identité</h6>
                 <div class="pl-lg-4">
-              {% for identity in  user.identites.all %} 
+             
                   <div class="row">
                       <div class="col-lg-6">
                          <p> N° {{identity.type}} :
-                          <label class="form-control-label" for="input-first-name">{{identity.reference}} </label>
+                          <label class="form-control-label" for="input-first-name">{{user.agent.reference}} </label>
                           </p>
                       </div>
                       <div class="col-lg-6">
                          <p>  
-                           {% if  identity.photo %}
-                            <img src="{{ identity.photo.url }}" class="rounded-circle">
+                           {% if  user.agent.photo %}
+                            <img src="{{ user.agent.photo.url }}" class="" />
 
                             {% endif %}
                           </p> 
@@ -256,12 +254,12 @@
                   <div class="row">
                       <div class="col-lg-6">
                          <p> Emis le :
-                          <label class="form-control-label" for="input-first-name">{{identity.initiated_at|date:' j/m/Y' }} </label>
+                          <label class="form-control-label" for="input-first-name">{{user.agent.initiated_at|date:' j/m/Y' }} </label>
                           </p>
                       </div>
                       <div class="col-lg-6">
                          <p>  Expire le:
-                            <label class="form-control-label" for="input-last-name"> {{identity.expired_at|date:' j/m/Y' }} </label>
+                            <label class="form-control-label" for="input-last-name"> {{user.agent.expired_at|date:' j/m/Y' }} </label>
                           </p> 
                       </div>
                   </div>
@@ -277,17 +275,17 @@
                       <div class="col-lg-6">
                          <p> Nom :
                           <label class="form-control-label" for="input-first-name"> 
-                          {{identity.contact_name}} {% if not identity.contact_name %} ____ {% endif %} </label>
+                          {{user.agent.contact_name}} {% if not user.agent.contact_name %} _ {% endif %} </label>
                           </p>
                       </div>
                       <div class="col-lg-6">
                          <p>  Tél:
-                            <label class="form-control-label" for="input-last-name"> {{identity.contact_tel}} {% if not identity.contact_tel %} ____ {% endif %}</label>
+                            <label class="form-control-label" for="input-last-name"> {{user.agent.contact_tel}} {% if not user.agent.contact_tel %} _ {% endif %}</label>
                           </p> 
                       </div>
                   </div>
                 </div>
-                {% endfor %}
+               
                 {% endif %}
  
                 

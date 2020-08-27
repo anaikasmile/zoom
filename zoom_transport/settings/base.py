@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'geolocalisation',
     'utilisateurs',
     'agences',
+    'vehicules',
     'commandes',
     'wkhtmltopdf',
     'django_tables2',
@@ -97,16 +98,16 @@ WSGI_APPLICATION = 'zoom_transport.wsgi.application'
 AUTH_USER_MODEL = 'utilisateurs.User'
 
 LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = '/users/login/'
+LOGOUT_REDIRECT_URL = '/acounts/login/'
 
 
 
 # Authentication
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'utilisateurs.AuthBackends.LoginBackend'
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend',
+#     'utilisateurs.AuthBackends.LoginBackend'
 
-)
+# )
 
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 ACCOUNT_EMAIL_REQUIRED = True

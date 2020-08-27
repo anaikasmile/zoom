@@ -42,19 +42,13 @@ def unique_order_id_generator(instance):
     return reference
 
 def home(request):
-
     return render(request, 'default/home.html', {})
-    # def get_queryset(self):
-    #     """Return the last five published questions."""
-    #     return Question.objects.order_by('-pub_date')[:5]
-
+  
 @login_required
 def commande_create(request):
-    
     form_class = ColisForm()
     commande_formset = CommandesSetForm()
 
-    #commande_formset = CommandesFormSet()
     if request.method == 'POST':
         form_class = ColisForm(request.POST, request.FILES) 
         commande_formset = CommandesSetForm(request.POST, request.FILES)
@@ -62,7 +56,6 @@ def commande_create(request):
             colis = form_class.save(commit=False)
             colis.client = request.user
             colis.save()
-
 
             new_colis = get_object_or_404(Colis, id=colis.id)
             data = getTrancheData(new_colis)
@@ -96,43 +89,6 @@ def commande_recap(request, commande_ref):
     }
     return render(request, 'commandes/commande_recap.html', context=context)
 
-
-    #template_name = 'commandes/create.html'
-    # def get_context_data(self, **kwargs):
-    #     # we need to overwrite get_context_data
-    #     # to make sure that our formset is rendered
-    #     data = super().get_context_data(**kwargs)
-    #     if self.request.POST:
-    #         data["commande"] = CommandesFormset(self.request.POST)
-    #     else:
-    #         data["commande"] = CommandesFormset()
-    #     return data
-    # def form_valid(self, form):
-    #     context = self.get_context_data()
-    #     commande = context["commande"]
-    #     self.object = form.save(commit=False)
-        
-    #     self.object.client = self.request.user
-    #     self.object.save()
-
-    #     if  commande.is_valid():
-
-    #         commande.instance = self.object
-    #         commande.save()
-
-    #         messages.success(self.request, 'Commande enregistrée')
-
-    #     else:
-    #         messages.error(self.request, 'Certaines données sont invalides')
-
-    #         #reference = random_string_generator()
-    #         # qs_exists = Commandes.objects.filter(numero_commande=reference).exists()
-    #         # if qs_exists:
-    #         #     reference = random_string_generator()
-    #     return super().form_valid(form)
-    # def get_success_url(self):
-
-    #     return reverse("commandes:create_commande")
 
 
 #Commande du client
@@ -180,14 +136,8 @@ class DriverCommandeListView(SingleTableMixin, FilterView):
 @login_required
 def mes_commandes_detail(request,commande_ref):
     commande = get_object_or_404(Commandes, numero_commande=commande_ref)
-
-    #paginator = Paginator(agences, 25)  # Show 25  per page
-    #page = request.GET.get('page')
-    #agences = paginator.get_page(page)
-
     context = {
         'commande': commande,
-
     }
     return render(request, "commandes/mes_commandes_detail.html", context)
 
@@ -357,22 +307,28 @@ def add_reclamation(request):
 def stats(request):
     return render(request, "default/stats.html", {})
 
-class CommandesListView(LoginRequiredMixin, SingleTableMixin, FilterView):
-    table_class = CommandeTable
+# class CommandesListView(LoginRequiredMixin, SingleTableMixin, FilterView):
+#     table_class = CommandeTable
+#     filterset_class = CommandesFilter
+#     template_name = 'commandes/commandes_liste.html'
+#     paginate_by = 2
+#     ordering = ['created_at']
+#     def get_context_data(self, **kwargs):
+#         # Call the base implementation first to get a context
+#         context = super().get_context_data(**kwargs)
+#         # Add in a QuerySet of all the books
+#         context['form_step1'] = Step1Form
+#         context['form_step2'] = form_step2
+
+#         return context
+   
+class CommandesListView(SingleTableMixin, FilterView):
+    table_class = CommandeClientTable
     filterset_class = CommandesFilter
     template_name = 'commandes/commandes_liste.html'
-    paginate_by = 2
-    ordering = ['created_at']
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['form_step1'] = Step1Form
-        context['form_step2'] = form_step2
-
-        return context
-   
-
+    paginate_by = 10
+    def get_queryset(self):
+        return Commandes.objects.all()
 
 
 @login_required

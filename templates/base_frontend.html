@@ -131,9 +131,8 @@
            {% else %}
          
              <li class="nav-item">
-                   <a href="{% url 'utilisateurs:login' %}" class="dropdown-item" title="Se connecter">
+                   <a href="{% url 'account_login' %}" class="dropdown-item" title="Se connecter">
                         <i class="ni ni-circle-08"></i>
-                        <i class="fa fa-caret-down"></i>
 
                     </a>
               </li>
@@ -162,7 +161,6 @@
         {% block content  %}
 
         {% endblock %}
-    </div>
 
 
 
