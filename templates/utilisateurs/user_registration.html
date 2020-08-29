@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+
+
 {% block header %}
 
 
@@ -7,12 +9,12 @@
 
 <div class="row align-items-center py-4">
     <div class="col-lg-6 col-7">
-      <h6 class="h2 text-white d-inline-block mb-0"> {{name}}</h6>
+      <h6 class="h2 text-white d-inline-block mb-0"> </h6>
       <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
         <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
           <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
           <li class="breadcrumb-item">
-          {{name}}
+          
 
           </li>
 
@@ -121,14 +123,14 @@
                             <div class="row">
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ form_identity.type.label }} *</label>
-                                   {{ form_identity.type }}
+                                  <label class="bmd-label-floating">{{ form.type.label }} *</label>
+                                   {{ form.type }}
                                 </div>
                               </div>
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ form_identity.reference.label }} *</label>
-                                   {{ form_identity.reference }}
+                                  <label class="bmd-label-floating">{{ form.reference.label }} *</label>
+                                   {{ form.reference }}
                                 </div>
                               </div>
                             </div>
@@ -136,15 +138,15 @@
                             <div class="row">
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ form_identity.initiated_at.label }} * </label>
-                                   {{ form_identity.initiated_at }}
+                                  <label class="bmd-label-floating">{{ form.initiated_at.label }} * </label>
+                                   {{ form.initiated_at }}
                                 </div>
                               </div>
 
                               <div class="col-md-6">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ form_identity.expired_at.label }} *</label>
-                                   {{ form_identity.expired_at }}
+                                  <label class="bmd-label-floating">{{ form.expired_at.label }} *</label>
+                                   {{ form.expired_at }}
                                 </div>
                               </div>
                             </div>
@@ -152,7 +154,7 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Image</label>
-                                   {{ form_identity.photo }}
+                                   {{ form.photo }}
                                 </div>
                               </div>
 
@@ -171,13 +173,13 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Nom</label>
-                                   {{ form_identity.contact_name }}
+                                   {{ form.contact_name }}
                                 </div>
                               </div>
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Tél </label>
-                                   {{ form_identity.contact_tel }}
+                                   {{ form.contact_tel }}
                                 </div>
                               </div>
                             </div>

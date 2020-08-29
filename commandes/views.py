@@ -133,6 +133,15 @@ class DriverCommandeListView(SingleTableMixin, FilterView):
     def get_queryset(self):
         return Commandes.objects.filter(driver=self.request.user)
 
+
+class AvailableCommandeListView(SingleTableMixin, FilterView):
+    table_class = CommandeDriverTable
+    filterset_class = CommandesDriverFilter
+    template_name = 'commandes/commandes_disponibles.html'
+    paginate_by = 10
+    def get_queryset(self):
+        return Commandes.objects.filter(driver__isnull=True, status=Commandes.ETAT_PAYE)
+
 @login_required
 def mes_commandes_detail(request,commande_ref):
     commande = get_object_or_404(Commandes, numero_commande=commande_ref)
@@ -142,8 +151,7 @@ def mes_commandes_detail(request,commande_ref):
     return render(request, "commandes/mes_commandes_detail.html", context)
 
 
-def detail_commande(request):
-    return
+
 
 #Vue commande du chauffeur
 # @login_required

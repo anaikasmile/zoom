@@ -27,4 +27,4 @@ class VehiculesForm(forms.ModelForm):
         }
     def __init__(self, *args, **kwargs):
         super(VehiculesForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.filter(user_type=3)
+        self.fields['user'].queryset = User.objects.filter(agent__is_driver=True)

@@ -29,7 +29,7 @@
             <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="fa fa-lock mr-2"></i>Mot de passe</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-calendar-grid-58 mr-2"></i>Commandes</a>
+            <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-3-tab" data-toggle="tab" href="#tabs-icons-text-3" role="tab" aria-controls="tabs-icons-text-3" aria-selected="false"><i class="ni ni-cart mr-2"></i>Commandes</a>
         </li>
     </ul>
 </div>
@@ -41,8 +41,23 @@
                 
                 <form method="post" autocomplete="off" enctype="multipart/form-data">
                   {% csrf_token %}
-                  {{form.errors}}
-                  {{ form_person.errors }}
+                  {% for field in form %}
+                <p>
+                 
+                  {% for error in field.errors %}
+                    <p style="color: red"> {{ error }}</p>
+                  {% endfor %}
+                </p>
+                {% endfor %}
+
+                 {% for field in form_person %}
+                <p>
+                  
+                  {% for error in field.errors %}
+                    <p style="color: red"> {{ error }}</p>
+                  {% endfor %}
+                </p>
+                {% endfor %}
 
                   <div class="row">
                     <div class="col-xl-4 order-xl-2">
@@ -118,7 +133,11 @@
                                   <div class="form-group">
                                     <label class="form-control-label" for="input-last-name">Date de naissance</label>
                                       {{ form.birth_date }}
+                                       {% if form.birth_date.help_text %}
+                                    <small style="color: grey">{{ form.birth_date.help_text }}</small>
+                                  {% endif %}
                                   </div>
+                                 
                                 </div>
                               </div>
 
@@ -127,8 +146,11 @@
                                   <div class="form-group">
                                     <label class="form-control-label" for="input-first-name">Tél</label>
                                     {{ form.tel }}
-
+                                  {% if form.tel.help_text %}
+                                    <small style="color: grey">{{ form.tel.help_text }}</small>
+                                  {% endif %}
                                   </div>
+                                  
                                 </div>
                                 <div class="col-lg-6">
                                  <div class="form-group">
@@ -174,45 +196,48 @@
               <h4 class="card-title"> Changer mon mot de passe</h4>
                 <form method="POST" action="{% url 'account_change_password' %}" class="password_change">
                   {% csrf_token %}
-                  
-                {% for field in form_password %}
-                <p>
-                  {% if field.help_text %}
-                    <small style="color: grey">{{ field.help_text }}</small>
-                  {% endif %}
-                  {% for error in field.errors %}
-                    <p style="color: red">{{ error }}</p>
-                  {% endfor %}
-                </p>
-                {% endfor %}
-                <div class="row">
-                  <div class="col-md-12">
-                      <div class="form-group">
-                        <label class="bmd-label-floating">Mot de passe actuel*</label>
-                  {{ form_password.oldpassword|add_class:'form-control'}}
+                 <div class="row"> 
+                    <div class="col-offset-3 col-md-6 col-offset-3">
+                    {% for field in form_password %}
+                    <p>
+                      {% if field.help_text %}
+                        <small style="color: grey">{{ field.help_text }}</small>
+                      {% endif %}
+                      {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                      {% endfor %}
+                    </p>
+                    {% endfor %}
+                    <div class="row">
+                      <div class="col-md-12">
+                          <div class="form-group">
+                            <label class="bmd-label-floating">Mot de passe actuel*</label>
+                      {{ form_password.oldpassword|add_class:'form-control'}}
+                          </div>
                       </div>
-                  </div>
 
-                </div>
-                <div class="row">
-                  <div class="col-md-12">
-                      <div class="form-group">
-                          <label class="bmd-label-floating">Nouveau mot de passe *</label>
-                  {{ form_password.password1|add_class:'form-control' }}
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                          <div class="form-group">
+                              <label class="bmd-label-floating">Nouveau mot de passe *</label>
+                      {{ form_password.password1|add_class:'form-control' }}
+                          </div>
                       </div>
-                  </div>
 
-                </div>
-                <div class="row">
-                  <div class="col-md-12">
-                      <div class="form-group">
-                          <label class="bmd-label-floating">Nouveau mot de passe (Confirmation)*</label>
-                  {{ form_password.password2|add_class:'form-control' }}
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                          <div class="form-group">
+                              <label class="bmd-label-floating">Nouveau mot de passe (Confirmation)*</label>
+                      {{ form_password.password2|add_class:'form-control' }}
+                          </div>
                       </div>
-                  </div>
 
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="action">Modifier</button>
+                  </div>
                 </div>
-                <button type="submit" class="btn btn-primary" name="action">Modifier</button>
                 </form>
 
             </div>
@@ -221,9 +246,10 @@
               <div class="table-responsive">
                 <h3>Commandes récentes</h3>
                 {% render_table table %}
-                  {% if request.user.user_type == 3 %}
+                  {% if request.user.agent.is_driver %}
                   <a class="btn btn-primary btn-sm pull-right" href="{% url 'commandes:drivers_orders' %}"> Voir plus</a>
-                  {% else %}
+                  {% endif %}
+                  {% if request.user.person.is_client %}
                   <a class="btn btn-primary btn-sm pull-right" href="{% url 'commandes:mes_commandes' %}"> Voir plus</a>
                 {% endif %}
               </div>

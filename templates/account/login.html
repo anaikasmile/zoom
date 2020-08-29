@@ -16,7 +16,18 @@
                 <small>Connectez-vous</small>
               </div>
               <form class="login" method="POST" action="{% url 'account_login' %}">
+
                   {% csrf_token %}
+                    {% for field in form %}
+                          <p>
+                          {% if field.help_text %}
+                            <small style="color: grey">{{ field.help_text }}</small>
+                          {% endif %}
+                          {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                          {% endfor %}
+                        </p>
+                      {% endfor %}
                 <div class="form-group mb-3">
                   <div class="input-group input-group-merge input-group-alternative">
                     <div class="input-group-prepend">
@@ -56,5 +67,5 @@
           </div>
 
       </div>
-
+</div>
 {% endblock %}

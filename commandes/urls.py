@@ -32,11 +32,11 @@ urlpatterns = [
 
     path('commandes/creer', views.commande_create, name='create_commande'),
 
-    #path('commandes/', views.mes_commandes, name='mes_commandes'),
-    #path('commandes/drivers', views.drivers_orders, name='drivers_orders'),
 
     path('commandes', views.ClientCommandeListView.as_view(), name='mes_commandes'),
     path('commandes/chauffeurs', views.DriverCommandeListView.as_view(), name='drivers_orders'),
+    path('commandes/disponibles/', views.AvailableCommandeListView.as_view(), name='availables_orders'),
+
 
     path('commandes/<commande_ref>/', views.mes_commandes_detail, name='mes_commandes_detail'),
     path('commandes/detail/<commande_ref>/', views.commande_view_driver, name='commande_detail_driver'),

@@ -9,6 +9,7 @@ from django.dispatch import receiver
 from django.conf import settings
 from phonenumber_field.modelfields import PhoneNumberField
 from agences.models import Agences
+from django.core.validators import RegexValidator
 
 class User(AbstractUser):
     # USER_TYPE_CHOICES = (
@@ -24,7 +25,7 @@ class User(AbstractUser):
     #user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, null=True, blank=True)
     sexe = models.CharField(max_length=10, choices=SEXE)
     adresse = models.TextField(max_length=500, blank=True, verbose_name="Adresse")
-    birth_date = models.DateField(null=True, blank=True, verbose_name="Date de naissance")
+    birth_date = models.DateField(null=True, blank=True, verbose_name="Date de naissance", help_text=_(u'JJ/MM/AAAA'))
     tel = PhoneNumberField(max_length=50, unique=True, verbose_name=_(u'Téléphone'), help_text=_(u'+228________'))
     photo = models.ImageField(upload_to="utilisateurs", blank=True, null=True)
 

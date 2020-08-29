@@ -17,7 +17,7 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from .models import Person
-from .forms import AgentSignUpForm, UserForm, PersonForm
+from .forms import AgentSignUpForm, UserForm, PersonForm, UserRegistrationForm
 from commandes.models import Commandes, Reclamations
 from .tables import UserTable, ClientTable, DriverTable
 from commandes.tables import CommandeClientTable, CommandeDriverTable
@@ -30,6 +30,7 @@ from allauth.account.forms import ChangePasswordForm
 # import os
 # from django.conf import settings
 from allauth.account.views import SignupView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Create your views here.
@@ -44,60 +45,34 @@ from allauth.account.views import SignupView
 #     return JsonResponse(data)
 
 
-# # Registration of user */
-# def registration(request,role):
+# Registration of user */
+def registration(request):
 
-#     if role == 1:
-#         name = 'Admin'
-#     elif role == 2:
-#         name = 'Agents'
-#     elif role == 3:
-#         name = "Chauffeurs"
-#     else: 
-#         name = "Clients"
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
 
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         form_identity = IdentityForm(request.POST)
+        if form.is_valid():
+            # user.username = form.cleaned_data['username']
+            # user.email = form.cleaned_data['email']
+            # user.first_name = form.cleaned_data['first_name']
+            # user.last_name = form.cleaned_data['last_name']
+            # user.birth_date = form.cleaned_data.get('birth_date')
+            # user.tel = form.cleaned_data.get('tel').as_e164
+            # user.sexe = form.cleaned_data.get('sexe')
+            # user.adresse = form.cleaned_data.get('adresse')
+            # user.save()
+           
+            messages.success(request, 'Enregistement réussi')
+            return redirect('utilisateurs:user_registration')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'utilisateurs/user_registration.html', {'form': form})
 
-#         if form.is_valid():
-#             user = form.save()
-#             user.refresh_from_db()  # load the profile instance created by the signal
-#             user.person.birth_date = form.cleaned_data.get('birth_date')
-#             user.person.tel = form.cleaned_data.get('tel').as_e164
-#             user.person.sexe = form.cleaned_data.get('sexe')
-#             user.person.adresse = form.cleaned_data.get('adresse')
-#             user.user_type = role
-#             user.save()
-#             identity = form_identity.save(commit=False)
-#             identity.user = user
-#             identity.save()
-#             messages.success(request, 'Enregistement réussi')
-#             return redirect('utilisateurs:user_registration', role)
-#     else:
-#         form = UserRegistrationForm()
-#         form_identity = IdentityForm()
-#     return render(request, 'utilisateurs/user_registration.html', {'form': form, 'form_identity': form_identity, 'name': name})
+
 
 
 # Registration of client */
-def signup(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            user.refresh_from_db()  # load the profile instance created by the signal
-            user.person.birth_date = form.cleaned_data.get('birth_date')
-            user.person.tel = form.cleaned_data.get('tel').as_e164
-            user.person.sexe = form.cleaned_data.get('sexe')
-            user.person.adresse = form.cleaned_data.get('adresse')
-            user.save()
-            messages.success(request, 'Votre compte a été bien créé')
-            login(request, user, backend='utilisateurs.AuthBackends.LoginBackend')
-            return redirect('commandes:home')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'utilisateurs/user_signup.html', {'form': form})
+
 
 
 
@@ -124,18 +99,19 @@ def my_profile(request):
             'table' : table
         }
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=request.user)
-        form_person = PersonForm(request.POST, request.FILES, instance=request.user.person)
+        form = UserForm(request.POST, request.FILES, instance=request.user)
+        form_person = PersonForm(request.POST,  instance=request.user.person)
 
 
         if form.is_valid() and form_person.is_valid():
             form.save()
             form_person.save()
             messages.success(request, ('Votre profile a été mis à jour.'))
+            return HttpResponseRedirect("/users/profile")
         else:
             messages.error(request, ('Certaines données sont incorecttes'))
 
-        #return HttpResponseRedirect("/users/profile")
+        #
 
     
         #messages.error(request, ('Une erreur est survenue'))
@@ -145,12 +121,13 @@ def my_profile(request):
 
 # #####ADMIN
 
-class AgentSignupView(SignupView):
-    # The referenced HTML content can be copied from the signup.html
-    # in the django-allauth template folder
+class AgentSignupView(LoginRequiredMixin,SignupView):
     template_name = 'account/signup_agent.html'
-    # the previously created form class
     form_class = AgentSignUpForm
+    redirect_field_name = 'next'
+    success_url = None
+
+   
 
 
 

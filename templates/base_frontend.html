@@ -99,11 +99,20 @@
                   <i class="fa fa-edit"></i>
                   <span>Envoyer un colis</span>
                 </a>
-                <a href="{% url 'commandes:drivers_orders' %}" class="dropdown-item">
+                {% if request.user.agent.is_driver %}
+                <a href="{% url 'commandes:availables_orders' %}" class="dropdown-item">
                   <i class="ni ni-cart"></i>
-                  <span>Mes commandes</span>
+                  <span>Commandes en attente</span>
 
                 </a>
+                {% endif %}
+                {% if request.user.person.is_client %}
+                  <a href="{% url 'commandes:mes_commandes' %}" class="dropdown-item">
+                    <i class="ni ni-cart"></i>
+                    <span>Mes commandes</span>
+
+                  </a>
+                {% endif %}
                
                 <a href="{% url 'utilisateurs:my_profile' %}" class="dropdown-item">
                   <i class="ni ni-single-02"></i>

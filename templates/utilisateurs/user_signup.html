@@ -1,5 +1,7 @@
 {% extends 'base_frontend.html' %}
 {% load widget_tweaks %}
+{% load static %}
+
 {% block header  %}
 
 {% endblock %}
@@ -34,13 +36,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="bmd-label-floating">Nom *</label>
-                                        {{ form.last_name }}
+                                        {{ form.last_name|add_class:'form-control' }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="bmd-label-floating">Prénoms *</label>
-                                        {{ form.first_name }}
+                                        {{ form.first_name|add_class:'form-control' }}
                                     </div>
                                 </div>
 
@@ -50,13 +52,13 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Sexe *</label>
-                                   {{ form.sexe }}
+                                   {{ form.sexe|add_class:'form-control' }}
                                 </div>
                               </div>
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Date de naissance *</label>
-                                    {{ form.birth_date }}
+                                    {{ form.birth_date|add_class:'form-control' }}
                                 </div>
                               </div>
                             </div>
@@ -65,7 +67,7 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Email* </label>
-                                   {{ form.email }}
+                                   {{ form.email|add_class:'form-control' }}
                                 </div>
                               </div>
                               <div class="col-md-6">
@@ -80,7 +82,7 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">{{ form.job.label }}</label>
-                                   {{ form.job }}
+                                   {{ form.job|add_class:'form-control' }}
                                 </div>
                               </div>
                               <div class="col-md-6">
@@ -100,7 +102,7 @@
                               <div class="col-md-12">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">{{ form.adresse.label }}</label>
-                                   {{ form.adresse }}
+                                   {{ form.adresse|add_class:'form-control' }}
                                 </div>
                               </div>
 

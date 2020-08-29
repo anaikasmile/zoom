@@ -190,6 +190,7 @@ LOGGING = {
     }
 }
 
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'TG'
 
 # Static files (CSS, JavaScript, Images)

@@ -8,9 +8,9 @@ app_name = 'utilisateurs'
 urlpatterns = [
 	# path('generate_password/', user_views.generate_password, name='generate_password'),
       
-      path('agent/create', user_views.AgentSignupView.as_view(), name='create_agent'),
+      #path('agent/create', user_views.AgentSignupView.as_view(), name='create_agent'),
 
- #    path('registration/<int:role>/', user_views.registration, name='user_registration'),
+      path('registration/', user_views.registration, name='user_registration'),
       #path('update/<int:user_id>/', user_views.user_update, name='user_update'),
       path('delete/<int:user_id>/', user_views.user_delete, name='user_delete'),
  #    path('password/change/<int:user_id>/', user_views.user_password_change, name='user_password_change'),
