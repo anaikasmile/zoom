@@ -6,14 +6,16 @@ from django.conf import settings
 
 app_name = 'utilisateurs'
 urlpatterns = [
-	# path('generate_password/', user_views.generate_password, name='generate_password'),
+	path('generate_password/', user_views.generate_password, name='generate_password'),
       
       #path('agent/create', user_views.AgentSignupView.as_view(), name='create_agent'),
 
-      path('registration/', user_views.registration, name='user_registration'),
-      #path('update/<int:user_id>/', user_views.user_update, name='user_update'),
+      path('registration/agent', user_views.registration_agent, name='user_registration_agent'),
+      path('registration/driver', user_views.registration_driver, name='user_registration_driver'),
+
+      path('update/<int:user_id>/', user_views.user_update, name='user_update'),
       path('delete/<int:user_id>/', user_views.user_delete, name='user_delete'),
- #    path('password/change/<int:user_id>/', user_views.user_password_change, name='user_password_change'),
+      path('password/change/<int:user_id>/', user_views.user_password_change, name='user_password_change'),
 
 
  #    path('signup/', user_views.signup, name='user_signup'),

@@ -8,16 +8,15 @@ from django.contrib import messages
 from django.db import transaction
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User, Group
-from .models import Person, User, Identity
+from .models import Person, User, Identity, Agent
 from django.views.generic import ListView, CreateView
 from django.db.models import Q, Count, F, Sum
-from django.contrib import messages
 from django.contrib.auth.base_user import BaseUserManager
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from .models import Person
-from .forms import AgentSignUpForm, UserForm, PersonForm, UserRegistrationForm
+from .forms import AgentSignUpForm, UserForm, PersonForm, AgentForm, UserRegistrationForm, AgentRegistrationForm
 from commandes.models import Commandes, Reclamations
 from .tables import UserTable, ClientTable, DriverTable
 from commandes.tables import CommandeClientTable, CommandeDriverTable
@@ -37,44 +36,68 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
-# def generate_password(request):
+def generate_password(request):
 
-#     data = {
-#         'pwd': BaseUserManager().make_random_password(8),
-#     }
-#     return JsonResponse(data)
+    data = {
+        'pwd': BaseUserManager().make_random_password(8),
+    }
+    return JsonResponse(data)
 
 
 # Registration of user */
-def registration(request):
+def registration_agent(request):
 
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = AgentRegistrationForm(request.POST, request.FILES)
 
         if form.is_valid():
-            # user.username = form.cleaned_data['username']
-            # user.email = form.cleaned_data['email']
-            # user.first_name = form.cleaned_data['first_name']
-            # user.last_name = form.cleaned_data['last_name']
-            # user.birth_date = form.cleaned_data.get('birth_date')
-            # user.tel = form.cleaned_data.get('tel').as_e164
-            # user.sexe = form.cleaned_data.get('sexe')
-            # user.adresse = form.cleaned_data.get('adresse')
-            # user.save()
-           
-            messages.success(request, 'Enregistement réussi')
-            return redirect('utilisateurs:user_registration')
+            user = form.save()
+            user.tel = form.cleaned_data.get('tel').as_e164
+            user.save()
+            type = form.cleaned_data['type']
+            reference = form.cleaned_data['reference']
+            initiated_at = form.cleaned_data['initiated_at']
+            expired_at = form.cleaned_data['expired_at']
+            contact_name = form.cleaned_data['contact_name']
+            contact_tel = form.cleaned_data['contact_tel']
+            photo = form.cleaned_data['photo']
+            agence = form.cleaned_data['agence']
+            agent = Agent.objects.create(user=user, type=type, reference=reference, initiated_at=initiated_at,
+                expired_at=expired_at, contact_tel=contact_tel, contact_name=contact_name, photo=photo, agence=agence, is_agent=True)
+            messages.success(request, 'Utilisateur créé')
+            return redirect('utilisateurs:user_registration_agent')
+    else:
+        form = AgentRegistrationForm()
+    return render(request, 'utilisateurs/user_registration_agent.html', {'form': form})
+
+
+def registration_driver(request):
+
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            user = form.save()
+            user.tel = form.cleaned_data.get('tel').as_e164
+            user.save()
+            type = form.cleaned_data['type']
+            reference = form.cleaned_data['reference']
+            initiated_at = form.cleaned_data['initiated_at']
+            expired_at = form.cleaned_data['expired_at']
+            contact_name = form.cleaned_data['contact_name']
+            contact_tel = form.cleaned_data['contact_tel']
+            photo = form.cleaned_data['photo']
+            agent = Agent.objects.create(user=user, type=type, reference=reference, initiated_at=initiated_at,
+                expired_at=expired_at, contact_tel=contact_tel, contact_name=contact_name, photo=photo, is_driver=True)
+            messages.success(request, 'Utilisateur créé')
+            return redirect('utilisateurs:user_registration_driver')
     else:
         form = UserRegistrationForm()
-    return render(request, 'utilisateurs/user_registration.html', {'form': form})
-
+    return render(request, 'utilisateurs/user_registration_driver.html', {'form': form})
 
 
 
 # Registration of client */
-
-
-
 
 def user_logout(request):
     logout(request)
@@ -111,10 +134,6 @@ def my_profile(request):
         else:
             messages.error(request, ('Certaines données sont incorecttes'))
 
-        #
-
-    
-        #messages.error(request, ('Une erreur est survenue'))
 
     return render(request, 'utilisateurs/my_profile.html', context)
 
@@ -129,8 +148,6 @@ class AgentSignupView(LoginRequiredMixin,SignupView):
 
    
 
-
-
 class ClientListView(SingleTableMixin, FilterView):
     table_class = ClientTable
     filterset_class = UserFilter
@@ -142,7 +159,7 @@ class ClientListView(SingleTableMixin, FilterView):
 
 class AgentListView(SingleTableMixin, FilterView):
     table_class = UserTable
-    template_name = "utilisateurs/user_list.html"
+    template_name = "utilisateurs/agents.html"
     paginate_by = 25
     filterset_class = UserFilter
     def get_queryset(self):
@@ -151,7 +168,7 @@ class AgentListView(SingleTableMixin, FilterView):
 
 class DriverListView(SingleTableMixin, FilterView):
     table_class = DriverTable
-    template_name = 'utilisateurs/user_list.html'
+    template_name = 'utilisateurs/agents.html'
     paginate_by = 25
     filterset_class = UserFilter
     ordering = ['lastname']
@@ -163,14 +180,17 @@ class DriverListView(SingleTableMixin, FilterView):
 
 def user_profile(request,user_id):
     user = get_object_or_404(User, id=user_id)
-    # if user.agent is not None and user.agent.is_driver == True:
-    #     commandes = Commandes.objects.filter(driver=user)
-    #     commission = Commandes.objects.filter(driver=user).filter(Q(status=Commandes.ETAT_RECEPTIONNE) | Q(status=Commandes.ETAT_LIVRE)).aggregate(Sum('commission'))
-
-    commandes = Commandes.objects.filter(colis__client=user)
-    commission = 0
+    try:
+        getattr(request.user, 'agent')  
+        commandes = Commandes.objects.filter(driver=user)
+        commission = Commandes.objects.filter(driver=user).filter(Q(status=Commandes.ETAT_RECEPTIONNE) | Q(status=Commandes.ETAT_LIVRE)).aggregate(Sum('commission'))
+        reclamations = 0
+    except AttributeError:
+        
+        commandes = Commandes.objects.filter(colis__client=user)
+        commission = 0
     
-    reclamations = Reclamations.objects.filter(commande__colis__client=user)
+        reclamations = Reclamations.objects.filter(commande__colis__client=user)
 
     nb_commandes = commandes.count()
     context = {
@@ -183,91 +203,47 @@ def user_profile(request,user_id):
     return render(request, 'utilisateurs/user_profile.html', context)
 
 # #Update User
-# # def user_update(request,user_id):
-# #     user = User.objects.get(id=user_id)
-# #     try:
-# #         identity = Identity.objects.get(user_id=user_id)
-# #     except Identity.DoesNotExist:
-# #         identity = None
+def user_update(request,user_id):
+    user = User.objects.get(id=user_id)
+    identity = Agent.objects.get(user=user)
+    if request.method == 'POST':
+        form_person = UserForm(request.POST, request.FILES, instance=user)
+        form_identity = AgentForm(request.POST,request.FILES, instance=identity)
 
-# #     if request.method == 'POST':
-# #         form_person = PersonForm(request.POST, request.FILES, instance=user.person)
-# #         form_identity = IdentityForm(request.POST,request.FILES, instance=identity)
+        if form_person.is_valid() and form_identity.is_valid():
+            form_person.save()           
+            form_identity.save()
+            messages.success(request,'Modification effectuée')
+    else:
+        form_person = UserForm(instance=user)
+        form_identity = AgentForm(instance=identity)
+    return render(request, 'utilisateurs/user_update.html', {'form_person': form_person,'form_identity': form_identity})
 
-# #         if form_person.is_valid():
-# #             form_person.save()           
-# #             form_identity.save()
-# #             messages.succes('Modification effectuée')
-# #     else:
-# #         form_person = PersonForm(instance=user.person)
-# #         form_identity = IdentityForm(instance=identity)
-# #     return render(request, 'utilisateurs/user_update.html', {'form_person': form_person,'form_identity': form_identity})
 
-# @login_required
-# def user_update(request, user_id):
-#     user = User.objects.get(id=user_id)
+@login_required
+def user_password_change(request, user_id):
+    user = User.objects.get(id=user_id)
     
-#     try:
-#         identity = Identity.objects.get(user_id=user_id)
-#     except Identity.DoesNotExist:
-#         identity = None
-    
- 
-#     if request.user.is_authenticated:
-#         if request.method == "POST":
-#             user_form = UserForm(request.POST, request.FILES, instance=user)
-#             formset = ProfileInlineFormset(request.POST, request.FILES, instance=user)
-#             form_identity = IdentityForm(request.POST,request.FILES, instance=identity)
-#             if user_form.is_valid() and form_identity.is_valid():
-#                 created_user = user_form.save(commit=False)
-#                 formset = ProfileInlineFormset(request.POST, request.FILES, instance=created_user)
- 
-#                 if formset.is_valid():
-#                     created_user.save()
-#                     formset.save()
-#                     form_identity.save()
-#                     messages.success('L utilisateur a été bien modifié')
-#         else:
-
-#             user_form = UserForm(instance=user)
-#             formset = ProfileInlineFormset(instance=user)
-#             form_identity = IdentityForm(instance=identity) 
-
-        
-#     else:
-#         raise PermissionDenied
-
-#     return render(request, "utilisateurs/user_update.html", {
-#             "user_form": user_form,
-#             "formset": formset,
-#             "form_identity": form_identity,
-#             "user_id": user_id
-#         })
-
-# @login_required
-# def user_password_change(request, user_id):
-#     user = User.objects.get(id=user_id)
-    
-#     if request.user.is_authenticated:
-#         if request.method == 'POST':
-#             form = PasswordChangeForm(user, request.POST)
-#             if form.is_valid():
-#                user = form.save()
-#                update_session_auth_hash(request, user)  # Important!
-#                messages.success(request, 'Mot de passe modifié')
-#                return redirect('utilisateurs:user_update user_id')
-#             else:
-#                 messages.error(request, 'Données invalides')
-#         else:
-#             form = PasswordChangeForm(request.user)
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = PasswordChangeForm(user, request.POST)
+            if form.is_valid():
+               user = form.save()
+               update_session_auth_hash(request, user)  # Important!
+               messages.success(request, 'Mot de passe modifié')
+               return redirect('utilisateurs:user_update user_id')
+            else:
+                messages.error(request, 'Données invalides')
+        else:
+            form = PasswordChangeForm(request.user)
     
         
-#     else:
-#         raise PermissionDenied
+    else:
+        raise PermissionDenied
 
-#     return render(request, "utilisateurs/user_password_change.html", {
-#             "form": form
-#         })
+    return render(request, "utilisateurs/user_password_change.html", {
+            "form": form
+        })
 
 #delete a user
 @login_required

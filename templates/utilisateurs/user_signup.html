@@ -59,6 +59,10 @@
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Date de naissance *</label>
                                     {{ form.birth_date|add_class:'form-control' }}
+                                    {{ form.birth_date }}
+                                       {% if form.birth_date.help_text %}
+                                    <small style="color: grey">{{ form.birth_date.help_text }}</small>
+                                  {% endif %}
                                 </div>
                               </div>
                             </div>

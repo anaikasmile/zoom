@@ -86,9 +86,9 @@ class Commandes(models.Model):
     def create_ref_code(self):
         return ''.join(random.choice(string.ascii_lowercase + string.digits, k=20))
 
-    def save(self, *args, **kwargs):
-        self.numero_commande = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.numero_commande = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return self.numero_commande
@@ -121,21 +121,7 @@ class Commandes(models.Model):
             libelle = ""
         return libelle
 
-    def getTrancheData(colis):
-        #tranches = Tranche.objects.all()
-        data = 0.00
-        # data = {
-        #     "amount": 0.00,
-        #     "commission": 0.00
-        # }
-        # for t in tranches:
-        #     minimum = colis.weight
-        #     if colis.weight >= t.min_weight and colis.weight  <= t.max_weight:
-        #         data = {
-        #            "amount": t.price,
-        #            "commission":  t.commission
-        #         }
-        return data
+    
 
 
 class Facture(models.Model):

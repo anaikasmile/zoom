@@ -57,8 +57,7 @@
                     <th>Image:</th>
                     <td>{% if commande.colis.image %}
                       <img src="{{commande.colis.image.url}}" class="" style="width: 108px; height: 70px;" />
-                      {% else %}
-                      <img src="{% static 'assets/img/brand/default.png' %}">
+                      
                       {% endif %}
                     </td>
                   </tr>  
@@ -111,10 +110,15 @@
                 </div>
                 <table class="table">
                   <tbody>
+                    {% for h in commande.commandeHistorique.all.reverse %}
                     <tr>
-                        <th>Etat:</th>
-                        <th>Date:  </th>
-                    </tr>
+                        <th>{{ h.created_at|date:'j/m/Y H:i'   }}</th>
+                    
+
+                        <th>{{h.getEtatLibelle}}</th> 
+                        <th>{% if h.agence %}{{ h.agence}} {% endif %}</th>
+                        <th>{{ h.comment}}</th>
+                    {% endfor %}
                   
                     <tr>
                       <td colspan="2">

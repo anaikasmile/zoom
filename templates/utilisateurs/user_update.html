@@ -36,7 +36,7 @@
                     </div>
                     <div class="card-body">
                         {{ user_form.errors }}
-                        {% comment %} {% for field in user_form %}
+                        {% comment %} {% for field in form_person %}
                           <p>
                             {{ field.birth_date }}<br>
                             {{ field }}
@@ -53,19 +53,18 @@
 
                             <!-- Infos personnel -->
                             <h6 class="heading-small text-muted mb-4">Informations Personnelles</h6>
-                                        {{ formset.management_form }}
 
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="bmd-label-floating">Nom *</label>
-                                        {{ user_form.last_name }}
+                                        {{ form_person.last_name }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="bmd-label-floating">Prénoms *</label>
-                                        {{ user_form.first_name }}
+                                        {{ form_person.first_name }}
                                     </div>
                                 </div>
 
@@ -75,13 +74,13 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Email </label>
-                                   {{ user_form.email }}
+                                   {{ form_person.email }}
                                 </div>
                               </div>
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Login *</label>
-                                   {{ user_form.username|add_class:'form-control' }}
+                                   {{ form_person.username|add_class:'form-control' }}
                                 </div>
                               </div>
                             </div>
@@ -90,13 +89,16 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Sexe *</label>
-                                   {{ formset.0.sexe }}
+                                   {{ form_person.sexe }}
                                 </div>
                               </div>
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Date de naissance *</label>
-                                    {{ formset.0.birth_date }}
+                                    {{ form_person.birth_date }}
+                                    {% if form_person.birth_date.help_text %}
+                                    <small style="color: grey">{{ form_person.birth_date.help_text }}</small>
+                                  {% endif %}
                                 </div>
                               </div>
                             </div>
@@ -105,7 +107,7 @@
                               <div class="col-md-6">
                                 <div class="form-group">
                                   <label class="bmd-label-floating">Tél *</label>
-                                    {{ formset.0.tel }}
+                                    {{ form_person.tel }}
 
                                 </div>
                               </div>
@@ -119,8 +121,8 @@
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="form-group">
-                                  <label class="bmd-label-floating">{{ formset.0.adresse.label }}</label>
-                                   {{ formset.0.adresse }}
+                                  <label class="bmd-label-floating">{{ form_person.adresse.label }}</label>
+                                   {{ form_person.adresse }}
                                 </div>
                               </div>
                             
@@ -205,8 +207,8 @@
                     <div class="col-lg-3 order-lg-2">
                       <div class="card-profile-image">
                         <a href="#">
-                          {% if  user.person.photo %}
-                              <img src="{{ user.person.photo.url }}" class="rounded-circle">
+                          {% if  user.photo %}
+                              <img src="{{ user.photo.url }}" class="rounded-circle">
                           {% else %}
                               <img src="{% static 'assets/img/theme/user_icon.png' %}" class="rounded-circle">
 
@@ -227,7 +229,7 @@
                           <br><br>
                           <div class="form-group">
                              <div class="custom-file">
-                                  {{ formset.0.photo }}
+                                  {{ user_form.photo }}
                                   <label class="custom-file-label" for="customFileLang">Select file</label>
                               </div>
                           </div>

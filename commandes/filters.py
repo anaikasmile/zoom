@@ -17,11 +17,11 @@ STATUS_CHOICES = (
 class CommandesFilter(FilterSet):
     #colis__client = ModelChoiceFilter(queryset=User.objects.exclude(Q(user_type=1) | Q(user_type=2)| Q(user_type=3)))
     #driver = ModelChoiceFilter(queryset=User.objects.filter(user_type=3))
-    #status = ChoiceFilter(choices=STATUS_CHOICES)
+    status = ChoiceFilter(choices=STATUS_CHOICES)
 
     class Meta:
         model = Commandes
-        fields = { 'numero_commande'}
+        fields = { 'numero_commande',  'status'}
 
 
 class CommandesClientFilter(FilterSet):

@@ -64,6 +64,7 @@ def commande_create(request):
             commande.colis = new_colis
             commande.price = data["amount"]
             commande.commission = data["commission"]
+            commande.numero_commande = ''.join(random.choice(string.ascii_lowercase) for _ in range(5))
             commande.save()
             messages.success(request, "Votre commande a été enregistrée")
             return redirect('commandes:commande_recap',  commande_ref = commande.numero_commande)
@@ -329,14 +330,22 @@ def stats(request):
 #         context['form_step2'] = form_step2
 
 #         return context
-   
+
 class CommandesListView(SingleTableMixin, FilterView):
-    table_class = CommandeClientTable
+    table_class = CommandeTable
     filterset_class = CommandesFilter
     template_name = 'commandes/commandes_liste.html'
     paginate_by = 10
-    def get_queryset(self):
-        return Commandes.objects.all()
+
+    def get_context_data(self, **kwargs):
+    # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+    # Add in a QuerySet of all the books
+        context['form_step1'] = Step1Form
+        context['form_step2'] = Step2Form
+
+        return context
+
 
 
 @login_required

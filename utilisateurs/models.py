@@ -64,7 +64,7 @@ class Agent(models.Model):
 
     )
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True, related_name ='agent')
-    agence  = models.ForeignKey(Agences, related_name='agent', on_delete=models.CASCADE)
+    agence  = models.ForeignKey(Agences, related_name='agent', on_delete=models.SET_NULL, null=True)
     type = models.CharField(max_length=50, choices=TYPE)
     reference = models.CharField(max_length=50, verbose_name=_(u'N° matricule'))
     photo = models.ImageField(upload_to="pieces_identites", blank=True, null=True)

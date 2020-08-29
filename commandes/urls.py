@@ -7,7 +7,7 @@ urlpatterns = [
     path('dashboard/', views.stats, name='dashboard'),
     path('liste/', views.CommandesListView.as_view(), name='liste'),
 
-    path('admin/commandes/liste', views.commandes_liste, name='liste_commandes'),
+    path('admin/commandes/liste', views.CommandesListView.as_view(), name='liste_commandes'),
 
     path('ajax/update/etat/', views.etat_update, name='update_etat'),
     path('admin/reclamations/liste/', views.list_reclamation, name='liste_reclamations'),

@@ -50,5 +50,7 @@ sudo supervisorctl reread
 
 sudo supervisorctl status 
 sudo supervisorctl status
+supervisorctl restart zoom-gunicorn
+service nginx restart
  nano zoom-gunicorn.conf
 
