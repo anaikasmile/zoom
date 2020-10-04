@@ -273,24 +273,27 @@ def commande_view_driver(request,commande_ref):
 
 #Enregistrer une Reclamations
 @login_required
-def add_reclamation(request):
+def add_reclamation(request, commande_ref = None):
+    if commande_ref != None:
+        commande = get_object_or_404(Commandes, numero_commande=commande_ref)  
+
     reclamations = Reclamations.objects.filter(commande__colis__client=request.user)
     paginator = Paginator(reclamations, 25)  # Show 25  per page
     page = request.GET.get('page')
     reclamations = paginator.get_page(page)
     if request.method == "POST":
-        form = ReclamationForm(request.user, request.POST)
+        form = ReclamationForm(request.POST, request.FILES, commande=commande, user=request.user)
 
         if form.is_valid():
             form.save()
             messages.success(request, 'Votre demande a été enregistrée et sera traitée dans les plus brefs délais')
-            return redirect('commandes:add_reclamation')
+            return redirect(request.path)
 
         else:
             messages.error(request, 'Certaines données sont invalides')
 
     else:
-        form = ReclamationForm(request.user)
+        form = ReclamationForm(commande=commande , user=request.user)
 
     return render(request, "commandes/ajout_reclamation.html",  {
         'form': form,

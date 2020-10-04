@@ -18,7 +18,7 @@
                   </div>
                 </div>
               <div class="card-body">
-                <form method="post" autocomplete="off">
+                <form method="post" autocomplete="off" enctype="multipart/form-data">
                     {% csrf_token %}
                      <div class="row">
                           <div class="col-md-12">
@@ -90,7 +90,7 @@
                   {% for r in reclamations %}
                   <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ r.created_at|date:'j F, Y'}}</td>
+                    <td>{{ r.created_at|date:'j/m/Y'}}</td>
                     <td>
                         {{ r.commande.numero_commande|upper}}
                     </td>

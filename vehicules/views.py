@@ -21,7 +21,7 @@ def vehicule_create(request):
     page = request.GET.get('page')
     vehicules = paginator.get_page(page)
     if request.method == "POST":
-        form = VehiculesForm(request.POST)
+        form = VehiculesForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, 'Véhicule enregistrée')

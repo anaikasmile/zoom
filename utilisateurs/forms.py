@@ -8,6 +8,8 @@ from django.contrib.auth.forms import UserCreationForm
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget, PhoneNumberInternationalFallbackWidget
 from django.forms.models import inlineformset_factory
+from django.contrib import messages
+
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -19,14 +21,14 @@ class UserForm(forms.ModelForm):
             'email': forms.TextInput(attrs={'placeholder':_(u'Email'),'name':'','id':'','class':'form-control'}),
             'sexe': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'tel': PhoneNumberPrefixWidget(initial='+228',attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
-            'birth_date': forms.DateInput( attrs={'type': '', 'class': 'form-control', 'required': False}),
+            'birth_date': forms.DateInput(attrs={'type': '', 'id':'datetimepicker', 'class': 'datepicker form-control', 'required': False}),
             'adresse': forms.Textarea(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', 'required': False}),
             'photo': forms.FileInput(attrs={'placeholder': _(u''), 'name': '', 'id': 'customFileLang', 'class': 'custom-file-input', 'lang': 'fr','required': False}),
 
               }
 
 
-class SignUpForm(forms.Form):
+class CustomSignUpForm(forms.Form):
     SEXE = (
         (u'F', _(u'Feminin')),
         (u'M', _(u'Masculin')),
@@ -37,7 +39,7 @@ class SignUpForm(forms.Form):
     sexe = forms.ChoiceField(required=True, widget=forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}), choices=SEXE)
     tel = PhoneNumberField(required=True, widget=PhoneNumberPrefixWidget(initial='+228',attrs={'class': 'form-control'}))
     photo = forms.FileField(required=False, widget=forms.FileInput(attrs={'class': 'custom-file-input', 'id': 'customFileLang', 'lang': 'fr'}))
-    birth_date = forms.DateField(help_text='Requis. Format: DD-MM-YYYY', widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    birth_date = forms.DateField(help_text='Requis. Format: DD-MM-YYYY', widget=forms.DateInput(attrs={'id':'datetimepicker', 'type': 'date', 'class': 'form-control'}))
     job = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     adresse = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control','placeholder': _(u'')}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
@@ -54,12 +56,20 @@ class SignUpForm(forms.Form):
         user.tel = self.cleaned_data.get('tel').as_e164
         user.sexe = self.cleaned_data.get('sexe')
         user.adresse = self.cleaned_data.get('adresse')
-        user.save()
 
-        person = Person.objects.create(user=user, job=self.cleaned_data.get('job'))
-        # person.job = 
-        person.save()
-        return user
+        try:
+            User.objects.get(tel=self.cleaned_data.get('tel').as_e164)
+            self.add_error('tel', 'Ce numéro de téléphone existe déjà!')
+            messages.error(request, 'Ce numéro de téléphone existe déjà!')
+            return self.cleaned_data 
+        except User.DoesNotExist:
+            user.save()
+
+            person = Person.objects.create(user=user, job=self.cleaned_data.get('job'))
+            person.save()
+            return user
+        raise forms.ValidationError(_("The mobilenumber already exists. Please try another one."))
+
 
 
 class AgentSignUpForm(forms.Form):
@@ -103,8 +113,8 @@ class UserRegistrationForm(UserCreationForm):
     type = forms.ChoiceField(required=True, widget=forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}), choices=TYPE)
     reference = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     photo = forms.FileField(required=False, widget=forms.FileInput(attrs={'class': 'custom-file-input', 'id': 'customFileLang', 'lang': 'fr'}))
-    initiated_at = forms.DateField(help_text='Requis. Format: YYYY-MM-DD', widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    expired_at = forms.DateField(help_text='Requis. Format: YYYY-MM-DD', widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    initiated_at = forms.DateField(help_text='Requis. Format: YYYY-MM-DD', widget=forms.DateInput(attrs={'type': '','id':'dateStart' ,'class': 'form-control'}))
+    expired_at = forms.DateField(help_text='Requis. Format: YYYY-MM-DD', widget=forms.DateInput(attrs={'type': '', 'id':'dateEnd', 'class': 'form-control'}))
     contact_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     contact_tel = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
@@ -115,13 +125,13 @@ class UserRegistrationForm(UserCreationForm):
         widgets = {
             'first_name': forms.TextInput(attrs={'required': True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
             'last_name': forms.TextInput(attrs={'required': True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control',}),
-            'email': forms.TextInput(attrs={'required': True,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
+            'email': forms.TextInput(attrs={'required': False,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
             'password1': forms.PasswordInput(attrs={'required': False,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
             'password2': forms.PasswordInput(attrs={'required': False,'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
             'username': forms.TextInput(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control','autocomplete':'off'}),
             'sexe': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'tel': PhoneNumberPrefixWidget(initial='+228', attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
-            'birth_date': forms.DateInput(format='%d/%m/%Y', attrs={'type': '', 'class': 'form-control', 'required': False}),
+            'birth_date': forms.DateInput(format='%d/%m/%Y', attrs={'type': '','id':'datetimepicker', 'class': 'form-control', 'required': False}),
             'adresse': forms.Textarea(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', 'rows': 5}),
             'job': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
             'photo': forms.FileInput(attrs={'placeholder': _(u''), 'name': '', 'id': 'customFileLang', 'class': 'custom-file-input', 'lang': 'fr'}),
@@ -154,8 +164,8 @@ class AgentForm(forms.ModelForm):
             'type': forms.Select(attrs={'required':True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'reference': forms.TextInput(attrs={'required':True, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'photo': forms.FileInput(attrs={'placeholder': _(u'Photo'), 'name': '', 'id': '', 'class': 'form-control'}),
-            'initiated_at': forms.DateInput(format='%d/%m/%Y', attrs={'required': True, 'type': '',  'name': '', 'id': '', 'class': 'form-control'}),
-            'expired_at': forms.DateInput(format='%d/%m/%Y', attrs={'required': True, 'type': '', 'name': '', 'id': '', 'class': 'form-control'}),
+            'initiated_at': forms.DateInput(format='%d/%m/%Y', attrs={'id':'dateStart','required': True, 'type': '',  'name': '', 'class': 'form-control'}),
+            'expired_at': forms.DateInput(format='%d/%m/%Y', attrs={'id':'dateEnd','required': True, 'type': '', 'name': '', 'class': 'form-control'}),
             'contact_name': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'contact_tel': forms.TextInput(
                 attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),

@@ -87,12 +87,24 @@
                     
                         <div class="col-lg-6">
                           <div class="form-group">
+                            <label class="form-control-label" > Photo</label>
+                             <div class="custom-file">
+                                      {{ form.image }}
+                                      <label class="custom-file-label" for="customFileLang">Select file</label>
+
+                                  </div>
+                          </div>
+                        </div>
+                     </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+              
+                          <div class="form-group">
                             <label class="form-control-label" > {{ form.description.label }}</label>
                                {{ form.description }}
                           </div>
                         </div>
                      </div>
-
                     <button type="submit" class="btn btn-primary mt-4">{% if "/update" in request.path %}  Modifier {% else %} Enregistrer {% endif %}</button>
                  </form>
               </div>

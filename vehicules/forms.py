@@ -14,7 +14,7 @@ class TypeVehiculeForm(forms.ModelForm):
 class VehiculesForm(forms.ModelForm):
     class Meta:
         model = Vehicules
-        fields = ('user', 'immatriculation', 'marque', 'modele', 'etat', 'type', 'description','nb_place' )
+        fields = ('user', 'immatriculation', 'marque', 'modele', 'etat', 'type', 'description','nb_place','image')
         widgets = {
             'user': forms.Select(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'immatriculation': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
@@ -24,6 +24,8 @@ class VehiculesForm(forms.ModelForm):
             'type': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'nb_place': forms.TextInput(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'placeholder': _(u''), 'name': '', 'id': 'customFileLang', 'class': 'custom-file-input', 'lang': 'fr','required': False}),
+
         }
     def __init__(self, *args, **kwargs):
         super(VehiculesForm, self).__init__(*args, **kwargs)

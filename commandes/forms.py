@@ -115,10 +115,14 @@ class ReclamationForm(forms.ModelForm):
             'observation': forms.Textarea(attrs={'placeholder':_(u''),'name':'','id':'','class':'form-control'}),
             'image': forms.FileInput(attrs={'required': False, 'placeholder': _(u''), 'name': '', 'id': 'customFileLang', 'class': 'custom-file-input','lang' :'fr'}),
         }
-    def __init__(self, user, *args, **kwargs):
-        super(ReclamationForm, self).__init__(*args, **kwargs)
-        self.fields['commande'].queryset = Commandes.objects.filter(colis__client=user)
+    def __init__(self, *args, **kwargs):
+        commande = kwargs.pop("commande")
+        user = kwargs.pop("user")
 
+        super(ReclamationForm, self).__init__(*args, **kwargs)
+        self.fields['commande'] = forms.ModelChoiceField(Commandes.objects.filter(colis__client=user), initial=commande,widget=forms.Select(attrs={'class': 'form-control'}))
+
+    
 class ReclamationHandlerForm(forms.ModelForm):
     class Meta:
         model = ReclamationsHandler

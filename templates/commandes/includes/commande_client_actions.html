@@ -7,6 +7,9 @@
 
     <a class="dropdown-item openModal" title="Commande terminée"  data-toggle="modal" href="updateEtat"  data-cmd-num={{record.numero_commande}} data-id="{{ record.id }}">Réceptionné</a>
     {% endif %}
-    <a class="dropdown-item" href="{% url 'commandes:mes_commandes_detail' record.numero_commande %}">Détails</a>
+    <a class="dropdown-item" href="{% url 'commandes:mes_commandes_detail' record.numero_commande %}">Voir</a>
+
+    <a class="dropdown-item" href="{% url 'commandes:add_reclamation' record.numero_commande %}">Réclamer</a>
+
   </div>
 </div>

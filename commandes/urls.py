@@ -45,7 +45,7 @@ urlpatterns = [
 
     path('ajax/commandes/assigner/', views.assign_order_to_me, name='assign_order_to_me'),
 
-    path('reclamations/', views.add_reclamation, name='add_reclamation'),
+    path('reclamations/<commande_ref>', views.add_reclamation, name='add_reclamation'),
 
     path('facture/<commande_ref>', views.generate, name='generate_facture'),
     path('commande/recap/<commande_ref>', views.commande_recap, name='commande_recap'),

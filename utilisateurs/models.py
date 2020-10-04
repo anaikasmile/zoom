@@ -29,7 +29,7 @@ class User(AbstractUser):
     tel = PhoneNumberField(max_length=50, unique=True, verbose_name=_(u'Téléphone'), help_text=_(u'+228________'))
     photo = models.ImageField(upload_to="utilisateurs", blank=True, null=True)
 
-    #TEL_FIELD = 'tel'
+    #USERNAME_FIELD = 'tel'
     def __str__(self):
         return self.last_name+' '+self.first_name
 

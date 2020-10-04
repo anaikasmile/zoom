@@ -27,7 +27,8 @@
           <link href="{% static 'assets/vendor/nucleo/css/nucleo.css' %}" rel="stylesheet" />
           <link rel="stylesheet" href="{% static 'assets/css/toastr.css' %}">
           <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
-
+          <!-- XDSoft DateTimePicker -->
+          <link rel="stylesheet" href="{% static 'assets/datetimepicker/jquery.datetimepicker.css' %}" />
 
 
     </head>
@@ -357,6 +358,24 @@
         <script src="{% static 'assets/vendor/chart.js/dist/Chart.extension.js' %}"></script>
         <script src="{% static 'assets/js/argon.js' %}"></script>
         <script src="{% static 'assets/js/toastr.js' %}"></script>
+        <script src="{% static 'assets/datetimepicker/jquery.datetimepicker.js' %}"></script>
+
+        <script>
+          $(function () {
+            $("#datetimepicker").datetimepicker(
+            {
+              format: 'd/m/Y' });
+
+            $("#dateStart").datetimepicker(
+            {
+              format: 'd/m/Y' });
+
+            $("#dateEnd").datetimepicker(
+            {
+              format: 'd/m/Y' });
+            
+          });
+        </script>
 
         {% if messages %}
             {% for message in messages %}

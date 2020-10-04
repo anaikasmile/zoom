@@ -3,7 +3,7 @@
 	      <i class="fas fa-ellipsis-v"></i>
 	    </a>
 	    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-	      <a class="dropdown-item" href="{% url 'commandes:commande_detail_driver' record.numero_commande %}">Détails</a>
+	      <a class="dropdown-item" href="{% url 'commandes:commande_detail_driver' record.numero_commande %}">Voir</a>
 	      {% if record.status == record.ETAT_PAYE %}
 		      {% if record.accepted == record.ETAT_NON_ACCEPTE %}
 		      	<a class="dropdown-item openModal" data-toggle="modal" href="assignTo"  data-id="{{ record.numero_commande }}">Accepter</a>

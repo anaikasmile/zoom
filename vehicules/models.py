@@ -21,7 +21,7 @@ class Vehicules(models.Model):
     description = models.TextField(blank=True, verbose_name="Description")
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    # image = models.ImageField(blank=True,null=True, upload_to="vehicules")
+    image = models.ImageField(blank=True,null=True, upload_to="vehicules")
     # pieceIdentification = models.ImageField(blank=True,null=True, upload_to="vehicules")
 
     def __str__(self):
