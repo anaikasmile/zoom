@@ -21,7 +21,7 @@ class UserForm(forms.ModelForm):
             'email': forms.TextInput(attrs={'placeholder':_(u'Email'),'name':'','id':'','class':'form-control'}),
             'sexe': forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}),
             'tel': PhoneNumberPrefixWidget(initial='+228',attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', }),
-            'birth_date': forms.DateInput(attrs={'type': '', 'id':'datetimepicker', 'class': 'datepicker form-control', 'required': False}),
+            'birth_date': forms.DateInput(attrs={'type': '', 'id':'datetimepicker', 'class': 'form-control', 'required': False}),
             'adresse': forms.Textarea(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control', 'required': False}),
             'photo': forms.FileInput(attrs={'placeholder': _(u''), 'name': '', 'id': 'customFileLang', 'class': 'custom-file-input', 'lang': 'fr','required': False}),
 
@@ -39,7 +39,7 @@ class CustomSignUpForm(forms.Form):
     sexe = forms.ChoiceField(required=True, widget=forms.Select(attrs={'placeholder': _(u''), 'name': '', 'id': '', 'class': 'form-control'}), choices=SEXE)
     tel = PhoneNumberField(required=True, widget=PhoneNumberPrefixWidget(initial='+228',attrs={'class': 'form-control'}))
     photo = forms.FileField(required=False, widget=forms.FileInput(attrs={'class': 'custom-file-input', 'id': 'customFileLang', 'lang': 'fr'}))
-    birth_date = forms.DateField(help_text='Requis. Format: DD-MM-YYYY', widget=forms.DateInput(attrs={'id':'datetimepicker', 'type': 'date', 'class': 'form-control'}))
+    birth_date = forms.DateField(help_text='Requis. Format: DD-MM-YYYY', widget=forms.DateInput(attrs={'id':'datetimepicker', 'type': '', 'class': 'form-control'}))
     job = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     adresse = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control','placeholder': _(u'')}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", }), required=True)
