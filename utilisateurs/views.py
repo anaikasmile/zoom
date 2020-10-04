@@ -16,6 +16,7 @@ from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
 from .models import Person
+from agences.models import Agences
 from .forms import AgentSignUpForm, UserForm, PersonForm, AgentForm, UserRegistrationForm, AgentRegistrationForm
 from commandes.models import Commandes, Reclamations
 from .tables import UserTable, ClientTable, DriverTable
@@ -62,6 +63,7 @@ def registration_agent(request):
             contact_tel = form.cleaned_data['contact_tel']
             photo = form.cleaned_data['photo']
             agence = form.cleaned_data['agence']
+            agence = get_object_or_404(Agences, id=agence)
             agent = Agent.objects.create(user=user, type=type, reference=reference, initiated_at=initiated_at,
                 expired_at=expired_at, contact_tel=contact_tel, contact_name=contact_name, photo=photo, agence=agence, is_agent=True)
             messages.success(request, 'Utilisateur créé')

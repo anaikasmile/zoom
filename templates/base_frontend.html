@@ -27,6 +27,7 @@
           <link rel="stylesheet" href="{% static 'assets/css/toastr.css' %}">
           <link rel="stylesheet" href="{% static 'assets/css/sweetalert2.css' %}">
           <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
+          <link rel="stylesheet" href="{% static 'assets/datetimepicker/jquery.datetimepicker.css' %}" />
 
 
 
@@ -241,6 +242,16 @@
         <script src="{% static 'assets/js/argon.js' %}"></script>
          <script src="{% static 'assets/js/toastr.js' %}"></script>
         <script src="{% static 'assets/js/sweetalert2.js' %}"></script>
+        <script src="{% static 'assets/datetimepicker/jquery.datetimepicker.js' %}"></script>
+        <script>
+          $(function () {
+            $("#datetimepicker").datetimepicker(
+            {
+              format: 'd/m/Y' });
+
+            
+          });
+        </script>
 
          {% if messages %}
             {% for message in messages %}
