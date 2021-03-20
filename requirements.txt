@@ -77,7 +77,7 @@ gunicorn==19.7.1
 html5lib==0.999
 httplib2==0.9.1
 idna==2.0
-Jinja2==2.8
+Jinja2==2.11.3
 jmespath==0.9.3
 language-selector==0.1
 ldif3==3.1.1
